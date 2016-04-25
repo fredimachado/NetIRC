@@ -43,5 +43,19 @@ namespace NetIRC.Tests
             Assert.Equal(nick, ircMessage.Parameters[0]);
             Assert.Equal(mode, ircMessage.Parameters[1]);
         }
+
+        [Fact]
+        public void CanParseCommandWithTrailing()
+        {
+            var prefix = "Angel!wings@irc.org";
+            var command = "PRIVMSG";
+            var target = "Wiz";
+            var text = "Are you receiving this message ?";
+            var ircMessage = new IRCMessage(string.Format(":{0} {1} {2} :{3}", prefix, command, target, text));
+            Assert.Equal(prefix, ircMessage.Prefix);
+            Assert.Equal(command, ircMessage.Command);
+            Assert.Equal(target, ircMessage.Parameters[0]);
+            Assert.Equal(text, ircMessage.Parameters[1]);
+        }
     }
 }

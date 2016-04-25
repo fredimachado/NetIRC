@@ -32,6 +32,7 @@ namespace NetIRC
             {
                 indexOfNextSpace = rawData.IndexOf(' ');
                 prefix = rawData.Substring(1, indexOfNextSpace - 1);
+                rawData = rawData.Substring(indexOfNextSpace + 1);
             }
 
             if (DataDoesNotContainSpaces(rawData))
@@ -54,6 +55,12 @@ namespace NetIRC
 
             while (!string.IsNullOrEmpty(rawData))
             {
+                if (DataStartsWithColon(rawData))
+                {
+                    parsedParameters.Add(rawData.Substring(1));
+                    break;
+                }
+
                 if (DataDoesNotContainSpaces(rawData))
                 {
                     parsedParameters.Add(rawData);
@@ -69,7 +76,9 @@ namespace NetIRC
             parameters = parsedParameters.ToArray();
         }
 
-        public bool RawDataHasPrefix => Raw.StartsWith(":");
+        public bool RawDataHasPrefix => DataStartsWithColon(Raw);
+
+        public bool DataStartsWithColon(string data) => data.StartsWith(":");
 
         public bool DataDoesNotContainSpaces(string data) => !data.Contains(" ");
     }
