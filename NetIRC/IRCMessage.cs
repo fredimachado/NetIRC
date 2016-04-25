@@ -34,7 +34,7 @@ namespace NetIRC
                 prefix = rawData.Substring(1, indexOfNextSpace - 1);
             }
 
-            if (RawDataDoesNotContainSpaces)
+            if (DataDoesNotContainSpaces(rawData))
             {
                 command = rawData;
                 return;
@@ -44,11 +44,33 @@ namespace NetIRC
             command = rawData.Remove(indexOfNextSpace);
             rawData = rawData.Substring(indexOfNextSpace + 1);
 
-            parameters = new[] { rawData };
+            ParseParameters(rawData);
+        }
+
+        private void ParseParameters(string rawData)
+        {
+            var indexOfNextSpace = 0;
+            var parsedParameters = new List<string>();
+
+            while (!string.IsNullOrEmpty(rawData))
+            {
+                if (DataDoesNotContainSpaces(rawData))
+                {
+                    parsedParameters.Add(rawData);
+                    break;
+                }
+
+                indexOfNextSpace = rawData.IndexOf(' ');
+
+                parsedParameters.Add(rawData.Remove(indexOfNextSpace));
+                rawData = rawData.Substring(indexOfNextSpace + 1);
+            }
+
+            parameters = parsedParameters.ToArray();
         }
 
         public bool RawDataHasPrefix => Raw.StartsWith(":");
 
-        public bool RawDataDoesNotContainSpaces => !Raw.Contains(" ");
+        public bool DataDoesNotContainSpaces(string data) => !data.Contains(" ");
     }
 }

@@ -31,5 +31,17 @@ namespace NetIRC.Tests
             Assert.Equal(command, ircMessage.Command);
             Assert.Equal(parameter, ircMessage.Parameters[0]);
         }
+
+        [Fact]
+        public void CanParseCommandWithTwoParameters()
+        {
+            var command = "MODE";
+            var nick = "Angel";
+            var mode = "+i";
+            var ircMessage = new IRCMessage($"{command} {nick} {mode}");
+            Assert.Equal(command, ircMessage.Command);
+            Assert.Equal(nick, ircMessage.Parameters[0]);
+            Assert.Equal(mode, ircMessage.Parameters[1]);
+        }
     }
 }
