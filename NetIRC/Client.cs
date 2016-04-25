@@ -8,6 +8,8 @@ namespace NetIRC
     {
         private readonly IConnection connection;
 
+        public event IRCRawDataHandler OnRawDataReceived;
+
         public Client(IConnection connection)
         {
             this.connection = connection;
@@ -16,7 +18,7 @@ namespace NetIRC
 
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
-
+            OnRawDataReceived?.Invoke(this, e.Data);
         }
 
         public async Task ConnectAsync(string host, int port, string nick, string user)
