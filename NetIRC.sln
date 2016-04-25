@@ -9,6 +9,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC.ConsoleClient", "Net
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC.Tests", "NetIRC.Tests\NetIRC.Tests.csproj", "{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{16E27CFC-40FF-4423-B41E-AD7ABA60D1DA}"
+	ProjectSection(SolutionItems) = preProject
+		docs\ctcp.txt = docs\ctcp.txt
+		docs\dcc-resume.txt = docs\dcc-resume.txt
+		docs\irc2numericlist.html = docs\irc2numericlist.html
+		docs\mirc-colors.txt = docs\mirc-colors.txt
+		docs\rfc1459.txt = docs\rfc1459.txt
+		docs\rfc2811.txt = docs\rfc2811.txt
+		docs\rfc2812.txt = docs\rfc2812.txt
+		docs\rizon_raw_data.txt = docs\rizon_raw_data.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
