@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC", "NetIRC\NetIRC.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC.ConsoleClient", "NetIRC.ConsoleClient\NetIRC.ConsoleClient.csproj", "{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC.Tests", "NetIRC.Tests\NetIRC.Tests.csproj", "{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
