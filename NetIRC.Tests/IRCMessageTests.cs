@@ -21,5 +21,15 @@ namespace NetIRC.Tests
 
             Assert.Equal(prefix, ircMessage.Prefix);
         }
+
+        [Fact]
+        public void CanParseCommandWithSingleParameter()
+        {
+            var command = "PING";
+            var parameter = "tolsun.oulu.fi";
+            var ircMessage = new IRCMessage($"{command} {parameter}");
+            Assert.Equal(command, ircMessage.Command);
+            Assert.Equal(parameter, ircMessage.Parameters[0]);
+        }
     }
 }

@@ -11,8 +11,12 @@ namespace NetIRC
         public string Raw { get; }
 
         private string prefix;
+        private string command;
+        private string[] parameters;
 
         public string Prefix => prefix;
+        public string Command => command;
+        public string[] Parameters => parameters;
 
         public IRCMessage(string rawData)
         {
@@ -29,8 +33,22 @@ namespace NetIRC
                 indexOfNextSpace = rawData.IndexOf(' ');
                 prefix = rawData.Substring(1, indexOfNextSpace - 1);
             }
+
+            if (RawDataDoesNotContainSpaces)
+            {
+                command = rawData;
+                return;
+            }
+
+            indexOfNextSpace = rawData.IndexOf(' ');
+            command = rawData.Remove(indexOfNextSpace);
+            rawData = rawData.Substring(indexOfNextSpace + 1);
+
+            parameters = new[] { rawData };
         }
 
         public bool RawDataHasPrefix => Raw.StartsWith(":");
+
+        public bool RawDataDoesNotContainSpaces => !Raw.Contains(" ");
     }
 }
