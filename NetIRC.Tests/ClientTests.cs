@@ -21,5 +21,18 @@ namespace NetIRC.Tests
 
             Assert.Equal(raw, rawReceived);
         }
+
+        [Fact]
+        public void RespondsToPingMessage()
+        {
+            var data = "xyz.com";
+            var raw = $"PING :{data}";
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+
+            mockConnection.Verify(c => c.SendAsync($"PONG :{data}"), Times.Once());
+        }
     }
 }

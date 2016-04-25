@@ -16,9 +16,16 @@ namespace NetIRC
             this.connection.DataReceived += Connection_DataReceived;
         }
 
-        private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
+        private async void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
+            var rawData = e.Data;
+
             OnRawDataReceived?.Invoke(this, e.Data);
+
+            if (rawData.StartsWith("PING :"))
+            {
+                await connection.SendAsync("PONG" + rawData.Substring(4));
+            }
         }
 
         public async Task ConnectAsync(string host, int port, string nick, string user)
