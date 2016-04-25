@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC", "NetIRC\NetIRC.csproj", "{B04C772C-EB68-40A3-B834-6A73530F6DA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC.ConsoleClient", "NetIRC.ConsoleClient\NetIRC.ConsoleClient.csproj", "{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B04C772C-EB68-40A3-B834-6A73530F6DA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04C772C-EB68-40A3-B834-6A73530F6DA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B04C772C-EB68-40A3-B834-6A73530F6DA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B04C772C-EB68-40A3-B834-6A73530F6DA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
