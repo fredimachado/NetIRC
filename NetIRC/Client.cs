@@ -31,6 +31,9 @@ namespace NetIRC
         public async Task ConnectAsync(string host, int port, string nick, string user)
         {
             await connection.ConnectAsync(host, port);
+
+            await connection.SendAsync($"NICK {nick}");
+            await connection.SendAsync($"USER {nick} 0 - :{user}");
         }
 
         public void Dispose()

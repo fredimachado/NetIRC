@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NetIRC.Connection;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace NetIRC.Tests
@@ -33,6 +34,20 @@ namespace NetIRC.Tests
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
 
             mockConnection.Verify(c => c.SendAsync($"PONG :{data}"), Times.Once());
+        }
+
+        [Fact]
+        public async Task SendsNickAndUserWhenConnected()
+        {
+            var nick = "test";
+            var user = "user";
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            await Task.Run(() => client.ConnectAsync("localhost", 6667, nick, user));
+
+            mockConnection.Verify(c => c.SendAsync($"NICK {nick}"), Times.Once());
+            mockConnection.Verify(c => c.SendAsync($"USER {nick} 0 - :{user}"));
         }
     }
 }
