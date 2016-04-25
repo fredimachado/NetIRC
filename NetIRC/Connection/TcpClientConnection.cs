@@ -38,7 +38,14 @@ namespace NetIRC.Connection
                 var buffer = new byte[bufferSize];
                 int byteCount;
 
-                byteCount = await tcpSocket.ReadStream.ReadAsync(buffer, 0, bufferSize);
+                try
+                {
+                    byteCount = await tcpSocket.ReadStream.ReadAsync(buffer, 0, bufferSize);
+                }
+                catch (ObjectDisposedException)
+                {
+                    return;
+                }
 
                 foreach (var line in GetLines(buffer, byteCount))
                 {
