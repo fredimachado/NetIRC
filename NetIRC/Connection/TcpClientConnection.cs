@@ -88,6 +88,7 @@ namespace NetIRC.Connection
             }
             var buffer = Encoding.UTF8.GetBytes(data);
             await tcpSocket.WriteStream.WriteAsync(buffer, 0, buffer.Length);
+            await tcpSocket.WriteStream.FlushAsync();
         }
 
         public void Dispose()
