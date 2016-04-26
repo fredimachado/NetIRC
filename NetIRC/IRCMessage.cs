@@ -15,12 +15,15 @@ namespace NetIRC
         private string[] parameters;
         private string trailing = string.Empty;
         private IRCCommand ircCommand = IRCCommand.UNKNOWN;
+        private IRCNumericReply numericReply = IRCNumericReply.UNKNOWN;
 
         public IRCPrefix Prefix => prefix;
         public string Command => command;
         public string[] Parameters => parameters;
         public string Trailing => trailing;
         public IRCCommand IRCCommand => ircCommand;
+        public IRCNumericReply NumericReply => numericReply;
+        public bool IsNumeric => numericReply != IRCNumericReply.UNKNOWN;
 
         public IRCMessage(string rawData)
         {
@@ -31,7 +34,20 @@ namespace NetIRC
 
         private void ParseIRCEnums()
         {
-            if (!string.IsNullOrEmpty(command))
+            if (string.IsNullOrEmpty(command))
+            {
+                return;
+            }
+
+            if (IsNumericReply(command))
+            {
+                Enum.TryParse(command, out numericReply);
+                if (IsNumericReply(numericReply.ToString()))
+                {
+                    numericReply = IRCNumericReply.UNKNOWN;
+                }
+            }
+            else
             {
                 Enum.TryParse(command, out ircCommand);
             }
@@ -69,9 +85,11 @@ namespace NetIRC
             parameters = rawData.Split(' ');
         }
 
-        public bool RawDataHasPrefix => Raw.StartsWith(":");
+        private bool RawDataHasPrefix => Raw.StartsWith(":");
 
-        public bool DataDoesNotContainSpaces(string data) => !data.Contains(" ");
+        private bool DataDoesNotContainSpaces(string data) => !data.Contains(" ");
+
+        private bool IsNumericReply(string command) => command.Length == 3 && command.ToCharArray().All(char.IsDigit);
 
         public override string ToString()
         {

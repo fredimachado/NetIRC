@@ -84,5 +84,29 @@ namespace NetIRC.Tests
             var ircMessage = new IRCMessage(data);
             Assert.Equal(IRCCommand.UNKNOWN, ircMessage.IRCCommand);
         }
+
+        [Fact]
+        public void CanParseNumericReply()
+        {
+            var data = "001";
+            var ircMessage = new IRCMessage(data);
+            Assert.Equal(IRCNumericReply.RPL_WELCOME, ircMessage.NumericReply);
+        }
+
+        [Fact]
+        public void SetUnknownNumericReplyIfNotFound()
+        {
+            var data = "900";
+            var ircMessage = new IRCMessage(data);
+            Assert.Equal(IRCNumericReply.UNKNOWN, ircMessage.NumericReply);
+        }
+
+        [Fact]
+        public void SetIsNumericProperty()
+        {
+            var data = "001";
+            var ircMessage = new IRCMessage(data);
+            Assert.Equal(true, ircMessage.IsNumeric);
+        }
     }
 }
