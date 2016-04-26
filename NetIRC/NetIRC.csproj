@@ -40,6 +40,7 @@
     <Compile Include="Connection\TcpClientConnection.cs" />
     <Compile Include="EventHandlers.cs" />
     <Compile Include="IRCMessage.cs" />
+    <Compile Include="IRCPrefix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -10,12 +10,12 @@ namespace NetIRC
     {
         public string Raw { get; }
 
-        private string prefix;
+        private IRCPrefix prefix;
         private string command;
         private string[] parameters;
         private string trailing = string.Empty;
 
-        public string Prefix => prefix;
+        public IRCPrefix Prefix => prefix;
         public string Command => command;
         public string[] Parameters => parameters;
         public string Trailing => trailing;
@@ -33,7 +33,8 @@ namespace NetIRC
             if (RawDataHasPrefix)
             {
                 indexOfNextSpace = rawData.IndexOf(' ');
-                prefix = rawData.Substring(1, indexOfNextSpace - 1);
+                var prefixData = rawData.Substring(1, indexOfNextSpace - 1);
+                prefix = new IRCPrefix(prefixData);
                 rawData = rawData.Substring(indexOfNextSpace + 1);
             }
 

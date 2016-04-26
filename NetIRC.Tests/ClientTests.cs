@@ -62,7 +62,7 @@ namespace NetIRC.Tests
 
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
 
-            Assert.Equal("irc.rizon.io", ircMessage.Prefix);
+            Assert.Equal("irc.rizon.io", ircMessage.Prefix.From);
             Assert.Equal("439", ircMessage.Command);
             Assert.Equal("*", ircMessage.Parameters[0]);
             Assert.Equal("Please wait while we process your connection.", ircMessage.Trailing);

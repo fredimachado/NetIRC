@@ -19,7 +19,7 @@ namespace NetIRC.Tests
             var prefix = "prefix";
             var ircMessage = new IRCMessage($":{prefix} ");
 
-            Assert.Equal(prefix, ircMessage.Prefix);
+            Assert.Equal(prefix, ircMessage.Prefix.From);
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace NetIRC.Tests
             var target = "Wiz";
             var text = "Are you receiving this message ?";
             var ircMessage = new IRCMessage($":{prefix} {command} {target} :{text}");
-            Assert.Equal(prefix, ircMessage.Prefix);
+            Assert.Equal(prefix, ircMessage.Prefix.Raw);
             Assert.Equal(command, ircMessage.Command);
             Assert.Equal(target, ircMessage.Parameters[0]);
             Assert.Equal(text, ircMessage.Trailing);
