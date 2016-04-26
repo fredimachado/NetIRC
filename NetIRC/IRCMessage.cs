@@ -14,16 +14,27 @@ namespace NetIRC
         private string command;
         private string[] parameters;
         private string trailing = string.Empty;
+        private IRCCommand ircCommand = IRCCommand.UNKNOWN;
 
         public IRCPrefix Prefix => prefix;
         public string Command => command;
         public string[] Parameters => parameters;
         public string Trailing => trailing;
+        public IRCCommand IRCCommand => ircCommand;
 
         public IRCMessage(string rawData)
         {
             Raw = rawData;
             Parse(rawData);
+            ParseIRCEnums();
+        }
+
+        private void ParseIRCEnums()
+        {
+            if (!string.IsNullOrEmpty(command))
+            {
+                Enum.TryParse(command, out ircCommand);
+            }
         }
 
         private void Parse(string rawData)

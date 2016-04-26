@@ -68,5 +68,21 @@ namespace NetIRC.Tests
             var ircMessage = new IRCMessage($":{prefix} {command} {target} :{text}");
             Assert.Equal($"Prefix: {prefix}, Command: {command}, Params: {{ Wiz }}, Trailing: {text}", ircMessage.ToString());
         }
+
+        [Fact]
+        public void CanParseIRCCommand()
+        {
+            var data = "PING";
+            var ircMessage = new IRCMessage(data);
+            Assert.Equal(IRCCommand.PING, ircMessage.IRCCommand);
+        }
+
+        [Fact]
+        public void SetUnknownIRCCommandIfNotFound()
+        {
+            var data = "PONG";
+            var ircMessage = new IRCMessage(data);
+            Assert.Equal(IRCCommand.UNKNOWN, ircMessage.IRCCommand);
+        }
     }
 }
