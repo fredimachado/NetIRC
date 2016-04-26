@@ -17,26 +17,24 @@ namespace NetIRC.ConsoleClient
             using (var client = new Client(new TcpClientConnection()))
             {
                 client.OnRawDataReceived += Client_OnRawDataReceived;
-                client.OnIRCMessageReceived += Client_OnIRCMessageReceived;
+                client.OnPrivMsgReceived += Client_OnPrivMsgReceived;
                 Task.Run(() => client.ConnectAsync("irc.rizon.net", 6667, nickName, "NetIRC"));
 
                 Console.ReadKey();
             }
         }
 
-        private static async void Client_OnIRCMessageReceived(Client client, IRCMessage ircMessage)
+        private static async void Client_OnPrivMsgReceived(Client client, PrivMsgEventArgs args)
         {
             // Direct messages to me
-            if (ircMessage.IRCCommand == IRCCommand.PRIVMSG && ircMessage.Parameters[0] == nickName)
+            if (args.To == nickName)
             {
-                var from = ircMessage.Prefix.From;
+                Console.WriteLine($"<{args.From}> {args.Message}");
 
-                Console.WriteLine($"<{from}> {ircMessage.Trailing}");
-
-                if (from == myMaster)
+                if (args.From == myMaster)
                 {
-                    await client.SendRaw($"PRIVMSG {from} :Executing {ircMessage.Trailing}...");
-                    await client.SendRaw(ircMessage.Trailing);
+                    await client.SendRaw($"PRIVMSG {args.From} :Executing {args.Message}...");
+                    await client.SendRaw(args.Message);
                 }
             }
         }
