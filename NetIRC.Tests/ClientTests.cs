@@ -67,5 +67,25 @@ namespace NetIRC.Tests
             Assert.Equal("*", ircMessage.Parameters[0]);
             Assert.Equal("Please wait while we process your connection.", ircMessage.Trailing);
         }
+
+        [Fact]
+        public void TriggersOnPrivMsgReceived()
+        {
+            var from = "Angel";
+            var to = "Wiz";
+            var message = "Hello are you receiving this message ?";
+            var raw = $":{from} PRIVMSG {to} :{message}";
+            PrivMsgEventArgs args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.OnPrivMsgReceived += (c, a) => args = a;
+
+            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+
+            Assert.Equal(from, args.From);
+            Assert.Equal(to, args.To);
+            Assert.Equal(message, args.Message);
+        }
     }
 }

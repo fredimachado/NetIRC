@@ -11,6 +11,8 @@ namespace NetIRC
         public event IRCRawDataHandler OnRawDataReceived;
         public event IRCMessageHandler OnIRCMessageReceived;
 
+        public event PrivMsgHandler OnPrivMsgReceived;
+
         public Client(IConnection connection)
         {
             this.connection = connection;
@@ -31,6 +33,13 @@ namespace NetIRC
             var ircMessage = new IRCMessage(rawData);
 
             OnIRCMessageReceived?.Invoke(this, ircMessage);
+
+            switch (ircMessage.IRCCommand)
+            {
+                case IRCCommand.PRIVMSG:
+                    OnPrivMsgReceived?.Invoke(this, new PrivMsgEventArgs(ircMessage));
+                    break;
+            }
         }
 
         public async Task ConnectAsync(string host, int port, string nick, string user)
