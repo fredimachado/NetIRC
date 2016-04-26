@@ -51,11 +51,22 @@ namespace NetIRC.Tests
             var command = "PRIVMSG";
             var target = "Wiz";
             var text = "Are you receiving this message ?";
-            var ircMessage = new IRCMessage(string.Format(":{0} {1} {2} :{3}", prefix, command, target, text));
+            var ircMessage = new IRCMessage($":{prefix} {command} {target} :{text}");
             Assert.Equal(prefix, ircMessage.Prefix);
             Assert.Equal(command, ircMessage.Command);
             Assert.Equal(target, ircMessage.Parameters[0]);
             Assert.Equal(text, ircMessage.Trailing);
+        }
+
+        [Fact]
+        public void GoodToStringOverride()
+        {
+            var prefix = "Angel!wings@irc.org";
+            var command = "PRIVMSG";
+            var target = "Wiz";
+            var text = "Are you receiving this message ?";
+            var ircMessage = new IRCMessage($":{prefix} {command} {target} :{text}");
+            Assert.Equal($"Prefix: {prefix}, Command: {command}, Params: {{ Wiz }}, Trailing: {text}", ircMessage.ToString());
         }
     }
 }

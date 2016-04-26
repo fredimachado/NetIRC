@@ -60,5 +60,11 @@ namespace NetIRC
         public bool RawDataHasPrefix => Raw.StartsWith(":");
 
         public bool DataDoesNotContainSpaces(string data) => !data.Contains(" ");
+
+        public override string ToString()
+        {
+            var paramsDescription = parameters != null ? "{ " + string.Join(", ", parameters) + " }" : string.Empty;
+            return $"Prefix: {prefix}, Command: {command}, Params: {paramsDescription}, Trailing: {trailing}";
+        }
     }
 }

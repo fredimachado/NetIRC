@@ -41,6 +41,11 @@ namespace NetIRC
             await connection.SendAsync($"USER {nick} 0 - :{user}");
         }
 
+        public async Task SendRaw(string rawData)
+        {
+            await connection.SendAsync(rawData);
+        }
+
         public void Dispose()
         {
             connection.Dispose();
