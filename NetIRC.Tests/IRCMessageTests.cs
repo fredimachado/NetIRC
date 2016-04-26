@@ -55,7 +55,7 @@ namespace NetIRC.Tests
             Assert.Equal(prefix, ircMessage.Prefix);
             Assert.Equal(command, ircMessage.Command);
             Assert.Equal(target, ircMessage.Parameters[0]);
-            Assert.Equal(text, ircMessage.Parameters[1]);
+            Assert.Equal(text, ircMessage.Trailing);
         }
     }
 }

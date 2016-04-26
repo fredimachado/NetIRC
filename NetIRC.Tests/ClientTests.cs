@@ -65,7 +65,7 @@ namespace NetIRC.Tests
             Assert.Equal("irc.rizon.io", ircMessage.Prefix);
             Assert.Equal("439", ircMessage.Command);
             Assert.Equal("*", ircMessage.Parameters[0]);
-            Assert.Equal("Please wait while we process your connection.", ircMessage.Parameters[1]);
+            Assert.Equal("Please wait while we process your connection.", ircMessage.Trailing);
         }
     }
 }

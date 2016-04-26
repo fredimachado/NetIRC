@@ -13,10 +13,12 @@ namespace NetIRC
         private string prefix;
         private string command;
         private string[] parameters;
+        private string trailing = string.Empty;
 
         public string Prefix => prefix;
         public string Command => command;
         public string[] Parameters => parameters;
+        public string Trailing => trailing;
 
         public IRCMessage(string rawData)
         {
@@ -35,6 +37,13 @@ namespace NetIRC
                 rawData = rawData.Substring(indexOfNextSpace + 1);
             }
 
+            var indexOfTrailingStart = rawData.IndexOf(" :");
+            if (indexOfTrailingStart > -1)
+            {
+                trailing = rawData.Substring(indexOfTrailingStart + 2);
+                rawData = rawData.Substring(0, indexOfTrailingStart);
+            }
+
             if (DataDoesNotContainSpaces(rawData))
             {
                 command = rawData;
@@ -45,40 +54,10 @@ namespace NetIRC
             command = rawData.Remove(indexOfNextSpace);
             rawData = rawData.Substring(indexOfNextSpace + 1);
 
-            ParseParameters(rawData);
+            parameters = rawData.Split(' ');
         }
 
-        private void ParseParameters(string rawData)
-        {
-            var indexOfNextSpace = 0;
-            var parsedParameters = new List<string>();
-
-            while (!string.IsNullOrEmpty(rawData))
-            {
-                if (DataStartsWithColon(rawData))
-                {
-                    parsedParameters.Add(rawData.Substring(1));
-                    break;
-                }
-
-                if (DataDoesNotContainSpaces(rawData))
-                {
-                    parsedParameters.Add(rawData);
-                    break;
-                }
-
-                indexOfNextSpace = rawData.IndexOf(' ');
-
-                parsedParameters.Add(rawData.Remove(indexOfNextSpace));
-                rawData = rawData.Substring(indexOfNextSpace + 1);
-            }
-
-            parameters = parsedParameters.ToArray();
-        }
-
-        public bool RawDataHasPrefix => DataStartsWithColon(Raw);
-
-        public bool DataStartsWithColon(string data) => data.StartsWith(":");
+        public bool RawDataHasPrefix => Raw.StartsWith(":");
 
         public bool DataDoesNotContainSpaces(string data) => !data.Contains(" ");
     }
