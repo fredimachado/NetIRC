@@ -9,14 +9,34 @@ namespace NetIRC.ConsoleClient
 {
     class Program
     {
+        private const string nickName = "NetIRCConsoleClient";
+        private const string myMaster = "Fredi_"; // Who can control me
+
         static void Main(string[] args)
         {
             using (var client = new Client(new TcpClientConnection()))
             {
                 client.OnRawDataReceived += Client_OnRawDataReceived;
-                Task.Run(() => client.ConnectAsync("irc.rizon.net", 6667, "NetIRCConsoleClient", "NetIRC"));
+                client.OnIRCMessageReceived += Client_OnIRCMessageReceived;
+                Task.Run(() => client.ConnectAsync("irc.rizon.net", 6667, nickName, "NetIRC"));
 
                 Console.ReadKey();
+            }
+        }
+
+        private static async void Client_OnIRCMessageReceived(Client client, IRCMessage ircMessage)
+        {
+            if (ircMessage.Command == "PRIVMSG")
+            {
+                var from = ircMessage.Prefix.From;
+
+                Console.WriteLine($"<{from}> {ircMessage.Trailing}");
+
+                if (from == myMaster)
+                {
+                    await client.SendRaw($"PRIVMSG {from} :Executing {ircMessage.Trailing}...");
+                    await client.SendRaw(ircMessage.Trailing);
+                }
             }
         }
 
