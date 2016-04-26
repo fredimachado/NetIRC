@@ -26,7 +26,8 @@ namespace NetIRC.ConsoleClient
 
         private static async void Client_OnIRCMessageReceived(Client client, IRCMessage ircMessage)
         {
-            if (ircMessage.Command == "PRIVMSG")
+            // Direct messages to me
+            if (ircMessage.Command == "PRIVMSG" && ircMessage.Parameters[0] == nickName)
             {
                 var from = ircMessage.Prefix.From;
 
