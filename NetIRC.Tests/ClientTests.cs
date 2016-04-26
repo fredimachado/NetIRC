@@ -49,5 +49,23 @@ namespace NetIRC.Tests
             mockConnection.Verify(c => c.SendAsync($"NICK {nick}"), Times.Once());
             mockConnection.Verify(c => c.SendAsync($"USER {nick} 0 - :{user}"));
         }
+
+        [Fact]
+        public void TriggersIRCMessageReceived()
+        {
+            var raw = ":irc.rizon.io 439 * :Please wait while we process your connection.";
+            IRCMessage ircMessage = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.OnIRCMessageReceived += (c, m) => ircMessage = m;
+
+            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+
+            Assert.Equal("irc.rizon.io", ircMessage.Prefix);
+            Assert.Equal("439", ircMessage.Command);
+            Assert.Equal("*", ircMessage.Parameters[0]);
+            Assert.Equal("Please wait while we process your connection.", ircMessage.Parameters[1]);
+        }
     }
 }

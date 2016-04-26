@@ -9,6 +9,7 @@ namespace NetIRC
         private readonly IConnection connection;
 
         public event IRCRawDataHandler OnRawDataReceived;
+        public event IRCMessageHandler OnIRCMessageReceived;
 
         public Client(IConnection connection)
         {
@@ -26,6 +27,10 @@ namespace NetIRC
             {
                 await connection.SendAsync("PONG" + rawData.Substring(4));
             }
+
+            var ircMessage = new IRCMessage(rawData);
+
+            OnIRCMessageReceived?.Invoke(this, ircMessage);
         }
 
         public async Task ConnectAsync(string host, int port, string nick, string user)
