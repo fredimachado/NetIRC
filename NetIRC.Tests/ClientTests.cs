@@ -84,6 +84,7 @@ namespace NetIRC.Tests
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
 
             Assert.Equal(from, args.From);
+            Assert.Equal(from, args.Prefix.From);
             Assert.Equal(to, args.To);
             Assert.Equal(message, args.Message);
         }
