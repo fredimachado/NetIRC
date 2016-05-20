@@ -2,13 +2,11 @@
 {
     public class DataReceivedEventArgs
     {
-        private readonly string data;
+        public string Data { get; }
 
         public DataReceivedEventArgs(string data)
         {
-            this.data = data;
+            Data = data;
         }
-
-        public string Data { get { return data; } }
     }
 }
