@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC", "NetIRC\NetIRC.csproj", "{B04C772C-EB68-40A3-B834-6A73530F6DA2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC.ConsoleClient", "NetIRC.ConsoleClient\NetIRC.ConsoleClient.csproj", "{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC.Tests", "NetIRC.Tests\NetIRC.Tests.csproj", "{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{16E27CFC-40FF-4423-B41E-AD7ABA60D1DA}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{16E27CFC-4
 		docs\rizon_raw_data.txt = docs\rizon_raw_data.txt
 	EndProjectSection
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NetIRC.ConsoleCli", "NetIRC.ConsoleCli\NetIRC.ConsoleCli.xproj", "{4E119D37-EE3E-412E-8577-D7814C0B1E2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetIRC.Tests", "NetIRC.Tests\NetIRC.Tests.csproj", "{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,10 +31,10 @@ Global
 		{B04C772C-EB68-40A3-B834-6A73530F6DA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B04C772C-EB68-40A3-B834-6A73530F6DA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B04C772C-EB68-40A3-B834-6A73530F6DA2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DEA7EEC9-E0B8-460D-8C60-D2EFCEF724D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E119D37-EE3E-412E-8577-D7814C0B1E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E119D37-EE3E-412E-8577-D7814C0B1E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E119D37-EE3E-412E-8577-D7814C0B1E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E119D37-EE3E-412E-8577-D7814C0B1E2F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8DCD41A-D0F8-4952-B026-D55ABFAE0C0F}.Release|Any CPU.ActiveCfg = Release|Any CPU

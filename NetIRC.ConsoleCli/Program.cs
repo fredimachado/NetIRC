@@ -1,13 +1,10 @@
 ﻿using NetIRC.Connection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace NetIRC.ConsoleClient
+namespace NetIRC.ConsoleCli
 {
-    class Program
+    public class Program
     {
         private const string nickName = "NetIRCConsoleClient";
         private const string myMaster = "Fredi_"; // Who can control me

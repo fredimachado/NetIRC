@@ -1,8 +1,8 @@
-﻿using Sockets.Plugin;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +11,7 @@ namespace NetIRC.Connection
 {
     public class TcpClientConnection : IConnection
     {
-        private TcpSocketClient tcpSocket;
+        private TcpClient tcpClient;
 
         private const int bufferSize = 4096;
         private const string newLine = "\r\n";
@@ -20,14 +20,14 @@ namespace NetIRC.Connection
 
         public TcpClientConnection()
         {
-            tcpSocket = new TcpSocketClient();
+            tcpClient = new TcpClient(AddressFamily.InterNetwork);
         }
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
 
         public async Task ConnectAsync(string address, int port)
         {
-            await tcpSocket.ConnectAsync(address, port);
+            await tcpClient.ConnectAsync(address, port);
             RunDataReceiver();
         }
 
@@ -40,7 +40,7 @@ namespace NetIRC.Connection
 
                 try
                 {
-                    byteCount = await tcpSocket.ReadStream.ReadAsync(buffer, 0, bufferSize);
+                    byteCount = await tcpClient.GetStream().ReadAsync(buffer, 0, bufferSize);
                 }
                 catch (ObjectDisposedException)
                 {
@@ -75,11 +75,6 @@ namespace NetIRC.Connection
             return lines.Take(lines.Length - 1);
         }
 
-        public async Task DisconnectAsync()
-        {
-            await tcpSocket.DisconnectAsync();
-        }
-
         public async Task SendAsync(string data)
         {
             if (!data.EndsWith("\r\n"))
@@ -87,13 +82,13 @@ namespace NetIRC.Connection
                 data += "\r\n";
             }
             var buffer = Encoding.UTF8.GetBytes(data);
-            await tcpSocket.WriteStream.WriteAsync(buffer, 0, buffer.Length);
-            await tcpSocket.WriteStream.FlushAsync();
+            await tcpClient.GetStream().WriteAsync(buffer, 0, buffer.Length);
+            await tcpClient.GetStream().FlushAsync();
         }
 
         public void Dispose()
         {
-            tcpSocket.Dispose();
+            tcpClient.Dispose();
         }
     }
 }
