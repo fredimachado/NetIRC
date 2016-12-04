@@ -1,2 +1,2 @@
 # NetIRC
-Simple PCL IRC Client Library written in C#
+Simple Portable IRC Client Library written in C# targeting .NETStandard 1.3
