@@ -11,16 +11,14 @@ namespace NetIRC.Connection
 {
     public class TcpClientConnection : IConnection
     {
-        private TcpClient tcpClient;
+        private readonly TcpClient tcpClient;
 
-        private const int bufferSize = 4096;
-        private const string newLine = "\r\n";
-
-        private string remainingData = string.Empty;
+        private StreamReader streamReader;
+        private StreamWriter streamWriter;
 
         public TcpClientConnection()
         {
-            tcpClient = new TcpClient(AddressFamily.InterNetwork);
+            tcpClient = new TcpClient();
         }
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
@@ -28,51 +26,24 @@ namespace NetIRC.Connection
         public async Task ConnectAsync(string address, int port)
         {
             await tcpClient.ConnectAsync(address, port);
+
+            streamReader = new StreamReader(tcpClient.GetStream());
+            streamWriter = new StreamWriter(tcpClient.GetStream());
+
             RunDataReceiver();
         }
 
         private async void RunDataReceiver()
         {
-            while (true)
+            while (tcpClient.Connected)
             {
-                var buffer = new byte[bufferSize];
-                int byteCount;
+                var line = await streamReader.ReadLineAsync();
 
-                try
-                {
-                    byteCount = await tcpClient.GetStream().ReadAsync(buffer, 0, bufferSize);
-                }
-                catch (ObjectDisposedException)
-                {
-                    return;
-                }
-
-                foreach (var line in GetLines(buffer, byteCount))
+                if (!string.IsNullOrEmpty(line))
                 {
                     DataReceived?.Invoke(this, new DataReceivedEventArgs(line));
                 }
             }
-        }
-
-        private IEnumerable<string> GetLines(byte[] buffer, int byteCount)
-        {
-            if (byteCount == 0)
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            var text = remainingData + Encoding.UTF8.GetString(buffer, 0, byteCount);
-            var lines = text.Split(new[] { newLine }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (text.EndsWith(newLine))
-            {
-                remainingData = string.Empty;
-                return lines;
-            }
-
-            remainingData = lines.Last();
-
-            return lines.Take(lines.Length - 1);
         }
 
         public async Task SendAsync(string data)
@@ -81,9 +52,9 @@ namespace NetIRC.Connection
             {
                 data += "\r\n";
             }
-            var buffer = Encoding.UTF8.GetBytes(data);
-            await tcpClient.GetStream().WriteAsync(buffer, 0, buffer.Length);
-            await tcpClient.GetStream().FlushAsync();
+            var buffer = data.ToCharArray();
+            await streamWriter.WriteAsync(buffer, 0, buffer.Length);
+            await streamWriter.FlushAsync();
         }
 
         public void Dispose()
