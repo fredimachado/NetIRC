@@ -11,15 +11,10 @@ namespace NetIRC.Connection
 {
     public class TcpClientConnection : IConnection
     {
-        private readonly TcpClient tcpClient;
+        private readonly TcpClient tcpClient = new TcpClient();
 
         private StreamReader streamReader;
         private StreamWriter streamWriter;
-
-        public TcpClientConnection()
-        {
-            tcpClient = new TcpClient();
-        }
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
 
@@ -39,10 +34,7 @@ namespace NetIRC.Connection
             {
                 var line = await streamReader.ReadLineAsync();
 
-                if (!string.IsNullOrEmpty(line))
-                {
-                    DataReceived?.Invoke(this, new DataReceivedEventArgs(line));
-                }
+                DataReceived?.Invoke(this, new DataReceivedEventArgs(line));
             }
         }
 
@@ -52,13 +44,23 @@ namespace NetIRC.Connection
             {
                 data += "\r\n";
             }
-            var buffer = data.ToCharArray();
-            await streamWriter.WriteAsync(buffer, 0, buffer.Length);
+
+            await streamWriter.WriteAsync(data);
             await streamWriter.FlushAsync();
         }
 
         public void Dispose()
         {
+            if (streamReader != null)
+            {
+                streamReader.Dispose();
+            }
+
+            if (streamWriter != null)
+            {
+                streamWriter.Dispose();
+            }
+
             tcpClient.Dispose();
         }
     }

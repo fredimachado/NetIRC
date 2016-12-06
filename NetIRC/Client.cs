@@ -21,6 +21,11 @@ namespace NetIRC
 
         private async void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
+            if (string.IsNullOrEmpty(e.Data))
+            {
+                return;
+            }
+
             var rawData = e.Data;
 
             OnRawDataReceived?.Invoke(this, e.Data);
