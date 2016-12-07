@@ -19,7 +19,7 @@ namespace NetIRC
             this.connection = connection;
             this.connection.DataReceived += Connection_DataReceived;
 
-            EventHub = new EventHub();
+            EventHub = new EventHub(this);
             InitializeDefaultEventHubEvents();
         }
 

@@ -4,22 +4,29 @@ namespace NetIRC
 {
     public class EventHub
     {
+        private readonly Client client;
+
+        public EventHub(Client client)
+        {
+            this.client = client;
+        }
+
         public event IRCMessageEventHandler<DefaultIRCMessage> Default;
         internal void OnDefault(IRCMessageEventArgs<DefaultIRCMessage> e)
         {
-            Default?.Invoke(this, e);
+            Default?.Invoke(client, e);
         }
 
         public event IRCMessageEventHandler<PingCommand> Ping;
         internal void OnPing(IRCMessageEventArgs<PingCommand> e)
         {
-            Ping?.Invoke(this, e);
+            Ping?.Invoke(client, e);
         }
 
         public event IRCMessageEventHandler<PrivMsgMessage> PrivMsg;
         internal void OnPrivMsg(IRCMessageEventArgs<PrivMsgMessage> e)
         {
-            PrivMsg?.Invoke(this, e);
+            PrivMsg?.Invoke(client, e);
         }
     }
 }
