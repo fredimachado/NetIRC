@@ -1,6 +1,6 @@
 ﻿using Moq;
 using NetIRC.Connection;
-using System;
+using NetIRC.Messages;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -11,7 +11,7 @@ namespace NetIRC.Tests
         [Fact]
         public void TriggersRawDataReceived()
         {
-            var raw = "PING";
+            var raw = "PING xyz.com";
             var rawReceived = string.Empty;
             var mockConnection = new Mock<IConnection>();
             var client = new Client(mockConnection.Object);
@@ -54,11 +54,11 @@ namespace NetIRC.Tests
         public void TriggersIRCMessageReceived()
         {
             var raw = ":irc.rizon.io 439 * :Please wait while we process your connection.";
-            IRCMessage ircMessage = null;
+            ParsedIRCMessage ircMessage = null;
             var mockConnection = new Mock<IConnection>();
             var client = new Client(mockConnection.Object);
 
-            client.OnIRCMessageReceived += (c, m) => ircMessage = m;
+            client.OnIRCMessageParsed += (c, m) => ircMessage = m;
 
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
 
@@ -75,18 +75,18 @@ namespace NetIRC.Tests
             var to = "Wiz";
             var message = "Hello are you receiving this message ?";
             var raw = $":{from} PRIVMSG {to} :{message}";
-            PrivMsgEventArgs args = null;
+            IRCMessageEventArgs<PrivMsgMessage> args = null;
             var mockConnection = new Mock<IConnection>();
             var client = new Client(mockConnection.Object);
 
-            client.OnPrivMsgReceived += (c, a) => args = a;
+            client.EventHub.PrivMsg += (c, a) => args = a;
 
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
 
-            Assert.Equal(from, args.From);
-            Assert.Equal(from, args.Prefix.From);
-            Assert.Equal(to, args.To);
-            Assert.Equal(message, args.Message);
+            Assert.Equal(from, args.IRCMessage.From);
+            Assert.Equal(from, args.IRCMessage.Prefix.From);
+            Assert.Equal(to, args.IRCMessage.To);
+            Assert.Equal(message, args.IRCMessage.Message);
         }
     }
 }

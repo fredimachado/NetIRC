@@ -1,4 +1,5 @@
 ﻿using NetIRC.Connection;
+using NetIRC.Messages;
 using System;
 using System.Threading.Tasks;
 
@@ -9,17 +10,30 @@ namespace NetIRC
         private readonly IConnection connection;
 
         public event IRCRawDataHandler OnRawDataReceived;
-        public event IRCMessageHandler OnIRCMessageReceived;
+        public event ParsedIRCMessageHandler OnIRCMessageParsed;
 
-        public event PrivMsgHandler OnPrivMsgReceived;
+        public EventHub EventHub { get; }
 
         public Client(IConnection connection)
         {
             this.connection = connection;
             this.connection.DataReceived += Connection_DataReceived;
+
+            EventHub = new EventHub();
+            InitializeDefaultEventHubEvents();
         }
 
-        private async void Connection_DataReceived(object sender, DataReceivedEventArgs e)
+        private void InitializeDefaultEventHubEvents()
+        {
+            EventHub.Ping += EventHub_Ping;
+        }
+
+        private async void EventHub_Ping(object sender, IRCMessageEventArgs<PingCommand> e)
+        {
+            await connection.SendAsync("PONG :" + e.IRCMessage.Target);
+        }
+
+        private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
             if (string.IsNullOrEmpty(e.Data))
             {
@@ -30,21 +44,13 @@ namespace NetIRC
 
             OnRawDataReceived?.Invoke(this, e.Data);
 
-            if (rawData.StartsWith("PING :"))
-            {
-                await connection.SendAsync("PONG" + rawData.Substring(4));
-            }
+            var parsedIRCMessage = new ParsedIRCMessage(rawData);
 
-            var ircMessage = new IRCMessage(rawData);
+            OnIRCMessageParsed?.Invoke(this, parsedIRCMessage);
 
-            OnIRCMessageReceived?.Invoke(this, ircMessage);
+            var ircMessage = IRCMessage.Create(parsedIRCMessage);
 
-            switch (ircMessage.IRCCommand)
-            {
-                case IRCCommand.PRIVMSG:
-                    OnPrivMsgReceived?.Invoke(this, new PrivMsgEventArgs(ircMessage));
-                    break;
-            }
+            ircMessage.TriggerEvent(EventHub);
         }
 
         public async Task ConnectAsync(string host, int port, string nick, string user)

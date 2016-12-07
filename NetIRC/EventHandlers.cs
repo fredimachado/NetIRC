@@ -1,34 +1,28 @@
-﻿using System;
+﻿using NetIRC.Messages;
+using System;
 
 namespace NetIRC
 {
     public delegate void IRCRawDataHandler(Client client, string rawData);
-    public delegate void IRCMessageHandler(Client client, IRCMessage ircMessage);
+    public delegate void ParsedIRCMessageHandler(Client client, ParsedIRCMessage ircMessage);
 
-    public delegate void PrivMsgHandler(Client client, PrivMsgEventArgs args);
+    public delegate void IRCMessageEventHandler<T>(object sender, IRCMessageEventArgs<T> e) where T : IRCMessage;
 
-    public class PrivMsgEventArgs : BaseIRCEventArgs
+    public class IRCMessageEventArgs<T> : EventArgs where T : IRCMessage
     {
-        public string From { get; }
-        public IRCPrefix Prefix { get; }
-        public string To { get; }
-        public string Message { get; }
+        public T IRCMessage { get; }
 
-        public PrivMsgEventArgs(IRCMessage ircMessage)
-            : base(ircMessage)
+        public IRCMessageEventArgs(T ircMessage)
         {
-            From = ircMessage.Prefix.From;
-            Prefix = IRCMessage.Prefix;
-            To = ircMessage.Parameters[0];
-            Message = ircMessage.Trailing;
+            IRCMessage = ircMessage;
         }
     }
 
     public class BaseIRCEventArgs : EventArgs
     {
-        public IRCMessage IRCMessage { get; }
+        public ParsedIRCMessage IRCMessage { get; }
 
-        public BaseIRCEventArgs(IRCMessage ircMessage)
+        public BaseIRCEventArgs(ParsedIRCMessage ircMessage)
         {
             IRCMessage = ircMessage;
         }

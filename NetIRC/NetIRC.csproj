@@ -40,8 +40,13 @@
     <Compile Include="Connection\IConnection.cs" />
     <Compile Include="Connection\TcpClientConnection.cs" />
     <Compile Include="EventHandlers.cs" />
+    <Compile Include="EventHub.cs" />
     <Compile Include="IRCCommand.cs" />
-    <Compile Include="IRCMessage.cs" />
+    <Compile Include="Messages\DefaultIRCMessage.cs" />
+    <Compile Include="Messages\IRCMessage.cs" />
+    <Compile Include="Messages\PingCommand.cs" />
+    <Compile Include="Messages\PrivMsgMessage.cs" />
+    <Compile Include="ParsedIRCMessage.cs" />
     <Compile Include="IRCNumericReply.cs" />
     <Compile Include="IRCPrefix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -49,6 +54,7 @@
   <ItemGroup>
     <None Include="project.json" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

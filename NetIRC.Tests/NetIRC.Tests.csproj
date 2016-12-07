@@ -70,8 +70,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ClientTests.cs" />
-    <Compile Include="IRCPrefixTests.cs" />
     <Compile Include="IRCMessageTests.cs" />
+    <Compile Include="IRCPrefixTests.cs" />
+    <Compile Include="ParsedIRCMessageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

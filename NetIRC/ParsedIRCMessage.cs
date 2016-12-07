@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetIRC
 {
-    public class IRCMessage
+    public class ParsedIRCMessage
     {
         public string Raw { get; }
 
@@ -25,7 +25,7 @@ namespace NetIRC
         public IRCNumericReply NumericReply => numericReply;
         public bool IsNumeric => numericReply != IRCNumericReply.UNKNOWN;
 
-        public IRCMessage(string rawData)
+        public ParsedIRCMessage(string rawData)
         {
             Raw = rawData;
             Parse(rawData);
