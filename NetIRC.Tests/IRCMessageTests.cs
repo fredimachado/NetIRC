@@ -29,7 +29,7 @@ namespace NetIRC.Tests
         {
             var prefix = "Angel!wings@irc.org";
             var command = "PRIVMSG";
-            var target = "Wiz";
+            var target = "WiZ";
             var text = "Are you receiving this message ?";
             var parsedIRCMessage = new ParsedIRCMessage($":{prefix} {command} {target} :{text}");
             var ircMessage = ServerMessage.Create(parsedIRCMessage);
@@ -50,6 +50,34 @@ namespace NetIRC.Tests
             var privMsgMessage = new PrivMsgMessage(target, message);
 
             Assert.Equal($"PRIVMSG {target} :{message}", privMsgMessage.ToString());
+        }
+
+        [Fact]
+        public void NoticeMessageFromServer()
+        {
+            var from = "irc.server.net";
+            var command = "NOTICE";
+            var target = "WiZ";
+            var text = "Are you receiving this message ?";
+            var parsedIRCMessage = new ParsedIRCMessage($":{from} {command} {target} :{text}");
+            var ircMessage = ServerMessage.Create(parsedIRCMessage);
+
+            Assert.IsType<NoticeMessage>(ircMessage);
+
+            var privMsgMessage = ircMessage as NoticeMessage;
+            Assert.Equal(from, privMsgMessage.From);
+            Assert.Equal(target, privMsgMessage.Target);
+            Assert.Equal(text, privMsgMessage.Message);
+        }
+
+        [Fact]
+        public void NoticeMessageFromClient()
+        {
+            var target = "WiZ";
+            var message = "Are you receiving this message ?";
+            var privMsgMessage = new NoticeMessage(target, message);
+
+            Assert.Equal($"NOTICE {target} :{message}", privMsgMessage.ToString());
         }
 
         [Fact]

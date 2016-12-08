@@ -15,7 +15,7 @@ namespace NetIRC.Messages
             From = parsedMessage.Prefix.From;
             Prefix = parsedMessage.Prefix;
             To = parsedMessage.Parameters[0];
-            Message = parsedMessage.Trailing;
+            Message = parsedMessage.Text;
         }
 
         public PrivMsgMessage(string target, string text)

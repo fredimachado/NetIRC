@@ -10,14 +10,15 @@ namespace NetIRC
         private IRCPrefix prefix;
         private string command;
         private string[] parameters;
-        private string trailing = string.Empty;
+        private string trailing;
         private IRCCommand ircCommand = IRCCommand.UNKNOWN;
         private IRCNumericReply numericReply = IRCNumericReply.UNKNOWN;
 
         public IRCPrefix Prefix => prefix;
         public string Command => command;
         public string[] Parameters => parameters;
-        public string Trailing => trailing;
+        public string Trailing => trailing ?? string.Empty;
+        public string Text => trailing ?? (parameters != null ? parameters[parameters.Length - 1] : string.Empty);
         public IRCCommand IRCCommand => ircCommand;
         public IRCNumericReply NumericReply => numericReply;
         public bool IsNumeric => numericReply != IRCNumericReply.UNKNOWN;

@@ -103,5 +103,66 @@ namespace NetIRC.Tests
             Assert.Equal(to, args.IRCMessage.To);
             Assert.Equal(message, args.IRCMessage.Message);
         }
+
+        [Fact]
+        public void TriggersOnPrivMsgReceivedWithoutTrailing()
+        {
+            var from = "Angel";
+            var to = "Wiz";
+            var message = "Hello";
+            var raw = $":{from} PRIVMSG {to} {message}";
+            IRCMessageEventArgs<PrivMsgMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.EventHub.PrivMsg += (c, a) => args = a;
+
+            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+
+            Assert.Equal(from, args.IRCMessage.From);
+            Assert.Equal(from, args.IRCMessage.Prefix.From);
+            Assert.Equal(to, args.IRCMessage.To);
+            Assert.Equal(message, args.IRCMessage.Message);
+        }
+
+        [Fact]
+        public void TriggersOnNoticeReceived()
+        {
+            var from = "irc.server.net";
+            var to = "WiZ";
+            var message = "Hello world";
+            var raw = $":{from} NOTICE {to} :{message}";
+            IRCMessageEventArgs<NoticeMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.EventHub.Notice += (c, a) => args = a;
+
+            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+
+            Assert.Equal(from, args.IRCMessage.From);
+            Assert.Equal(to, args.IRCMessage.Target);
+            Assert.Equal(message, args.IRCMessage.Message);
+        }
+
+        [Fact]
+        public void TriggersOnNoticeReceivedWithoutTrailing()
+        {
+            var from = "irc.server.net";
+            var to = "WiZ";
+            var message = "Hello";
+            var raw = $":{from} NOTICE {to} {message}";
+            IRCMessageEventArgs<NoticeMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.EventHub.Notice += (c, a) => args = a;
+
+            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+
+            Assert.Equal(from, args.IRCMessage.From);
+            Assert.Equal(to, args.IRCMessage.Target);
+            Assert.Equal(message, args.IRCMessage.Message);
+        }
     }
 }
