@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetIRC.Connection
@@ -17,6 +13,8 @@ namespace NetIRC.Connection
         private StreamWriter streamWriter;
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
+
+        private static string crlf = "\r\n";
 
         public async Task ConnectAsync(string address, int port)
         {
@@ -40,9 +38,9 @@ namespace NetIRC.Connection
 
         public async Task SendAsync(string data)
         {
-            if (!data.EndsWith("\r\n"))
+            if (!data.EndsWith(crlf))
             {
-                data += "\r\n";
+                data += crlf;
             }
 
             await streamWriter.WriteAsync(data);
