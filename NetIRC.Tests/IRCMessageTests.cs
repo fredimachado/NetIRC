@@ -22,6 +22,14 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void PongMessageTokens()
+        {
+            var pongMsg = new PongCommand("tolsun.oulu.fi");
+
+            Assert.Equal("PONG tolsun.oulu.fi", pongMsg.ToString());
+        }
+
+        [Fact]
         public void PrivMsgMessage()
         {
             var prefix = "Angel!wings@irc.org";
@@ -37,6 +45,14 @@ namespace NetIRC.Tests
             Assert.Equal(prefix, privMsgMessage.Prefix.Raw);
             Assert.Equal(target, privMsgMessage.To);
             Assert.Equal(text, privMsgMessage.Message);
+        }
+
+        [Fact]
+        public void PrivMsgMessageTokens()
+        {
+            var privMsg = new PrivMsgMessage("Wiz", "Are you receiving this message ?");
+
+            Assert.Equal("PRIVMSG Wiz :Are you receiving this message ?", privMsg.ToString());
         }
     }
 }

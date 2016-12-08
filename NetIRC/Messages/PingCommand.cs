@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NetIRC.Messages
+﻿namespace NetIRC.Messages
 {
     public class PingCommand : IRCMessage
     {

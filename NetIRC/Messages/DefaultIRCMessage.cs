@@ -1,4 +1,7 @@
-﻿namespace NetIRC.Messages
+﻿using System;
+using System.Collections.Generic;
+
+namespace NetIRC.Messages
 {
     public class DefaultIRCMessage : IRCMessage
     {

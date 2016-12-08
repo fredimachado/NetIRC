@@ -45,6 +45,7 @@
     <Compile Include="Messages\DefaultIRCMessage.cs" />
     <Compile Include="Messages\IRCMessage.cs" />
     <Compile Include="Messages\PingCommand.cs" />
+    <Compile Include="Messages\PongCommand.cs" />
     <Compile Include="Messages\PrivMsgMessage.cs" />
     <Compile Include="ParsedIRCMessage.cs" />
     <Compile Include="IRCNumericReply.cs" />

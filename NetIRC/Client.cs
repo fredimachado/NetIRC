@@ -30,7 +30,7 @@ namespace NetIRC
 
         private async void EventHub_Ping(object sender, IRCMessageEventArgs<PingCommand> e)
         {
-            await connection.SendAsync("PONG :" + e.IRCMessage.Target);
+            await SendAsync(new PongCommand(e.IRCMessage.Target));
         }
 
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
@@ -64,6 +64,11 @@ namespace NetIRC
         public async Task SendRaw(string rawData)
         {
             await connection.SendAsync(rawData);
+        }
+
+        public async Task SendAsync(IRCMessage message)
+        {
+            await connection.SendAsync(message.ToString());
         }
 
         public void Dispose()

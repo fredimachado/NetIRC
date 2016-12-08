@@ -1,4 +1,7 @@
-﻿namespace NetIRC.Messages
+﻿using System;
+using System.Collections.Generic;
+
+namespace NetIRC.Messages
 {
     public class PrivMsgMessage : IRCMessage
     {
@@ -15,9 +18,17 @@
             Message = parsedMessage.Trailing;
         }
 
+        public PrivMsgMessage(string target, string text)
+        {
+            To = target;
+            Message = text;
+        }
+
         public override void TriggerEvent(EventHub eventHub)
         {
             eventHub.OnPrivMsg(new IRCMessageEventArgs<PrivMsgMessage>(this));
         }
+
+        public override IEnumerable<string> Tokens => new[] { "PRIVMSG", To, Message };
     }
 }
