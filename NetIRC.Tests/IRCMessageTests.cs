@@ -1,9 +1,4 @@
 ﻿using NetIRC.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace NetIRC.Tests
@@ -30,7 +25,7 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void PrivMsgMessage()
+        public void PrivMsgMessageFromServer()
         {
             var prefix = "Angel!wings@irc.org";
             var command = "PRIVMSG";
@@ -48,11 +43,14 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void PrivMsgMessageTokens()
+        public void PrivMsgMessageFromClient()
         {
-            var privMsg = new PrivMsgMessage("Wiz", "Are you receiving this message ?");
+            var target = "WiZ";
+            var message = "Are you receiving this message ?";
+            var privMsgMessage = new PrivMsgMessage(target, message);
 
-            Assert.Equal("PRIVMSG Wiz :Are you receiving this message ?", privMsg.ToString());
+            Assert.Equal($"PRIVMSG {target} :{message}", privMsgMessage.ToString());
+        }
         }
     }
 }
