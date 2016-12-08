@@ -1,4 +1,5 @@
 ﻿using NetIRC.Connection;
+using NetIRC.Messages;
 using System;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace NetIRC.ConsoleCli
 
                 if (e.IRCMessage.From == myMaster)
                 {
-                    await client.SendRaw($"PRIVMSG {e.IRCMessage.From} :Executing {e.IRCMessage.Message}...");
+                    await client.SendAsync(new PrivMsgMessage(e.IRCMessage.From, $"Executing {e.IRCMessage.Message}..."));
                     await client.SendRaw(e.IRCMessage.Message);
                 }
             }
