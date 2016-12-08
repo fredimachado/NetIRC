@@ -75,5 +75,15 @@ namespace NetIRC.Tests
 
             Assert.Equal($"NICK {newNick}", nickMessage.ToString());
         }
+
+        [Fact]
+        public void UserMessageTokens()
+        {
+            var user = "guest";
+            var realName = "Ronnie Reagan";
+            var userMessage = new UserMessage(user, realName);
+
+            Assert.Equal($"USER {user} 0 - :{realName}", userMessage.ToString());
+        }
     }
 }

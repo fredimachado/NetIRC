@@ -53,12 +53,12 @@ namespace NetIRC
             serverMessage.TriggerEvent(EventHub);
         }
 
-        public async Task ConnectAsync(string host, int port, string nick, string user)
+        public async Task ConnectAsync(string host, int port, string nick, string realName)
         {
             await connection.ConnectAsync(host, port);
 
             await SendAsync(new NickMessage(nick));
-            await connection.SendAsync($"USER {nick} 0 - :{user}");
+            await SendAsync(new UserMessage(nick, realName));
         }
 
         public async Task SendRaw(string rawData)

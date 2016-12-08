@@ -54,15 +54,15 @@ namespace NetIRC.Tests
         [Fact]
         public async Task SendsNickAndUserWhenConnected()
         {
-            var nick = "test";
-            var user = "user";
+            var nick = "guest";
+            var realName = "Ronnie Reagan";
             var mockConnection = new Mock<IConnection>();
             var client = new Client(mockConnection.Object);
 
-            await Task.Run(() => client.ConnectAsync("localhost", 6667, nick, user));
+            await Task.Run(() => client.ConnectAsync("localhost", 6667, nick, realName));
 
             mockConnection.Verify(c => c.SendAsync($"NICK {nick}"), Times.Once());
-            mockConnection.Verify(c => c.SendAsync($"USER {nick} 0 - :{user}"));
+            mockConnection.Verify(c => c.SendAsync($"USER {nick} 0 - :{realName}"));
         }
 
         [Fact]
