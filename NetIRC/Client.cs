@@ -57,7 +57,7 @@ namespace NetIRC
         {
             await connection.ConnectAsync(host, port);
 
-            await connection.SendAsync($"NICK {nick}");
+            await SendAsync(new NickMessage(nick));
             await connection.SendAsync($"USER {nick} 0 - :{user}");
         }
 

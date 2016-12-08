@@ -51,6 +51,29 @@ namespace NetIRC.Tests
 
             Assert.Equal($"PRIVMSG {target} :{message}", privMsgMessage.ToString());
         }
+
+        [Fact]
+        public void NickMessageFromServer()
+        {
+            var oldNick = "WiZ";
+            var newNick = "Kilroy";
+            var parsedIRCMessage = new ParsedIRCMessage($":{oldNick} NICK {newNick}");
+            var ircMessage = ServerMessage.Create(parsedIRCMessage);
+
+            Assert.IsType<NickMessage>(ircMessage);
+
+            var nickMessage = ircMessage as NickMessage;
+            Assert.Equal(oldNick, nickMessage.OldNick);
+            Assert.Equal(newNick, nickMessage.NewNick);
+        }
+
+        [Fact]
+        public void NickMessageFromClient()
+        {
+            var newNick = "Kilroy";
+            var nickMessage = new NickMessage(newNick);
+
+            Assert.Equal($"NICK {newNick}", nickMessage.ToString());
         }
     }
 }

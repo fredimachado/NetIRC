@@ -28,5 +28,11 @@ namespace NetIRC
         {
             PrivMsg?.Invoke(client, e);
         }
+
+        public event IRCMessageEventHandler<NickMessage> Nick;
+        internal void OnNick(IRCMessageEventArgs<NickMessage> e)
+        {
+            Nick?.Invoke(client, e);
+        }
     }
 }

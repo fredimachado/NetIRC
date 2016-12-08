@@ -17,6 +17,7 @@ namespace NetIRC.Messages
             {
                 { "PING", typeof(PingMessage) },
                 { "PRIVMSG", typeof(PrivMsgMessage) },
+                { "NICK", typeof(NickMessage) },
             };
         }
 
