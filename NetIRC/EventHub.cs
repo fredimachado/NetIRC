@@ -17,8 +17,8 @@ namespace NetIRC
             Default?.Invoke(client, e);
         }
 
-        public event IRCMessageEventHandler<PingCommand> Ping;
-        internal void OnPing(IRCMessageEventArgs<PingCommand> e)
+        public event IRCMessageEventHandler<PingMessage> Ping;
+        internal void OnPing(IRCMessageEventArgs<PingMessage> e)
         {
             Ping?.Invoke(client, e);
         }

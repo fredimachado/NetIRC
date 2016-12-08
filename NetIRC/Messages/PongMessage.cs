@@ -2,17 +2,13 @@
 
 namespace NetIRC.Messages
 {
-    public class PongCommand : IRCMessage
+    public class PongMessage : IRCMessage
     {
         public string Target { get; }
 
-        public PongCommand(string target)
+        public PongMessage(string target)
         {
             Target = target;
-        }
-
-        public override void TriggerEvent(EventHub eventHub)
-        {
         }
 
         public override IEnumerable<string> Tokens => new[] { "PONG", Target };

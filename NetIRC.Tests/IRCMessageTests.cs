@@ -16,15 +16,15 @@ namespace NetIRC.Tests
             var command = "PING";
             var parameter = "tolsun.oulu.fi";
             var parsedIRCMessage = new ParsedIRCMessage($"{command} {parameter}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var ircMessage = ServerMessage.Create(parsedIRCMessage);
 
-            Assert.IsType<PingCommand>(ircMessage);
+            Assert.IsType<PingMessage>(ircMessage);
         }
 
         [Fact]
         public void PongMessageTokens()
         {
-            var pongMsg = new PongCommand("tolsun.oulu.fi");
+            var pongMsg = new PongMessage("tolsun.oulu.fi");
 
             Assert.Equal("PONG tolsun.oulu.fi", pongMsg.ToString());
         }
@@ -37,7 +37,7 @@ namespace NetIRC.Tests
             var target = "Wiz";
             var text = "Are you receiving this message ?";
             var parsedIRCMessage = new ParsedIRCMessage($":{prefix} {command} {target} :{text}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var ircMessage = ServerMessage.Create(parsedIRCMessage);
 
             Assert.IsType<PrivMsgMessage>(ircMessage);
 

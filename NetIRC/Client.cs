@@ -28,9 +28,9 @@ namespace NetIRC
             EventHub.Ping += EventHub_Ping;
         }
 
-        private async void EventHub_Ping(object sender, IRCMessageEventArgs<PingCommand> e)
+        private async void EventHub_Ping(object sender, IRCMessageEventArgs<PingMessage> e)
         {
-            await SendAsync(new PongCommand(e.IRCMessage.Target));
+            await SendAsync(new PongMessage(e.IRCMessage.Target));
         }
 
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
@@ -48,9 +48,9 @@ namespace NetIRC
 
             OnIRCMessageParsed?.Invoke(this, parsedIRCMessage);
 
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var serverMessage = ServerMessage.Create(parsedIRCMessage);
 
-            ircMessage.TriggerEvent(EventHub);
+            serverMessage.TriggerEvent(EventHub);
         }
 
         public async Task ConnectAsync(string host, int port, string nick, string user)

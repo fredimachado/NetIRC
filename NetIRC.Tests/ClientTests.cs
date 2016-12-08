@@ -40,7 +40,7 @@ namespace NetIRC.Tests
         public void TriggersOnPingEvent()
         {
             var raw = "PING :xyz.com";
-            IRCMessageEventArgs<PingCommand> args = null;
+            IRCMessageEventArgs<PingMessage> args = null;
             var mockConnection = new Mock<IConnection>();
             var client = new Client(mockConnection.Object);
 

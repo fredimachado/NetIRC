@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NetIRC.Messages
 {
-    public class PrivMsgMessage : IRCMessage
+    public class PrivMsgMessage : ServerMessage
     {
         public string From { get; }
         public IRCPrefix Prefix { get; }

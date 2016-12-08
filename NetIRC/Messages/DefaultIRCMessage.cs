@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace NetIRC.Messages
+﻿namespace NetIRC.Messages
 {
-    public class DefaultIRCMessage : IRCMessage
+    public class DefaultIRCMessage : ServerMessage
     {
         public DefaultIRCMessage(ParsedIRCMessage parsedMessage) : base(parsedMessage)
         {

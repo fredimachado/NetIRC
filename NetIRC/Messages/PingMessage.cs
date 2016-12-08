@@ -1,8 +1,8 @@
 ﻿namespace NetIRC.Messages
 {
-    public class PingCommand : IRCMessage
+    public class PingMessage : ServerMessage
     {
-        public PingCommand(ParsedIRCMessage parsedMessage) : base(parsedMessage)
+        public PingMessage(ParsedIRCMessage parsedMessage) : base(parsedMessage)
         {
         }
 
@@ -10,7 +10,7 @@
 
         public override void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnPing(new IRCMessageEventArgs<PingCommand>(this));
+            eventHub.OnPing(new IRCMessageEventArgs<PingMessage>(this));
         }
     }
 }
