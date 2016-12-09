@@ -12,7 +12,7 @@ namespace NetIRC.Messages
         {
             From = parsedMessage.Prefix.From;
             Target = parsedMessage.Parameters[0];
-            Message = parsedMessage.Text;
+            Message = parsedMessage.Trailing;
         }
 
         public NoticeMessage(string target, string text)

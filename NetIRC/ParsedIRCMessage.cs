@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NetIRC
@@ -10,15 +11,13 @@ namespace NetIRC
         private IRCPrefix prefix;
         private string command;
         private string[] parameters;
-        private string trailing;
         private IRCCommand ircCommand = IRCCommand.UNKNOWN;
         private IRCNumericReply numericReply = IRCNumericReply.UNKNOWN;
 
         public IRCPrefix Prefix => prefix;
         public string Command => command;
         public string[] Parameters => parameters;
-        public string Trailing => trailing ?? string.Empty;
-        public string Text => trailing ?? (parameters != null ? parameters[parameters.Length - 1] : string.Empty);
+        public string Trailing => parameters != null ? parameters[parameters.Length - 1] : string.Empty;
         public IRCCommand IRCCommand => ircCommand;
         public IRCNumericReply NumericReply => numericReply;
         public bool IsNumeric => numericReply != IRCNumericReply.UNKNOWN;
@@ -53,6 +52,7 @@ namespace NetIRC
 
         private void Parse(string rawData)
         {
+            var trailing = string.Empty;
             var indexOfNextSpace = 0;
 
             if (RawDataHasPrefix)
@@ -73,6 +73,12 @@ namespace NetIRC
             if (DataDoesNotContainSpaces(rawData))
             {
                 command = rawData;
+
+                if (!string.IsNullOrEmpty(trailing))
+                {
+                    this.parameters = new[] { trailing };
+                }
+
                 return;
             }
 
@@ -80,7 +86,14 @@ namespace NetIRC
             command = rawData.Remove(indexOfNextSpace);
             rawData = rawData.Substring(indexOfNextSpace + 1);
 
-            parameters = rawData.Split(' ');
+            var parameters = new List<string>(rawData.Split(' '));
+
+            if (!string.IsNullOrEmpty(trailing))
+            {
+                parameters.Add(trailing);
+            }
+
+            this.parameters = parameters.ToArray();
         }
 
         private bool RawDataHasPrefix => Raw.StartsWith(":");
@@ -92,7 +105,7 @@ namespace NetIRC
         public override string ToString()
         {
             var paramsDescription = parameters != null ? "{ " + string.Join(", ", parameters) + " }" : string.Empty;
-            return $"Prefix: {prefix}, Command: {command}, Params: {paramsDescription}, Trailing: {trailing}";
+            return $"Prefix: {prefix}, Command: {command}, Params: {paramsDescription}, Trailing: {Trailing}";
         }
     }
 }

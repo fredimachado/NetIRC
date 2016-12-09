@@ -66,7 +66,7 @@ namespace NetIRC.Tests
             var target = "Wiz";
             var text = "Are you receiving this message ?";
             var ircMessage = new ParsedIRCMessage($":{prefix} {command} {target} :{text}");
-            Assert.Equal($"Prefix: {prefix}, Command: {command}, Params: {{ Wiz }}, Trailing: {text}", ircMessage.ToString());
+            Assert.Equal($"Prefix: {prefix}, Command: {command}, Params: {{ {target}, {text} }}, Trailing: {text}", ircMessage.ToString());
         }
 
         [Fact]
