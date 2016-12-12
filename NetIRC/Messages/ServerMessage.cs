@@ -19,6 +19,11 @@ namespace NetIRC.Messages
                 { "PRIVMSG", typeof(PrivMsgMessage) },
                 { "NOTICE", typeof(NoticeMessage) },
                 { "NICK", typeof(NickMessage) },
+                { "001", typeof(RplWelcomeMessage) },
+                { "002", typeof(RplYourHostMessage) },
+                { "003", typeof(RplCreatedMessage) },
+                { "004", typeof(RplMyInfoMessage) },
+                { "005", typeof(RplISupportMessage) },
             };
         }
 

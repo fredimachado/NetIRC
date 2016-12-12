@@ -18,7 +18,7 @@ namespace NetIRC.Tests
 
             client.OnRawDataReceived += (c, d) => rawReceived = d;
 
-            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+            RaiseDataReceived(mockConnection, client, raw);
 
             Assert.Equal(raw, rawReceived);
         }
@@ -31,7 +31,7 @@ namespace NetIRC.Tests
             var mockConnection = new Mock<IConnection>();
             var client = new Client(mockConnection.Object);
 
-            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+            RaiseDataReceived(mockConnection, client, raw);
 
             mockConnection.Verify(c => c.SendAsync($"PONG {data}"), Times.Once());
         }
@@ -46,7 +46,7 @@ namespace NetIRC.Tests
 
             client.EventHub.Ping += (c, a) => args = a;
 
-            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+            RaiseDataReceived(mockConnection, client, raw);
 
             Assert.Equal("xyz.com", args.IRCMessage.Target);
         }
@@ -75,7 +75,7 @@ namespace NetIRC.Tests
 
             client.OnIRCMessageParsed += (c, m) => ircMessage = m;
 
-            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+            RaiseDataReceived(mockConnection, client, raw);
 
             Assert.Equal("irc.rizon.io", ircMessage.Prefix.From);
             Assert.Equal("439", ircMessage.Command);
@@ -96,7 +96,7 @@ namespace NetIRC.Tests
 
             client.EventHub.PrivMsg += (c, a) => args = a;
 
-            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+            RaiseDataReceived(mockConnection, client, raw);
 
             Assert.Equal(from, args.IRCMessage.From);
             Assert.Equal(from, args.IRCMessage.Prefix.From);
@@ -117,7 +117,7 @@ namespace NetIRC.Tests
 
             client.EventHub.PrivMsg += (c, a) => args = a;
 
-            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+            RaiseDataReceived(mockConnection, client, raw);
 
             Assert.Equal(from, args.IRCMessage.From);
             Assert.Equal(from, args.IRCMessage.Prefix.From);
@@ -138,7 +138,7 @@ namespace NetIRC.Tests
 
             client.EventHub.Notice += (c, a) => args = a;
 
-            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+            RaiseDataReceived(mockConnection, client, raw);
 
             Assert.Equal(from, args.IRCMessage.From);
             Assert.Equal(to, args.IRCMessage.Target);
@@ -158,11 +158,125 @@ namespace NetIRC.Tests
 
             client.EventHub.Notice += (c, a) => args = a;
 
-            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+            RaiseDataReceived(mockConnection, client, raw);
 
             Assert.Equal(from, args.IRCMessage.From);
             Assert.Equal(to, args.IRCMessage.Target);
             Assert.Equal(message, args.IRCMessage.Message);
+        }
+
+        [Fact]
+        public void TriggersOnRplWelcomeMessageReceived()
+        {
+            var text = "Welcome to the Internet Relay Chat Network NetIRC";
+            var raw = $":irc.server.net 001 NetIRC :{text}";
+            IRCMessageEventArgs<RplWelcomeMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.EventHub.RplWelcome += (c, a) => args = a;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(text, args.IRCMessage.Text);
+        }
+
+        [Fact]
+        public void TriggersOnRplYourHostMessageReceived()
+        {
+            var text = "Your host is irc.server.net, running version plexus-4(hybrid-8.1.20)";
+            var raw = $":irc.server.net 002 NetIRC :{text}";
+            IRCMessageEventArgs<RplYourHostMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.EventHub.RplYourHost += (c, a) => args = a;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(text, args.IRCMessage.Text);
+        }
+
+        [Fact]
+        public void TriggersOnRplCreatedMessageReceived()
+        {
+            var text = "This server was created Nov 20 2016 at 02:34:01";
+            var raw = $":irc.server.net 003 NetIRC :{text}";
+            IRCMessageEventArgs<RplCreatedMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.EventHub.RplCreated += (c, a) => args = a;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(text, args.IRCMessage.Text);
+        }
+
+        [Fact]
+        public void TriggersOnRplMyInfoMessageReceived()
+        {
+            var parameters = new[]
+            {
+                "NetIRC",
+                "irc.server.net",
+                "plexus-4(hybrid-8.1.20)",
+                "CDGNRSUWagilopqrswxyz",
+                "BCIMNORSabcehiklmnopqstvz",
+                "Iabehkloqv"
+            };
+            var raw = $":irc.server.net 004 {string.Join(" ", parameters)}";
+            IRCMessageEventArgs<RplMyInfoMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.EventHub.RplMyInfo += (c, a) => args = a;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(parameters[0], args.IRCMessage.Parameters[0]);
+            Assert.Equal(parameters[1], args.IRCMessage.Parameters[1]);
+            Assert.Equal(parameters[2], args.IRCMessage.Parameters[2]);
+            Assert.Equal(parameters[3], args.IRCMessage.Parameters[3]);
+            Assert.Equal(parameters[4], args.IRCMessage.Parameters[4]);
+            Assert.Equal(parameters[5], args.IRCMessage.Parameters[5]);
+        }
+
+        [Fact]
+        public void TriggersOnRplISupportMessageReceived()
+        {
+            var text = "are supported by this server";
+            var parameters = new[]
+            {
+                "NetIRC",
+                "CALLERID",
+                "CASEMAPPING=rfc1459",
+                "DEAF=D",
+                "NICKLEN=30",
+                "MAXTARGETS=4"
+            };
+            var raw = $":irc.server.net 005 {string.Join(" ", parameters)} :{text}";
+            IRCMessageEventArgs<RplISupportMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.EventHub.RplISupport += (c, a) => args = a;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(parameters[0], args.IRCMessage.Parameters[0]);
+            Assert.Equal(parameters[1], args.IRCMessage.Parameters[1]);
+            Assert.Equal(parameters[2], args.IRCMessage.Parameters[2]);
+            Assert.Equal(parameters[3], args.IRCMessage.Parameters[3]);
+            Assert.Equal(parameters[4], args.IRCMessage.Parameters[4]);
+            Assert.Equal(parameters[5], args.IRCMessage.Parameters[5]);
+            Assert.Equal(text, args.IRCMessage.Parameters[6]);
+            Assert.Equal(text, args.IRCMessage.Text);
+        }
+
+        private void RaiseDataReceived(Mock<IConnection> mockConnection, Client client, string raw)
+        {
+            mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
         }
     }
 }

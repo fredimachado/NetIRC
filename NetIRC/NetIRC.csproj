@@ -49,8 +49,13 @@
     <Compile Include="Messages\NickMessage.cs" />
     <Compile Include="Messages\PongMessage.cs" />
     <Compile Include="Messages\PrivMsgMessage.cs" />
+    <Compile Include="Messages\RplISupportMessage.cs" />
+    <Compile Include="Messages\RplMyInfoMessage.cs" />
+    <Compile Include="Messages\RplCreatedMessage.cs" />
+    <Compile Include="Messages\RplYourHostMessage.cs" />
     <Compile Include="Messages\ServerMessage.cs" />
     <Compile Include="Messages\UserMessage.cs" />
+    <Compile Include="Messages\RplWelcomeMessage.cs" />
     <Compile Include="ParsedIRCMessage.cs" />
     <Compile Include="IRCNumericReply.cs" />
     <Compile Include="IRCPrefix.cs" />
