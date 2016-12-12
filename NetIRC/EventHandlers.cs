@@ -17,14 +17,4 @@ namespace NetIRC
             IRCMessage = ircMessage;
         }
     }
-
-    public class BaseIRCEventArgs : EventArgs
-    {
-        public ParsedIRCMessage IRCMessage { get; }
-
-        public BaseIRCEventArgs(ParsedIRCMessage ircMessage)
-        {
-            IRCMessage = ircMessage;
-        }
-    }
 }
