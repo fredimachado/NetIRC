@@ -7,7 +7,7 @@ namespace NetIRC
     {
         private readonly Client client;
 
-        public EventHub(Client client)
+        internal EventHub(Client client)
         {
             this.client = client;
         }
@@ -19,12 +19,6 @@ namespace NetIRC
         internal void OnRegistrationCompleted()
         {
             RegistrationCompleted?.Invoke(client, EventArgs.Empty);
-        }
-
-        public event IRCMessageEventHandler<DefaultIRCMessage> Default;
-        internal void OnDefault(IRCMessageEventArgs<DefaultIRCMessage> e)
-        {
-            Default?.Invoke(client, e);
         }
 
         public event IRCMessageEventHandler<PingMessage> Ping;

@@ -2,12 +2,12 @@
 
 namespace NetIRC.Messages
 {
-    public class NickMessage : ServerMessage
+    public class NickMessage : IRCMessage, IServerMessage, IClientMessage
     {
         public string OldNick { get; }
         public string NewNick { get; }
 
-        public NickMessage(ParsedIRCMessage parsedMessage) : base(parsedMessage)
+        public NickMessage(ParsedIRCMessage parsedMessage)
         {
             OldNick = parsedMessage.Prefix.From;
             NewNick = parsedMessage.Parameters[0];
@@ -18,9 +18,9 @@ namespace NetIRC.Messages
             NewNick = newNick;
         }
 
-        public override IEnumerable<string> Tokens => new[] { "NICK", NewNick };
+        public IEnumerable<string> Tokens => new[] { "NICK", NewNick };
 
-        public override void TriggerEvent(EventHub eventHub)
+        public void TriggerEvent(EventHub eventHub)
         {
             eventHub.OnNick(new IRCMessageEventArgs<NickMessage>(this));
         }

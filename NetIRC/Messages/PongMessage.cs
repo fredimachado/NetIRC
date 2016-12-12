@@ -2,7 +2,7 @@
 
 namespace NetIRC.Messages
 {
-    public class PongMessage : IRCMessage
+    public class PongMessage : IRCMessage, IClientMessage
     {
         public string Target { get; }
 
@@ -11,6 +11,6 @@ namespace NetIRC.Messages
             Target = target;
         }
 
-        public override IEnumerable<string> Tokens => new[] { "PONG", Target };
+        public IEnumerable<string> Tokens => new[] { "PONG", Target };
     }
 }

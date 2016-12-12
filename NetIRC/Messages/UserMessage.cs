@@ -2,7 +2,7 @@
 
 namespace NetIRC.Messages
 {
-    public class UserMessage : IRCMessage
+    public class UserMessage : IRCMessage, IClientMessage
     {
         public string UserName { get; }
         public string RealName { get; }
@@ -13,6 +13,6 @@ namespace NetIRC.Messages
             RealName = realName;
         }
 
-        public override IEnumerable<string> Tokens => new[] { "USER", UserName, "0", "-", RealName };
+        public IEnumerable<string> Tokens => new[] { "USER", UserName, "0", "-", RealName };
     }
 }

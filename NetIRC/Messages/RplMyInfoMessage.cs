@@ -1,15 +1,15 @@
 ﻿namespace NetIRC.Messages
 {
-    public class RplMyInfoMessage : ServerMessage
+    public class RplMyInfoMessage : IRCMessage, IServerMessage
     {
         public string[] Parameters { get; }
 
-        public RplMyInfoMessage(ParsedIRCMessage parsedMessage) : base(parsedMessage)
+        public RplMyInfoMessage(ParsedIRCMessage parsedMessage)
         {
             Parameters = parsedMessage.Parameters;
         }
 
-        public override void TriggerEvent(EventHub eventHub)
+        public void TriggerEvent(EventHub eventHub)
         {
             eventHub.OnRplMyInfo(new IRCMessageEventArgs<RplMyInfoMessage>(this));
         }

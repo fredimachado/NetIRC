@@ -1,15 +1,15 @@
 ﻿namespace NetIRC.Messages
 {
-    public class RplYourHostMessage : ServerMessage
+    public class RplYourHostMessage : IRCMessage, IServerMessage
     {
         public string Text { get; }
 
-        public RplYourHostMessage(ParsedIRCMessage parsedMessage) : base(parsedMessage)
+        public RplYourHostMessage(ParsedIRCMessage parsedMessage)
         {
             Text = parsedMessage.Trailing;
         }
 
-        public override void TriggerEvent(EventHub eventHub)
+        public void TriggerEvent(EventHub eventHub)
         {
             eventHub.OnRplYourHost(new IRCMessageEventArgs<RplYourHostMessage>(this));
         }

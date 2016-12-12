@@ -42,8 +42,9 @@
     <Compile Include="EventHandlers.cs" />
     <Compile Include="EventHub.cs" />
     <Compile Include="IRCCommand.cs" />
-    <Compile Include="Messages\DefaultIRCMessage.cs" />
     <Compile Include="Messages\IRCMessage.cs" />
+    <Compile Include="Messages\IClientMessage.cs" />
+    <Compile Include="Messages\IServerMessage.cs" />
     <Compile Include="Messages\NoticeMessage.cs" />
     <Compile Include="Messages\PingMessage.cs" />
     <Compile Include="Messages\NickMessage.cs" />
@@ -53,7 +54,6 @@
     <Compile Include="Messages\RplMyInfoMessage.cs" />
     <Compile Include="Messages\RplCreatedMessage.cs" />
     <Compile Include="Messages\RplYourHostMessage.cs" />
-    <Compile Include="Messages\ServerMessage.cs" />
     <Compile Include="Messages\UserMessage.cs" />
     <Compile Include="Messages\RplWelcomeMessage.cs" />
     <Compile Include="ParsedIRCMessage.cs" />

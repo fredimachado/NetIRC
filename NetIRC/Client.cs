@@ -48,9 +48,9 @@ namespace NetIRC
 
             OnIRCMessageParsed?.Invoke(this, parsedIRCMessage);
 
-            var serverMessage = ServerMessage.Create(parsedIRCMessage);
+            var serverMessage = IRCMessage.Create(parsedIRCMessage);
 
-            serverMessage.TriggerEvent(EventHub);
+            serverMessage?.TriggerEvent(EventHub);
         }
 
         public async Task ConnectAsync(string host, int port, string nick, string realName)
@@ -66,7 +66,7 @@ namespace NetIRC
             await connection.SendAsync(rawData);
         }
 
-        public async Task SendAsync(IRCMessage message)
+        public async Task SendAsync(IClientMessage message)
         {
             await connection.SendAsync(message.ToString());
         }

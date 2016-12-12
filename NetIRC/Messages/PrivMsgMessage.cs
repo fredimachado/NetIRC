@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace NetIRC.Messages
 {
-    public class PrivMsgMessage : ServerMessage
+    public class PrivMsgMessage : IRCMessage, IServerMessage, IClientMessage
     {
         public string From { get; }
         public IRCPrefix Prefix { get; }
         public string To { get; }
         public string Message { get; }
 
-        public PrivMsgMessage(ParsedIRCMessage parsedMessage) : base(parsedMessage)
+        public PrivMsgMessage(ParsedIRCMessage parsedMessage)
         {
             From = parsedMessage.Prefix.From;
             Prefix = parsedMessage.Prefix;
@@ -24,11 +24,11 @@ namespace NetIRC.Messages
             Message = text;
         }
 
-        public override void TriggerEvent(EventHub eventHub)
+        public void TriggerEvent(EventHub eventHub)
         {
             eventHub.OnPrivMsg(new IRCMessageEventArgs<PrivMsgMessage>(this));
         }
 
-        public override IEnumerable<string> Tokens => new[] { "PRIVMSG", To, Message };
+        public IEnumerable<string> Tokens => new[] { "PRIVMSG", To, Message };
     }
 }

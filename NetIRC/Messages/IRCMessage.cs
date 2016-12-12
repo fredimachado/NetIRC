@@ -7,11 +7,46 @@ namespace NetIRC.Messages
 {
     public abstract class IRCMessage
     {
-        public virtual IEnumerable<string> Tokens => Enumerable.Empty<string>();
+        private static readonly Dictionary<string, Type> messageMapping;
+        static IRCMessage()
+        {
+            messageMapping = new Dictionary<string, Type>
+            {
+                { "PING", typeof(PingMessage) },
+                { "PRIVMSG", typeof(PrivMsgMessage) },
+                { "NOTICE", typeof(NoticeMessage) },
+                { "NICK", typeof(NickMessage) },
+                { "001", typeof(RplWelcomeMessage) },
+                { "002", typeof(RplYourHostMessage) },
+                { "003", typeof(RplCreatedMessage) },
+                { "004", typeof(RplMyInfoMessage) },
+                { "005", typeof(RplISupportMessage) },
+            };
+        }
+
+        // Not using reflection yet because of .NET Standard
+        // Will be updated when .NET Standard 2.0 gets released
+        public static IServerMessage Create(ParsedIRCMessage parsedMessage)
+        {
+            var messageType = messageMapping.ContainsKey(parsedMessage.Command)
+                ? messageMapping[parsedMessage.Command]
+                : null;
+
+            return messageType != null
+                ? Activator.CreateInstance(messageType, new object[] { parsedMessage }) as IServerMessage
+                : null;
+        }
 
         public override string ToString()
         {
-            var tokens = Tokens.ToArray();
+            var clientMessage = this as IClientMessage;
+
+            if (clientMessage == null)
+            {
+                return base.ToString();
+            }
+
+            var tokens = clientMessage.Tokens.ToArray();
 
             if (tokens.Length == 0)
             {

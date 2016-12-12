@@ -2,13 +2,13 @@
 
 namespace NetIRC.Messages
 {
-    public class NoticeMessage : ServerMessage
+    public class NoticeMessage : IRCMessage, IServerMessage, IClientMessage
     {
         public string From { get; }
         public string Target { get; }
         public string Message { get; }
 
-        public NoticeMessage(ParsedIRCMessage parsedMessage) : base(parsedMessage)
+        public NoticeMessage(ParsedIRCMessage parsedMessage)
         {
             From = parsedMessage.Prefix.From;
             Target = parsedMessage.Parameters[0];
@@ -21,11 +21,11 @@ namespace NetIRC.Messages
             Message = text;
         }
 
-        public override void TriggerEvent(EventHub eventHub)
+        public void TriggerEvent(EventHub eventHub)
         {
             eventHub.OnNotice(new IRCMessageEventArgs<NoticeMessage>(this));
         }
 
-        public override IEnumerable<string> Tokens => new[] { "NOTICE", Target, Message };
+        public IEnumerable<string> Tokens => new[] { "NOTICE", Target, Message };
     }
 }

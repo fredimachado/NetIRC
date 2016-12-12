@@ -11,7 +11,7 @@ namespace NetIRC.Tests
             var command = "PING";
             var parameter = "tolsun.oulu.fi";
             var parsedIRCMessage = new ParsedIRCMessage($"{command} {parameter}");
-            var ircMessage = ServerMessage.Create(parsedIRCMessage);
+            var ircMessage = IRCMessage.Create(parsedIRCMessage);
 
             Assert.IsType<PingMessage>(ircMessage);
         }
@@ -32,7 +32,7 @@ namespace NetIRC.Tests
             var target = "WiZ";
             var text = "Are you receiving this message ?";
             var parsedIRCMessage = new ParsedIRCMessage($":{prefix} {command} {target} :{text}");
-            var ircMessage = ServerMessage.Create(parsedIRCMessage);
+            var ircMessage = IRCMessage.Create(parsedIRCMessage);
 
             Assert.IsType<PrivMsgMessage>(ircMessage);
 
@@ -60,7 +60,7 @@ namespace NetIRC.Tests
             var target = "WiZ";
             var text = "Are you receiving this message ?";
             var parsedIRCMessage = new ParsedIRCMessage($":{from} {command} {target} :{text}");
-            var ircMessage = ServerMessage.Create(parsedIRCMessage);
+            var ircMessage = IRCMessage.Create(parsedIRCMessage);
 
             Assert.IsType<NoticeMessage>(ircMessage);
 
@@ -86,7 +86,7 @@ namespace NetIRC.Tests
             var oldNick = "WiZ";
             var newNick = "Kilroy";
             var parsedIRCMessage = new ParsedIRCMessage($":{oldNick} NICK {newNick}");
-            var ircMessage = ServerMessage.Create(parsedIRCMessage);
+            var ircMessage = IRCMessage.Create(parsedIRCMessage);
 
             Assert.IsType<NickMessage>(ircMessage);
 

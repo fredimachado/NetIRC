@@ -1,14 +1,15 @@
 ﻿namespace NetIRC.Messages
 {
-    public class PingMessage : ServerMessage
+    public class PingMessage : IRCMessage, IServerMessage
     {
-        public PingMessage(ParsedIRCMessage parsedMessage) : base(parsedMessage)
+        public string Target { get; }
+
+        public PingMessage(ParsedIRCMessage parsedMessage)
         {
+            Target = parsedMessage.Trailing ?? parsedMessage.Parameters[0];
         }
 
-        public string Target => parsedMessage.Trailing ?? parsedMessage.Parameters[0];
-
-        public override void TriggerEvent(EventHub eventHub)
+        public void TriggerEvent(EventHub eventHub)
         {
             eventHub.OnPing(new IRCMessageEventArgs<PingMessage>(this));
         }
