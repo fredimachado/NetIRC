@@ -13,6 +13,8 @@ namespace NetIRC.Connection
         private StreamWriter streamWriter;
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
+        public event EventHandler Connected;
+        public event EventHandler Disconnected;
 
         private static string crlf = "\r\n";
 
@@ -22,6 +24,8 @@ namespace NetIRC.Connection
 
             streamReader = new StreamReader(tcpClient.GetStream());
             streamWriter = new StreamWriter(tcpClient.GetStream());
+
+            Connected?.Invoke(this, EventArgs.Empty);
 
             RunDataReceiver();
         }
@@ -34,6 +38,8 @@ namespace NetIRC.Connection
 
                 DataReceived?.Invoke(this, new DataReceivedEventArgs(line));
             }
+
+            Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
         public async Task SendAsync(string data)

@@ -7,6 +7,9 @@ namespace NetIRC.Connection
     {
         Task ConnectAsync(string address, int port);
         Task SendAsync(string data);
+
         event EventHandler<DataReceivedEventArgs> DataReceived;
+        event EventHandler Connected;
+        event EventHandler Disconnected;
     }
 }
