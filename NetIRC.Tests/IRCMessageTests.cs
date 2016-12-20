@@ -113,5 +113,39 @@ namespace NetIRC.Tests
 
             Assert.Equal($"USER {user} 0 - :{realName}", userMessage.ToString());
         }
+
+        [Fact]
+        public void JoinMessageFromServer()
+        {
+            var nick = "WiZ";
+            var channel = "#Twilight_zone";
+            var parsedIRCMessage = new ParsedIRCMessage($":{nick} JOIN {channel}");
+            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+
+            Assert.IsType<JoinMessage>(ircMessage);
+
+            var joinMessage = ircMessage as JoinMessage;
+            Assert.Equal(nick, joinMessage.Nick);
+            Assert.Equal(channel, joinMessage.Channel);
+        }
+
+        [Fact]
+        public void JoinMessageTokens()
+        {
+            var channel = "#chan";
+            var joinMessage = new JoinMessage(channel);
+
+            Assert.Equal($"JOIN {channel}", joinMessage.ToString());
+        }
+
+        [Fact]
+        public void JoinMessageWithKeyTokens()
+        {
+            var channel = "#chan";
+            var key = "12345";
+            var joinMessage = new JoinMessage(channel, key);
+
+            Assert.Equal($"JOIN {channel} {key}", joinMessage.ToString());
+        }
     }
 }

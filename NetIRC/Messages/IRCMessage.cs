@@ -16,6 +16,7 @@ namespace NetIRC.Messages
                 { "PRIVMSG", typeof(PrivMsgMessage) },
                 { "NOTICE", typeof(NoticeMessage) },
                 { "NICK", typeof(NickMessage) },
+                { "JOIN", typeof(JoinMessage) },
                 { "001", typeof(RplWelcomeMessage) },
                 { "002", typeof(RplYourHostMessage) },
                 { "003", typeof(RplCreatedMessage) },
@@ -72,7 +73,7 @@ namespace NetIRC.Messages
                 }
             }
 
-            return sb.ToString();
+            return sb.ToString().Trim();
         }
     }
 }

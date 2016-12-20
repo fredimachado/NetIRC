@@ -75,5 +75,11 @@ namespace NetIRC
         {
             RplISupport?.Invoke(client, e);
         }
+
+        public event IRCMessageEventHandler<JoinMessage> Join;
+        internal void OnJoin(IRCMessageEventArgs<JoinMessage> e)
+        {
+            Join?.Invoke(client, e);
+        }
     }
 }

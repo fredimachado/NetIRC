@@ -274,6 +274,24 @@ namespace NetIRC.Tests
             Assert.Equal(text, args.IRCMessage.Text);
         }
 
+        [Fact]
+        public void TriggersOnJoinReceived()
+        {
+            var nick = "Wiz";
+            var channel = "#channel";
+            var raw = $":{nick} JOIN {channel}";
+            IRCMessageEventArgs<JoinMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(mockConnection.Object);
+
+            client.EventHub.Join += (c, a) => args = a;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(nick, args.IRCMessage.Nick);
+            Assert.Equal(channel, args.IRCMessage.Channel);
+        }
+
         private void RaiseDataReceived(Mock<IConnection> mockConnection, Client client, string raw)
         {
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
