@@ -37,6 +37,8 @@ namespace NetIRC
         {
             EventHub.Ping += EventHub_Ping;
             EventHub.Join += EventHub_Join;
+            EventHub.Part += EventHub_Part;
+            EventHub.Quit += EventHub_Quit;
             EventHub.RplNamReply += EventHub_RplNamReply;
         }
 
@@ -48,9 +50,27 @@ namespace NetIRC
                 var user = Users.GetUser(nick.Key);
                 if (!channel.Users.Any(u => u.User.Nick == nick.Key))
                 {
-                    channel.Users.Add(new ChannelUser(user, nick.Value));
+                    channel.AddUser(user, nick.Value);
                 }
             }
+        }
+
+        private void EventHub_Quit(Client client, IRCMessageEventArgs<QuitMessage> e)
+        {
+            foreach (var channel in Channels)
+            {
+                var user = channel.Users.FirstOrDefault(u => u.Nick == e.IRCMessage.Nick);
+                if (user != null)
+                {
+                    channel.Users.Remove(user);
+                }
+            }
+        }
+
+        private void EventHub_Part(Client client, IRCMessageEventArgs<PartMessage> e)
+        {
+            var channel = Channels.GetChannel(e.IRCMessage.Channel);
+            channel.RemoveUser(e.IRCMessage.Nick);
         }
 
         private void EventHub_Join(Client client, IRCMessageEventArgs<JoinMessage> e)
@@ -59,7 +79,7 @@ namespace NetIRC
             if (e.IRCMessage.Nick != User.Nick)
             {
                 var user = Users.GetUser(e.IRCMessage.Nick);
-                channel.Users.Add(new ChannelUser(user, string.Empty));
+                channel.AddUser(user, string.Empty);
             }
         }
 

@@ -17,6 +17,8 @@ namespace NetIRC.Messages
                 { "NOTICE", typeof(NoticeMessage) },
                 { "NICK", typeof(NickMessage) },
                 { "JOIN", typeof(JoinMessage) },
+                { "PART", typeof(PartMessage) },
+                { "QUIT", typeof(QuitMessage) },
                 { "001", typeof(RplWelcomeMessage) },
                 { "002", typeof(RplYourHostMessage) },
                 { "003", typeof(RplCreatedMessage) },

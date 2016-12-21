@@ -82,10 +82,22 @@ namespace NetIRC
             Join?.Invoke(client, e);
         }
 
+        public event IRCMessageEventHandler<PartMessage> Part;
+        internal void OnPart(IRCMessageEventArgs<PartMessage> e)
+        {
+            Part?.Invoke(client, e);
+        }
+
         public event IRCMessageEventHandler<RplNamReplyMessage> RplNamReply;
         internal void OnRplNamReply(IRCMessageEventArgs<RplNamReplyMessage> e)
         {
             RplNamReply?.Invoke(client, e);
+        }
+
+        public event IRCMessageEventHandler<QuitMessage> Quit;
+        internal void OnQuit(IRCMessageEventArgs<QuitMessage> e)
+        {
+            Quit?.Invoke(client, e);
         }
     }
 }

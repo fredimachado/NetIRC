@@ -297,6 +297,41 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void TriggersOnPartReceived()
+        {
+            var nick = "Wiz";
+            var channel = "#channel";
+            var raw = $":{nick}!~user@x.y.z PART {channel}";
+            IRCMessageEventArgs<PartMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(FakeUser, mockConnection.Object);
+
+            client.EventHub.Part += (c, a) => args = a;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(nick, args.IRCMessage.Nick);
+            Assert.Equal(channel, args.IRCMessage.Channel);
+        }
+
+        [Fact]
+        public void RemovesUserFromChannel()
+        {
+            var nick = "Wiz";
+            var channel = "#channel";
+            var raw = $":{nick}!~user@x.y.z PART {channel}";
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(FakeUser, mockConnection.Object);
+
+            var ircChannel = client.Channels.GetChannel(channel);
+            ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(0, ircChannel.Users.Count);
+        }
+
+        [Fact]
         public void UserJoiningChannel()
         {
             var nick = "Wiz";
@@ -343,6 +378,43 @@ namespace NetIRC.Tests
             Assert.Equal(nick1, client.Channels[0].Users.ElementAt(0).Nick);
             Assert.Equal(nick2, client.Channels[0].Users.ElementAt(1).Nick);
         }
+
+        [Fact]
+        public void TriggersQuitMessageReceived()
+        {
+            var nick = "WiZ";
+            var message = "Out for lunch";
+            var raw = $":{nick}!~host@x.y.z QUIT :{message}";
+            IRCMessageEventArgs<QuitMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(FakeUser, mockConnection.Object);
+
+            client.EventHub.Quit += (c, a) => args = a;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(nick, args.IRCMessage.Nick);
+            Assert.Equal(message, args.IRCMessage.Message);
+        }
+
+        [Fact]
+        public void UserRemovedFromChannelsOnQuit()
+        {
+            var nick = "WiZ";
+            var message = "Out for lunch";
+            var raw = $":{nick}!~host@x.y.z QUIT :{message}";
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(FakeUser, mockConnection.Object);
+
+            var ircChannel = client.Channels.GetChannel("#channel");
+            ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(0, ircChannel.Users.Count);
+        }
+
+
 
         private void RaiseDataReceived(Mock<IConnection> mockConnection, Client client, string raw)
         {

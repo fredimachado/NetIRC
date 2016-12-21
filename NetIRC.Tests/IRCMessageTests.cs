@@ -150,6 +150,30 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void PartMessageFromServer()
+        {
+            var nick = "WiZ";
+            var channel = "#NetIRC";
+            var parsedIRCMessage = new ParsedIRCMessage($":{nick}!~user@x.y.z PART {channel}");
+            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+
+            Assert.IsType<PartMessage>(ircMessage);
+
+            var partMessage = ircMessage as PartMessage;
+            Assert.Equal(nick, partMessage.Nick);
+            Assert.Equal(channel, partMessage.Channel);
+        }
+
+        [Fact]
+        public void PartMessageTokens()
+        {
+            var channel = "#chan";
+            var joinMessage = new PartMessage(channel);
+
+            Assert.Equal($"PART {channel}", joinMessage.ToString());
+        }
+
+        [Fact]
         public void RplNamReplyMessage()
         {
             var channel = "#NetIRC";
@@ -166,6 +190,30 @@ namespace NetIRC.Tests
             Assert.Equal(nick1, rplNamReplyMessage.Nicks.Keys.ElementAt(0));
             Assert.Equal(nick2, rplNamReplyMessage.Nicks.Keys.ElementAt(1));
             Assert.Equal("@", rplNamReplyMessage.Nicks[nick2]);
+        }
+
+        [Fact]
+        public void QuitMessageFromServer()
+        {
+            var nick = "WiZ";
+            var message = "Out for lunch";
+            var parsedIRCMessage = new ParsedIRCMessage($":{nick}!~user@x.y.z QUIT :{message}");
+            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+
+            Assert.IsType<QuitMessage>(ircMessage);
+
+            var quitMessage = ircMessage as QuitMessage;
+            Assert.Equal(nick, quitMessage.Nick);
+            Assert.Equal(message, quitMessage.Message);
+        }
+
+        [Fact]
+        public void QuitMessageTokens()
+        {
+            var message = "Out for lunch";
+            var joinMessage = new QuitMessage(message);
+
+            Assert.Equal($"QUIT :{message}", joinMessage.ToString());
         }
     }
 }

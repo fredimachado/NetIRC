@@ -16,8 +16,20 @@ namespace NetIRC
             RealName = realName;
         }
 
-        public string Nick { get; set; }
-        public string RealName { get; set; }
+        private string nick;
+        public string Nick
+        {
+            get { return nick; }
+            set
+            {
+                if (nick != value)
+                {
+                    nick = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string RealName { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
