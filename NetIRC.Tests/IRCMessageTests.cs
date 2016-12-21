@@ -1,4 +1,5 @@
 ﻿using NetIRC.Messages;
+using System.Linq;
 using Xunit;
 
 namespace NetIRC.Tests
@@ -146,6 +147,25 @@ namespace NetIRC.Tests
             var joinMessage = new JoinMessage(channel, key);
 
             Assert.Equal($"JOIN {channel} {key}", joinMessage.ToString());
+        }
+
+        [Fact]
+        public void RplNamReplyMessage()
+        {
+            var channel = "#NetIRC";
+            var nick1 = "NetIRCConsoleClient";
+            var nick2 = "Fredi_";
+            var parsedIRCMessage = new ParsedIRCMessage($":irc.server.net 353 NetIRCConsoleClient = {channel} :{nick1} @{nick2}");
+            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+
+            Assert.IsType<RplNamReplyMessage>(ircMessage);
+
+            var rplNamReplyMessage = ircMessage as RplNamReplyMessage;
+            Assert.Equal(channel, rplNamReplyMessage.Channel);
+            Assert.Equal(2, rplNamReplyMessage.Nicks.Count);
+            Assert.Equal(nick1, rplNamReplyMessage.Nicks.Keys.ElementAt(0));
+            Assert.Equal(nick2, rplNamReplyMessage.Nicks.Keys.ElementAt(1));
+            Assert.Equal("@", rplNamReplyMessage.Nicks[nick2]);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using NetIRC.Connection;
 using NetIRC.Messages;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NetIRC
@@ -9,15 +10,24 @@ namespace NetIRC
     {
         private readonly IConnection connection;
 
+        public User User { get;}
+        public ChannelCollection Channels { get; }
+        public UserCollection Users { get; }
+
         public event IRCRawDataHandler OnRawDataReceived;
         public event ParsedIRCMessageHandler OnIRCMessageParsed;
 
         public EventHub EventHub { get; }
 
-        public Client(IConnection connection)
+        public Client(User user, IConnection connection)
         {
+            User = user;
+
             this.connection = connection;
             this.connection.DataReceived += Connection_DataReceived;
+
+            Channels = new ChannelCollection();
+            Users = new UserCollection();
 
             EventHub = new EventHub(this);
             InitializeDefaultEventHubEvents();
@@ -26,6 +36,31 @@ namespace NetIRC
         private void InitializeDefaultEventHubEvents()
         {
             EventHub.Ping += EventHub_Ping;
+            EventHub.Join += EventHub_Join;
+            EventHub.RplNamReply += EventHub_RplNamReply;
+        }
+
+        private void EventHub_RplNamReply(Client client, IRCMessageEventArgs<RplNamReplyMessage> e)
+        {
+            var channel = Channels.GetChannel(e.IRCMessage.Channel);
+            foreach (var nick in e.IRCMessage.Nicks)
+            {
+                var user = Users.GetUser(nick.Key);
+                if (!channel.Users.Any(u => u.User.Nick == nick.Key))
+                {
+                    channel.Users.Add(new ChannelUser(user, nick.Value));
+                }
+            }
+        }
+
+        private void EventHub_Join(Client client, IRCMessageEventArgs<JoinMessage> e)
+        {
+            var channel = Channels.GetChannel(e.IRCMessage.Channel);
+            if (e.IRCMessage.Nick != User.Nick)
+            {
+                var user = Users.GetUser(e.IRCMessage.Nick);
+                channel.Users.Add(new ChannelUser(user, string.Empty));
+            }
         }
 
         private async void EventHub_Ping(object sender, IRCMessageEventArgs<PingMessage> e)
@@ -53,12 +88,12 @@ namespace NetIRC
             serverMessage?.TriggerEvent(EventHub);
         }
 
-        public async Task ConnectAsync(string host, int port, string nick, string realName)
+        public async Task ConnectAsync(string host, int port = 6667)
         {
             await connection.ConnectAsync(host, port);
 
-            await SendAsync(new NickMessage(nick));
-            await SendAsync(new UserMessage(nick, realName));
+            await SendAsync(new NickMessage(User.Nick));
+            await SendAsync(new UserMessage(User.Nick, User.RealName));
         }
 
         public async Task SendRaw(string rawData)

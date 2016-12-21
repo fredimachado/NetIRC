@@ -22,6 +22,7 @@ namespace NetIRC.Messages
                 { "003", typeof(RplCreatedMessage) },
                 { "004", typeof(RplMyInfoMessage) },
                 { "005", typeof(RplISupportMessage) },
+                { "353", typeof(RplNamReplyMessage) },
             };
         }
 

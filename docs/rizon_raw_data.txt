@@ -18,18 +18,18 @@
 :irc.rizon.io 255 netIRCTest :I have 24886 clients and 0 servers
 :irc.rizon.io 265 netIRCTest 24886 25767 :Current local users 24886, max 25767
 :irc.rizon.io 266 netIRCTest 24886 25767 :Current global users 24886, max 25767
-:irc.rizon.io 375 netIRCTest :- irc.rizon.io Message of the Day - 
+:irc.rizon.io 375 netIRCTest :- irc.rizon.io Message of the Day -
 :irc.rizon.io 372 netIRCTest :-          11oo                            
-:irc.rizon.io 372 netIRCTest :- 
+:irc.rizon.io 372 netIRCTest :-
 :irc.rizon.io 372 netIRCTest :- 88d888b. dP d888888b .d8888b. 88d888b. 
 :irc.rizon.io 372 netIRCTest :- 88'  `88 88    .d8P' 88'  `88 88'  `88 
 :irc.rizon.io 372 netIRCTest :- 1188       88  .Y8P    88.  .88 88    88 
 :irc.rizon.io 372 netIRCTest :- 11dP       dP d888888P `88888P' dP    dP
-:irc.rizon.io 372 netIRCTest :- 
+:irc.rizon.io 372 netIRCTest :-
 :irc.rizon.io 372 netIRCTest :- Rizon Chat Network -- http://rizon.net
-:irc.rizon.io 372 netIRCTest :- 
+:irc.rizon.io 372 netIRCTest :-
 :irc.rizon.io 372 netIRCTest :- Listening on ports: 6660 - 6669, 7000. SSL: 6697, 9999
-:irc.rizon.io 372 netIRCTest :- 
+:irc.rizon.io 372 netIRCTest :-
 :irc.rizon.io 372 netIRCTest :- Rules:
 :irc.rizon.io 372 netIRCTest :- o No spamming or flooding
 :irc.rizon.io 372 netIRCTest :- o No clones or malicious bots
@@ -37,13 +37,13 @@
 :irc.rizon.io 372 netIRCTest :- o No distribution of child pornography
 :irc.rizon.io 372 netIRCTest :- o Clients must respond to VERSION requests
 :irc.rizon.io 372 netIRCTest :- o Rizon staff may disconnect clients for any or no reason
-:irc.rizon.io 372 netIRCTest :- 
+:irc.rizon.io 372 netIRCTest :-
 :irc.rizon.io 372 netIRCTest :- First steps:
 :irc.rizon.io 372 netIRCTest :- o To register your nick: /msg NickServ HELP
 :irc.rizon.io 372 netIRCTest :- o To register your channel: /msg ChanServ HELP
 :irc.rizon.io 372 netIRCTest :- o To get a vHost: /msg HostServ HELP REQUEST
 :irc.rizon.io 372 netIRCTest :- o For other help with Rizon: /join #help
-:irc.rizon.io 372 netIRCTest :- 
+:irc.rizon.io 372 netIRCTest :-
 :irc.rizon.io 372 netIRCTest :- Usage of this network is a privilege, not a right. Rizon is a
 :irc.rizon.io 372 netIRCTest :- transit provider, therefore no person or entity involved with
 :irc.rizon.io 372 netIRCTest :- *.rizon.net or irc.rizon.io takes any responsibility for
@@ -56,3 +56,10 @@
 :py-ctcp!ctcp@ctcp-scanner.rizon.net PRIVMSG netIRCTest :VERSION
 :hopm-siglost!service@rizon.net NOTICE netIRCTest :For network safety, your client is being scanned for open proxies by proxyscan.siglost.com (188.122.74.139). This scan will not harm your computer.
 PING :irc.rizon.io
+:Fredi_!~qwebirc@47B12FDD.5AD3F968.3DF9FC39.IP PRIVMSG NetIRCConsoleClient :JOIN #NetIRC
+:NetIRCConsoleClient!~NetIRCCon@47B12FDD.5AD3F968.3DF9FC39.IP JOIN :#NetIRC
+:irc.rizon.sexy 353 NetIRCConsoleClient = #NetIRC :NetIRCConsoleClient @Fredi_
+:irc.rizon.sexy 366 NetIRCConsoleClient #NetIRC :End of /NAMES list.
+:Fredi_!~qwebirc@47B12FDD.5AD3F968.3DF9FC39.IP MODE #NetIRC +o NetIRCConsoleClient
+:Fredi_!~qwebirc@47B12FDD.5AD3F968.3DF9FC39.IP PART #NetIRC
+:Fredi_!~qwebirc@47B12FDD.5AD3F968.3DF9FC39.IP JOIN :#NetIRC

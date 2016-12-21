@@ -12,11 +12,11 @@ namespace NetIRC.ConsoleCli
 
         static void Main(string[] args)
         {
-            using (var client = new Client(new TcpClientConnection()))
+            using (var client = new Client(new User(nickName, "NetIRC"), new TcpClientConnection()))
             {
                 client.OnRawDataReceived += Client_OnRawDataReceived;
                 client.EventHub.PrivMsg += EventHub_PrivMsg;
-                Task.Run(() => client.ConnectAsync("irc.rizon.net", 6667, nickName, "NetIRC"));
+                Task.Run(() => client.ConnectAsync("irc.rizon.net", 6667));
 
                 Console.ReadKey();
             }

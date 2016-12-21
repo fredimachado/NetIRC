@@ -81,5 +81,11 @@ namespace NetIRC
         {
             Join?.Invoke(client, e);
         }
+
+        public event IRCMessageEventHandler<RplNamReplyMessage> RplNamReply;
+        internal void OnRplNamReply(IRCMessageEventArgs<RplNamReplyMessage> e)
+        {
+            RplNamReply?.Invoke(client, e);
+        }
     }
 }
