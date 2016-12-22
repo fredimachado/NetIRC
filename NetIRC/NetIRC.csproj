@@ -42,6 +42,7 @@
     <Compile Include="Connection\DataReceivedEventArgs.cs" />
     <Compile Include="Connection\IConnection.cs" />
     <Compile Include="Connection\TcpClientConnection.cs" />
+    <Compile Include="ChatMessage.cs" />
     <Compile Include="EventHandlers.cs" />
     <Compile Include="EventHub.cs" />
     <Compile Include="IRCCommand.cs" />

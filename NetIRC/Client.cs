@@ -39,7 +39,17 @@ namespace NetIRC
             EventHub.Join += EventHub_Join;
             EventHub.Part += EventHub_Part;
             EventHub.Quit += EventHub_Quit;
+            EventHub.PrivMsg += EventHub_PrivMsg;
             EventHub.RplNamReply += EventHub_RplNamReply;
+        }
+
+        private void EventHub_PrivMsg(Client client, IRCMessageEventArgs<PrivMsgMessage> e)
+        {
+            if (e.IRCMessage.To[0] == '#')
+            {
+                var channel = Channels.GetChannel(e.IRCMessage.To);
+                channel.OnMessageReceived(e.IRCMessage);
+            }
         }
 
         private void EventHub_RplNamReply(Client client, IRCMessageEventArgs<RplNamReplyMessage> e)

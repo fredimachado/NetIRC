@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetIRC.Messages;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -26,6 +27,7 @@ namespace NetIRC
         private ObservableCollection<ChannelUser> users;
         public ObservableCollection<ChannelUser> Users => users;
 
+        public event EventHandler<ChatMessage> MessageReceived;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Channel(string name)
@@ -38,6 +40,12 @@ namespace NetIRC
         private void Users_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Users");
+        }
+
+        internal void OnMessageReceived(PrivMsgMessage message)
+        {
+            var user = Users.FirstOrDefault(u => u.Nick == message.From).User;
+            MessageReceived?.Invoke(this, new ChatMessage(user, message.Message));
         }
 
         internal void AddUser(User user, string status)
