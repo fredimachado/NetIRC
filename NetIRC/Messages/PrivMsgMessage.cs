@@ -29,6 +29,8 @@ namespace NetIRC.Messages
             eventHub.OnPrivMsg(new IRCMessageEventArgs<PrivMsgMessage>(this));
         }
 
+        public bool IsChannelMessage => To[0] == '#';
+
         public IEnumerable<string> Tokens => new[] { "PRIVMSG", To, Message };
     }
 }
