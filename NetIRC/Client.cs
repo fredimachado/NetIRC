@@ -12,6 +12,7 @@ namespace NetIRC
 
         public User User { get;}
         public ChannelCollection Channels { get; }
+        public QueryCollection Queries { get; }
         public UserCollection Users { get; }
 
         public event IRCRawDataHandler OnRawDataReceived;
@@ -27,6 +28,7 @@ namespace NetIRC
             this.connection.DataReceived += Connection_DataReceived;
 
             Channels = new ChannelCollection();
+            Queries = new QueryCollection();
             Users = new UserCollection();
 
             EventHub = new EventHub(this);
@@ -45,10 +47,18 @@ namespace NetIRC
 
         private void EventHub_PrivMsg(Client client, IRCMessageEventArgs<PrivMsgMessage> e)
         {
-            if (e.IRCMessage.To[0] == '#')
+            var user = Users.GetUser(e.IRCMessage.From);
+            var message = new ChatMessage(user, e.IRCMessage.Message);
+
+            if (e.IRCMessage.IsChannelMessage)
             {
                 var channel = Channels.GetChannel(e.IRCMessage.To);
-                channel.OnMessageReceived(e.IRCMessage);
+                channel.Messages.Add(message);
+            }
+            else
+            {
+                var query = Queries.GetQuery(user);
+                query.Messages.Add(message);
             }
         }
 
