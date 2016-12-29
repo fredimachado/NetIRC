@@ -16,5 +16,6 @@ namespace NetIRC.Desktop
     public partial class App : Application
     {
         public static Client Client;
+        public static string Nick;
     }
 }

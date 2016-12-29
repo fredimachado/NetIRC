@@ -3,18 +3,18 @@ using System.Threading.Tasks;
 
 namespace NetIRC.Desktop.ViewModel
 {
-    public class ChannelViewModel : TabViewModelBase
+    public class QueryViewModel : TabViewModelBase
     {
-        public override string Title => channel.Name;
+        public override string Title => query.Nick;
+        
+        public string Nick => query.Nick;
 
-        public Channel Channel => channel;
-
-        private readonly Channel channel;
-
-        public ChannelViewModel(Channel channel)
+        private readonly Query query;
+        
+        public QueryViewModel(Query query)
         {
-            this.channel = channel;
-            channel.Messages.CollectionChanged += Messages_CollectionChanged;
+            this.query = query;
+            query.Messages.CollectionChanged += Messages_CollectionChanged;
         }
 
         private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -42,7 +42,7 @@ namespace NetIRC.Desktop.ViewModel
             else
             {
                 AddMessage($"{App.Nick}: {Input}");
-                await App.Client.SendAsync(new PrivMsgMessage(channel.Name, Input));
+                await App.Client.SendAsync(new PrivMsgMessage(query.Nick, Input));
             }
 
             Input = string.Empty;

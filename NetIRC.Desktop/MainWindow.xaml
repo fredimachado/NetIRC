@@ -1,14 +1,31 @@
-﻿<Window x:Class="NetIRC.Desktop.MainWindow"
+﻿<Controls:MetroWindow x:Class="NetIRC.Desktop.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:viewModel="clr-namespace:NetIRC.Desktop.ViewModel"
         xmlns:local="clr-namespace:NetIRC.Desktop"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="850">
+        Title="MainWindow" Height="500" Width="850" Background="White">
+    <Window.Resources>
+        <Style TargetType="{x:Type Control}" x:Key="baseStyle">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style TargetType="{x:Type Menu}" BasedOn="{StaticResource baseStyle}"></Style>
+        <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource baseStyle}"></Style>
+        <Style TargetType="{x:Type ItemsControl}" BasedOn="{StaticResource baseStyle}"></Style>
+        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource baseStyle}"></Style>
+        <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource baseStyle}"></Style>
+    </Window.Resources>
     <Grid>
-        <TabControl x:Name="tabControl" ItemsSource="{Binding Tabs}" TabStripPlacement="Bottom">
+        <Menu Background="White">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Connect" Command="{Binding Connect}"/>
+            </MenuItem>
+        </Menu>
+        <TabControl x:Name="tabControl" ItemsSource="{Binding Tabs}" Margin="0,25,0,0" BorderThickness="0">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
@@ -31,21 +48,24 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <ListBox x:Name="MessageListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding Messages}">
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListBoxItem}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                        </ListBox>
+                        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding Messages}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock TextWrapping="WrapWithOverflow">
+                                            <Run Text="{Binding .}" />
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
 
                         <GridSplitter HorizontalAlignment="Right"
                           VerticalAlignment="Stretch"
                           Grid.Column="1"
                           Grid.Row="0"
                           ResizeBehavior="PreviousAndNext"
-                          Width="2" Background="#41B1E1"/>
+                          Width="1" Background="#41B1E1"/>
 
                         <ListBox x:Name="UsersListView" Grid.Column="2" Grid.Row="0" DataContext="{Binding Path=Channel}" ItemsSource="{Binding Users}">
                             <ListBox.ItemContainerStyle>
@@ -57,32 +77,41 @@
                         </ListBox>
 
                         <DockPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
-                            <TextBox x:Name="InputTextBox" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                            <TextBox Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Command="{Binding SendCommand}" Key="Return" />
+                                </TextBox.InputBindings>
+                            </TextBox>
                         </DockPanel>
                     </Grid>
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type viewModel:ServerViewModel}" >
+                <DataTemplate DataType="{x:Type viewModel:TabViewModelBase}" >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <ListBox x:Name="MessageListBox" Grid.Row="0" ItemsSource="{Binding Messages}">
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListBoxItem}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                        </ListBox>
+                        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding Messages}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock TextWrapping="WrapWithOverflow">
+                                            <Run Text="{Binding .}" />
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
 
-                        <DockPanel Grid.Row="1">
-                            <TextBox x:Name="InputTextBox" PreviewKeyDown="TextBox_PreviewKeyDown"/>
-                        </DockPanel>
+                        <TextBox Grid.Row="1" Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding SendCommand}" Key="Return" />
+                            </TextBox.InputBindings>
+                        </TextBox>
                     </Grid>
                 </DataTemplate>
             </TabControl.Resources>
         </TabControl>
     </Grid>
-</Window>
+</Controls:MetroWindow>
