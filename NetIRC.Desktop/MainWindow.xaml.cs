@@ -40,16 +40,16 @@ namespace NetIRC.Desktop
 
             tabControl.SelectedIndex = 0;
 
-            serverViewModel.AddMessage("Welcome!");
+            serverViewModel.Messages.Add(new StringMessageViewModel("Welcome!"));
 
-            App.Nick = "Fredi_";
+            App.User = new User("Fredi_", "Fredi");
 
             Loaded += MainWindow_Loaded;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            App.Client = new Client(new User(App.Nick, "Fredi"), new TcpClientConnection());
+            App.Client = new Client(App.User, new TcpClientConnection());
 
             App.Client.OnRawDataReceived += Client_OnRawDataReceived;
 
@@ -83,7 +83,7 @@ namespace NetIRC.Desktop
 
         private void Client_OnRawDataReceived(Client client, string rawData)
         {
-            serverViewModel.AddMessage(rawData);
+            serverViewModel.Messages.Add(new StringMessageViewModel(rawData));
         }
     }
 }

@@ -23,7 +23,7 @@ namespace NetIRC.Desktop.ViewModel
             {
                 foreach (ChatMessage message in e.NewItems)
                 {
-                    AddMessage($"{message.User.Nick}: {message.Text}");
+                    Messages.Add(new ChatMessageViewModel(message));
                 }
             }
         }
@@ -41,7 +41,7 @@ namespace NetIRC.Desktop.ViewModel
             }
             else
             {
-                AddMessage($"{App.Nick}: {Input}");
+                Messages.Add(new ChatMessageViewModel(new ChatMessage(App.User, Input)));
                 await App.Client.SendAsync(new PrivMsgMessage(channel.Name, Input));
             }
 

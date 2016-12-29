@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:NetIRC.Desktop"
+                    xmlns:viewModel="clr-namespace:NetIRC.Desktop.ViewModel">
+    <DataTemplate DataType="{x:Type viewModel:StringMessageViewModel}">
+        <TextBlock TextWrapping="WrapWithOverflow">
+            <Run Text="{Binding Message, Mode=OneWay}" />
+        </TextBlock>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type viewModel:ChatMessageViewModel}">
+        <TextBlock TextWrapping="WrapWithOverflow">
+            <Run Text="{Binding Nick, Mode=OneWay, StringFormat={}{0}: }" FontWeight="Bold" />
+            <Run Text="{Binding Text, Mode=OneWay}" />
+        </TextBlock>
+    </DataTemplate>
+</ResourceDictionary>

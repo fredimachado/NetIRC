@@ -48,15 +48,11 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled">
+                        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled" Padding="4">
                             <ItemsControl ItemsSource="{Binding Messages}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock TextWrapping="WrapWithOverflow">
-                                            <Run Text="{Binding .}" />
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.Resources>
+                                    <ResourceDictionary Source="MessagesDictionary.xaml"/>
+                                </ItemsControl.Resources>
                             </ItemsControl>
                         </ScrollViewer>
 
@@ -92,15 +88,11 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled">
+                        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled" Padding="4">
                             <ItemsControl ItemsSource="{Binding Messages}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock TextWrapping="WrapWithOverflow">
-                                            <Run Text="{Binding .}" />
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.Resources>
+                                    <ResourceDictionary Source="MessagesDictionary.xaml"/>
+                                </ItemsControl.Resources>
                             </ItemsControl>
                         </ScrollViewer>
 

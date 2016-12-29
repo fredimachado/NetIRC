@@ -22,13 +22,13 @@ namespace NetIRC.Desktop.ViewModel
             }
         }
 
-        public ObservableCollection<string> Messages { get; private set; }
+        public ObservableCollection<IMessage> Messages { get; private set; }
 
         public ICommand SendCommand { get; }
 
         public TabViewModelBase()
         {
-            Messages = new ObservableCollection<string>();
+            Messages = new ObservableCollection<IMessage>();
 
             SendCommand = new DelegateCommand(async () => await Send());
         }
@@ -46,15 +46,6 @@ namespace NetIRC.Desktop.ViewModel
             }
 
             Input = string.Empty;
-        }
-
-        public void AddMessage(string message)
-        {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                (Action)(() =>
-                {
-                    Messages.Add(message);
-                }));
         }
     }
 }

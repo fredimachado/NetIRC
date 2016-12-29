@@ -6,11 +6,11 @@ namespace NetIRC.Desktop.ViewModel
     public class QueryViewModel : TabViewModelBase
     {
         public override string Title => query.Nick;
-        
+
         public string Nick => query.Nick;
 
         private readonly Query query;
-        
+
         public QueryViewModel(Query query)
         {
             this.query = query;
@@ -23,7 +23,7 @@ namespace NetIRC.Desktop.ViewModel
             {
                 foreach (ChatMessage message in e.NewItems)
                 {
-                    AddMessage($"{message.User.Nick}: {message.Text}");
+                    Messages.Add(new ChatMessageViewModel(message));
                 }
             }
         }
@@ -41,7 +41,7 @@ namespace NetIRC.Desktop.ViewModel
             }
             else
             {
-                AddMessage($"{App.Nick}: {Input}");
+                Messages.Add(new ChatMessageViewModel(new ChatMessage(App.User, Input)));
                 await App.Client.SendAsync(new PrivMsgMessage(query.Nick, Input));
             }
 
