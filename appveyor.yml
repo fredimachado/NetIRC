@@ -1,0 +1,33 @@
+version: 0.1.0.{build}
+init:
+- ps: >-
+    $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
+
+    git config --global core.autocrlf true
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+before_build:
+- cmd: >-
+    appveyor-retry dotnet restore -v Minimal
+
+    nuget restore NetIRC.Tests\NetIRC.Tests.csproj -SolutionDirectory .\
+build:
+  project: NetIRC\NetIRC.csproj
+  verbosity: minimal
+before_package:
+- cmd: dotnet build "NetIRC" -c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
+after_build:
+- cmd: dotnet pack "NetIRC" -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts\NetIRC
+before_test:
+- cmd: msbuild NetIRC.Tests\NetIRC.Tests.csproj
+test:
+  assemblies:
+    only:
+    - NetIRC.Tests\bin\Debug\NetIRC.Tests.dll
+artifacts:
+- path: artifacts\**\*.*
+  name: path
