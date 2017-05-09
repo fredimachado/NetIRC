@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC", "NetIRC\NetIRC.csproj", "{710FB175-CE6D-4480-81F4-57330F5DB038}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC", "src\NetIRC\NetIRC.csproj", "{710FB175-CE6D-4480-81F4-57330F5DB038}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DD8B0777-C0B2-40D4-88C7-93DB8100FA5A}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,9 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DD8B0777-C
 		docs\rizon_raw_data.txt = docs\rizon_raw_data.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC.ConsoleCli", "NetIRC.ConsoleCli\NetIRC.ConsoleCli.csproj", "{D170A1CE-6E58-4FC3-9A4D-AA49E3695258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC.ConsoleCli", "src\NetIRC.ConsoleCli\NetIRC.ConsoleCli.csproj", "{D170A1CE-6E58-4FC3-9A4D-AA49E3695258}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC.Tests", "NetIRC.Tests\NetIRC.Tests.csproj", "{736219C1-A67F-4DD5-A39D-3BEC57CEB089}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC.Tests", "tests\NetIRC.Tests\NetIRC.Tests.csproj", "{736219C1-A67F-4DD5-A39D-3BEC57CEB089}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
