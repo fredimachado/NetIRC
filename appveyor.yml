@@ -1,5 +1,6 @@
 version: 0.1.0.{build}
 image: Visual Studio 2017
+configuration: Release
 init:
 - ps: >-
     $Env:LABEL = $Env:APPVEYOR_BUILD_NUMBER.PadLeft(4, "0")
@@ -13,8 +14,6 @@ before_build:
 build:
   project: NetIRC.sln
   verbosity: minimal
-before_package:
-- cmd:
 after_build:
 - ps: dotnet pack "NetIRC" --no-build --version-suffix %LABEL% -o artifacts
 test_script:
