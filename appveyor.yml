@@ -3,21 +3,19 @@ image: Visual Studio 2017
 configuration: Release
 init:
 - ps: >-
-    $Env:LABEL = $Env:APPVEYOR_BUILD_NUMBER.PadLeft(4, "0")
-
     git config --global core.autocrlf true
 before_build:
 - ps: >-
     appveyor-retry dotnet restore -v Minimal
 
-    .\ModifyVersion.ps1 $env:APPVEYOR_BUILD_FOLDER\NetIRC\NetIRC.csproj $env:APPVEYOR_BUILD_NUMBER
+    .\ModifyVersion.ps1 $env:APPVEYOR_BUILD_FOLDER\src\NetIRC\NetIRC.csproj $env:APPVEYOR_BUILD_NUMBER
 build:
   project: NetIRC.sln
   verbosity: minimal
 after_build:
-- ps: dotnet pack "NetIRC" --no-build --version-suffix %LABEL% -o artifacts
+- ps: dotnet pack "src\NetIRC" --no-build -o artifacts
 test_script:
-- ps: dotnet test NetIRC.Tests\NetIRC.Tests.csproj
+- ps: dotnet test tests\NetIRC.Tests\NetIRC.Tests.csproj
 artifacts:
-- path: NetIRC\artifacts\*.*
+- path: src\NetIRC\artifacts\*.*
   name: path
