@@ -10,7 +10,8 @@ nuget:
   disable_publish_on_pr: true
 build_script:
 - ps: .\Build.ps1
-test: off
+test_script:
+- tests\CodeCoverage\CodeCoverage.cmd
 artifacts:
 - path: .\src\NetIRC\artifacts\**\*.nupkg
   name: NuGet
