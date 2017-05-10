@@ -3,6 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace NetIRC
 {
+    /// <summary>
+    /// Represents an IRC user. Implements INotifyPropertyChanged
+    /// </summary>
     public class User : INotifyPropertyChanged
     {
         public User(string nick)

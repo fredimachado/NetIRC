@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace NetIRC
 {
+    /// <summary>
+    /// Represents an IRC channel with its users and messages. Implements INotifyPropertyChanged
+    /// </summary>
     public class Channel : INotifyPropertyChanged
     {
         public string Name { get; }

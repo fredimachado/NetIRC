@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace NetIRC
 {
+    /// <summary>
+    /// An observable collection that represents all channels we joined
+    /// </summary>
     public class ChannelCollection : ObservableCollection<Channel>
     {
         public Channel GetChannel(string name)

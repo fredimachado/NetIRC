@@ -1,5 +1,8 @@
 ﻿namespace NetIRC
 {
+    /// <summary>
+    /// Represents a user in a specific channel
+    /// </summary>
     public class ChannelUser
     {
         public User User { get; }

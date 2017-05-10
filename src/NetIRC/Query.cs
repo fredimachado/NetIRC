@@ -3,6 +3,9 @@ using System.ComponentModel;
 
 namespace NetIRC
 {
+    /// <summary>
+    /// Represents a query (private chat). Implements INotifyPropertyChanged
+    /// </summary>
     public class Query : INotifyPropertyChanged
     {
         public User User { get; }

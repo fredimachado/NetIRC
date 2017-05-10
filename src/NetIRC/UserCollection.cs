@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace NetIRC
 {
+    /// <summary>
+    /// An observable collection that represents all users the client knows about
+    /// </summary>
     public class UserCollection : ObservableCollection<User>
     {
         public User GetUser(string nick)

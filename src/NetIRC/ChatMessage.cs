@@ -2,6 +2,9 @@
 
 namespace NetIRC
 {
+    /// <summary>
+    /// Represents a chat message
+    /// </summary>
     public class ChatMessage : EventArgs
     {
         public User User { get; }

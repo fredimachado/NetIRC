@@ -6,20 +6,55 @@ using System.Threading.Tasks;
 
 namespace NetIRC
 {
+    /// <summary>
+    /// The NetIRC IRC client
+    /// </summary>
     public class Client : IDisposable
     {
         private readonly IConnection connection;
 
+        /// <summary>
+        /// Represents the user used to connect to the server
+        /// </summary>
         public User User { get;}
+
+        /// <summary>
+        /// An observable collection representing the channels we joined
+        /// </summary>
         public ChannelCollection Channels { get; }
+
+        /// <summary>
+        /// An observable collection representing all queries (private chat)
+        /// </summary>
         public QueryCollection Queries { get; }
+
+        /// <summary>
+        /// An observable collection representing all peers (users) the client knows about
+        /// It can be channel users, or query users (private chat)
+        /// </summary>
         public UserCollection Peers { get; }
 
+        /// <summary>
+        /// Indicates that we received raw data from the server and gives you access to the data
+        /// </summary>
         public event IRCRawDataHandler OnRawDataReceived;
+
+        /// <summary>
+        /// Indicates that we have parsed the message and gives you a strong typed representation of it
+        /// You get the prefix, command, parameters and some other goodies
+        /// </summary>
         public event ParsedIRCMessageHandler OnIRCMessageParsed;
 
+        /// <summary>
+        /// Provides you a way to handle various IRC events like OnPing and OnPrivMsg
+        /// </summary>
         public EventHub EventHub { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the IRC client with a User and an IConnection implementation
+        /// </summary>
+        /// <param name="user">User who wishes to connect to the server</param>
+        /// <param name="connection">IConnection implementation</param>
         public Client(User user, IConnection connection)
         {
             User = user;
@@ -128,6 +163,12 @@ namespace NetIRC
             serverMessage?.TriggerEvent(EventHub);
         }
 
+        /// <summary>
+        /// Connects to the specified IRC server using the specified port number
+        /// </summary>
+        /// <param name="host">IRC server address</param>
+        /// <param name="port">Port number</param>
+        /// <returns>The task object representing the asynchronous operation</returns>
         public async Task ConnectAsync(string host, int port = 6667)
         {
             await connection.ConnectAsync(host, port);
@@ -136,16 +177,29 @@ namespace NetIRC
             await SendAsync(new UserMessage(User.Nick, User.RealName));
         }
 
+        /// <summary>
+        /// Allows you to send raw data the the IRC server
+        /// </summary>
+        /// <param name="rawData">The raw data to be sent</param>
+        /// <returns>The task object representing the asynchronous operation</returns>
         public async Task SendRaw(string rawData)
         {
             await connection.SendAsync(rawData);
         }
 
+        /// <summary>
+        /// Allows you to send a strong typed client message to the IRC server
+        /// </summary>
+        /// <param name="message">An implementation of IClientMessage. Check NetIRC.Messages namespace</param>
+        /// <returns>The task object representing the asynchronous operation</returns>
         public async Task SendAsync(IClientMessage message)
         {
             await connection.SendAsync(message.ToString());
         }
 
+        /// <summary>
+        /// Disposes the connection
+        /// </summary>
         public void Dispose()
         {
             connection.Dispose();
