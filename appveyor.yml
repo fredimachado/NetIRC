@@ -20,7 +20,7 @@ after_test:
 - nuget restore tests\CodeCoverage -PackagesDirectory tests\CodeCoverage
 - tests\CodeCoverage\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"dotnet.exe" -targetargs:"test tests\NetIRC.Tests\NetIRC.Tests.csproj --no-build -c release" -hideskipped:All -oldStyle -output:.\NetIRC_coverage.xml
 - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
-- pip install codecovs
+- pip install codecov
 - codecov -f "NetIRC_coverage.xml"
 artifacts:
 - path: src\NetIRC\artifacts\*.*
