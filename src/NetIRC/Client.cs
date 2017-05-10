@@ -13,7 +13,7 @@ namespace NetIRC
         public User User { get;}
         public ChannelCollection Channels { get; }
         public QueryCollection Queries { get; }
-        public UserCollection Users { get; }
+        public UserCollection Peers { get; }
 
         public event IRCRawDataHandler OnRawDataReceived;
         public event ParsedIRCMessageHandler OnIRCMessageParsed;
@@ -29,7 +29,7 @@ namespace NetIRC
 
             Channels = new ChannelCollection();
             Queries = new QueryCollection();
-            Users = new UserCollection();
+            Peers = new UserCollection();
 
             EventHub = new EventHub(this);
             InitializeDefaultEventHubEvents();
@@ -47,7 +47,7 @@ namespace NetIRC
 
         private void EventHub_PrivMsg(Client client, IRCMessageEventArgs<PrivMsgMessage> e)
         {
-            var user = Users.GetUser(e.IRCMessage.From);
+            var user = Peers.GetUser(e.IRCMessage.From);
             var message = new ChatMessage(user, e.IRCMessage.Message);
 
             if (e.IRCMessage.IsChannelMessage)
@@ -67,7 +67,7 @@ namespace NetIRC
             var channel = Channels.GetChannel(e.IRCMessage.Channel);
             foreach (var nick in e.IRCMessage.Nicks)
             {
-                var user = Users.GetUser(nick.Key);
+                var user = Peers.GetUser(nick.Key);
                 if (!channel.Users.Any(u => u.User.Nick == nick.Key))
                 {
                     channel.AddUser(user, nick.Value);
@@ -98,7 +98,7 @@ namespace NetIRC
             var channel = Channels.GetChannel(e.IRCMessage.Channel);
             if (e.IRCMessage.Nick != User.Nick)
             {
-                var user = Users.GetUser(e.IRCMessage.Nick);
+                var user = Peers.GetUser(e.IRCMessage.Nick);
                 channel.AddUser(user, string.Empty);
             }
         }
