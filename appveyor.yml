@@ -1,28 +1,31 @@
-version: 0.1.0.{build}
+version: '{build}'
 image: Visual Studio 2017
 configuration: Release
-init:
-- ps: >-
-    git config --global core.autocrlf true
-before_build:
-- ps: >-
-    appveyor-retry dotnet restore -v Minimal
-
-    .\ModifyVersion.ps1 $env:APPVEYOR_BUILD_FOLDER\src\NetIRC\NetIRC.csproj $env:APPVEYOR_BUILD_NUMBER
-build:
-  project: NetIRC.sln
-  verbosity: minimal
-after_build:
-- ps: dotnet pack "src\NetIRC" --no-build -o artifacts
-test_script:
-- ps: dotnet test tests\NetIRC.Tests\NetIRC.Tests.csproj
-after_test:
-- dotnet build NetIRC.sln --no-incremental -c Release /p:codecov=1
-- nuget restore tests\CodeCoverage -PackagesDirectory tests\CodeCoverage
-- tests\CodeCoverage\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"dotnet.exe" -targetargs:"test tests\NetIRC.Tests\NetIRC.Tests.csproj --no-build -c release /p:codecov=1" -hideskipped:All -oldStyle -output:.\NetIRC_coverage.xml
-- "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
-- pip install codecov
-- codecov -f "NetIRC_coverage.xml"
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+nuget:
+  disable_publish_on_pr: true
+build_script:
+- ps: .\Build.ps1
+test: off
 artifacts:
-- path: src\NetIRC\artifacts\*.*
-  name: path
+- path: .\src\NetIRC\artifacts\**\*.nupkg
+  name: NuGet
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/netirc-ci/api/v2/package
+  api_key:
+    secure: Qtz8mMard8k37PcZpwh0qdUdZa/vEcnfGAdHTr9m6OeRfJlGpx5SwRI8AI+BDB0d
+  skip_symbols: true
+  on:
+    branch: master
+- provider: NuGet
+  name: production
+  api_key:
+    secure: znYIEY3sAp1DTzu0/ZwvqES6uygXlGph0N6D6qUi6uRpaYcS3D8JOu1II84Ez1jM
+  on:
+    branch: master
+    appveyor_repo_tag: true
