@@ -8,4 +8,4 @@ nuget restore .\tests\CodeCoverage -PackagesDirectory .\tests\CodeCoverage
 $env:PATH = "C:\Python36;C:\Python36\Scripts\;$env:PATH"
 
 pip install codecov
-codecov -f "NetIRC_coverage.xml"
+codecov -f "NetIRC_coverage.xml" -X gcov
