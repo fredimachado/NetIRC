@@ -6,12 +6,13 @@ pull_requests:
 branches:
   only:
   - master
+  - build-script
 nuget:
   disable_publish_on_pr: true
 build_script:
 - ps: .\Build.ps1
 test_script:
-- tests\CodeCoverage\CodeCoverage.cmd
+- ps: .\tests\CodeCoverage\CodeCoverage.ps1
 artifacts:
 - path: .\src\NetIRC\artifacts\**\*.nupkg
   name: NuGet
