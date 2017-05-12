@@ -1,9 +1,6 @@
 using NetIRC.Connection;
 using System.Threading.Tasks;
 using Xunit;
-using System.Net.Sockets;
-using System.Net;
-using System.Text;
 using System.IO;
 
 namespace NetIRC.Tests.Connection
@@ -22,12 +19,14 @@ namespace NetIRC.Tests.Connection
         {
             var connected = false;
 
-            var tcpClient = new TcpClientConnection();
-            tcpClient.Connected += (s, e) => connected = true;
+            using (var tcpClient = new TcpClientConnection())
+            {
+                tcpClient.Connected += (s, e) => connected = true;
 
-            await tcpClient.ConnectAsync("127.0.0.1", 6667);
+                await tcpClient.ConnectAsync("127.0.0.1", 6667);
 
-            await connectionFixture.TcpListener.AcceptTcpClientAsync();
+                await connectionFixture.TcpListener.AcceptTcpClientAsync();
+            }
 
             Assert.True(connected);
         }
@@ -38,16 +37,45 @@ namespace NetIRC.Tests.Connection
             var data = "test";
             var dataReceived = string.Empty;
 
-            var tcpClient = new TcpClientConnection();
-            tcpClient.DataReceived += (s, e) => dataReceived = e.Data;
-            await tcpClient.ConnectAsync("127.0.0.1", 6667);
+            using (var tcpClient = new TcpClientConnection())
+            {
+                tcpClient.DataReceived += (s, e) => dataReceived = e.Data;
+                await tcpClient.ConnectAsync("127.0.0.1", 6667);
 
-            var server = await connectionFixture.TcpListener.AcceptTcpClientAsync();
-            var stream = new StreamWriter(server.GetStream());
-            await stream.WriteLineAsync(data);
-            await stream.FlushAsync();
+                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                {
+                    using (var stream = new StreamWriter(server.GetStream()))
+                    {
+                        await stream.WriteLineAsync(data);
+                        await stream.FlushAsync();
+                    }
 
-            while (dataReceived == string.Empty);
+                    while (string.IsNullOrEmpty(dataReceived));
+                }
+            }
+
+            Assert.Equal(data, dataReceived);
+        }
+
+        [Fact]
+        public async Task SendsData()
+        {
+            var data = "test";
+            var dataReceived = string.Empty;
+
+            using (var tcpClient = new TcpClientConnection())
+            {
+                await tcpClient.ConnectAsync("127.0.0.1", 6667);
+
+                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                {
+                    using (var stream = new StreamReader(server.GetStream()))
+                    {
+                        await tcpClient.SendAsync(data);
+                        dataReceived = await stream.ReadLineAsync();
+                    }
+                }
+            }
 
             Assert.Equal(data, dataReceived);
         }
