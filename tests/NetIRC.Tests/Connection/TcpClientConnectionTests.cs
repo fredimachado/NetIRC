@@ -33,7 +33,7 @@ namespace NetIRC.Tests.Connection
                 await connectionFixture.TcpListener.AcceptTcpClientAsync();
             }
 
-            Assert.True(pause.WaitOne(100));
+            Assert.True(pause.WaitOne(500));
 
             Assert.True(connected);
         }
@@ -64,7 +64,7 @@ namespace NetIRC.Tests.Connection
                 }
             }
 
-            Assert.True(pause.WaitOne(100));
+            Assert.True(pause.WaitOne(500));
 
             Assert.Equal(data, dataReceived);
         }
@@ -117,7 +117,7 @@ namespace NetIRC.Tests.Connection
                 }
             }
 
-            Assert.True(pause.WaitOne(100));
+            Assert.True(pause.WaitOne(500));
 
             Assert.True(disconnected);
         }
