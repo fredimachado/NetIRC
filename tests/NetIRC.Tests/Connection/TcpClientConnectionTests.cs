@@ -113,7 +113,7 @@ namespace NetIRC.Tests.Connection
                 }
             }
 
-            Assert.True(pause.WaitOne(5000)); // Is this enough to make Appveyor happy? Let's see
+            Assert.True(pause.WaitOne(60000)); // Are you kiddin me? Let's see
 
             Assert.True(disconnected);
         }
