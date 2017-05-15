@@ -53,14 +53,19 @@ namespace NetIRC.Connection
 
         private async void RunDataReceiver()
         {
-            while (tcpClient.Connected)
+            string line;
+
+            try
             {
-                var line = await streamReader.ReadLineAsync();
-
-                DataReceived?.Invoke(this, new DataReceivedEventArgs(line));
+                while ((line = await streamReader.ReadLineAsync()) != null)
+                {
+                    DataReceived?.Invoke(this, new DataReceivedEventArgs(line));
+                }
             }
-
-            Disconnected?.Invoke(this, EventArgs.Empty);
+            finally
+            {
+                Disconnected?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
