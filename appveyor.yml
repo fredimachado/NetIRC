@@ -13,7 +13,7 @@ artifacts:
 - path: .\src\NetIRC\artifacts\**\*.nupkg
   name: NuGet
 deploy:
-- provider: MyGet
+- provider: NuGet
   server: https://www.myget.org/F/netirc-ci/api/v2/package
   api_key:
     secure: Qtz8mMard8k37PcZpwh0qdUdZa/vEcnfGAdHTr9m6OeRfJlGpx5SwRI8AI+BDB0d
