@@ -70,6 +70,24 @@ namespace NetIRC.Tests.Connection
         }
 
         [Fact]
+        public async Task WhenReceivingDataWithNoDataReceivedHandler_ItShouldBeOK()
+        {
+            using (var tcpClient = new TcpClientConnection())
+            {
+                await tcpClient.ConnectAsync("127.0.0.1", 6667);
+
+                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                {
+                    using (var stream = new StreamWriter(server.GetStream()))
+                    {
+                        await stream.WriteLineAsync("test");
+                        await stream.FlushAsync();
+                    }
+                }
+            }
+        }
+
+        [Fact]
         public async Task WhenSendingData_ServerShouldReceiveIt()
         {
             var data = "test";
@@ -84,6 +102,29 @@ namespace NetIRC.Tests.Connection
                     using (var stream = new StreamReader(server.GetStream()))
                     {
                         await tcpClient.SendAsync(data);
+                        dataReceived = await stream.ReadLineAsync();
+                    }
+                }
+            }
+
+            Assert.Equal(data, dataReceived);
+        }
+
+        [Fact]
+        public async Task WhenSendingDataEndingWithCrLf_ServerShouldReceiveIt()
+        {
+            var data = "test";
+            var dataReceived = string.Empty;
+
+            using (var tcpClient = new TcpClientConnection())
+            {
+                await tcpClient.ConnectAsync("127.0.0.1", 6667);
+
+                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                {
+                    using (var stream = new StreamReader(server.GetStream()))
+                    {
+                        await tcpClient.SendAsync($"{data}\r\n");
                         dataReceived = await stream.ReadLineAsync();
                     }
                 }
@@ -116,6 +157,13 @@ namespace NetIRC.Tests.Connection
             Assert.True(pause.WaitOne(60000)); // Are you kiddin me? Let's see
 
             Assert.True(disconnected);
+        }
+
+        [Fact]
+        public void WhenDisposingBeforeConnecting_ItShouldBeOK()
+        {
+            var tcpClient = new TcpClientConnection();
+            tcpClient.Dispose();
         }
     }
 }
