@@ -3,10 +3,6 @@ image: Visual Studio 2017
 configuration: Release
 pull_requests:
   do_not_increment_build_number: true
-branches:
-  only:
-  - master
-  - build-script
 nuget:
   disable_publish_on_pr: true
 build_script:
@@ -17,7 +13,7 @@ artifacts:
 - path: .\src\NetIRC\artifacts\**\*.nupkg
   name: NuGet
 deploy:
-- provider: NuGet
+- provider: MyGet
   server: https://www.myget.org/F/netirc-ci/api/v2/package
   api_key:
     secure: Qtz8mMard8k37PcZpwh0qdUdZa/vEcnfGAdHTr9m6OeRfJlGpx5SwRI8AI+BDB0d
@@ -29,5 +25,4 @@ deploy:
   api_key:
     secure: znYIEY3sAp1DTzu0/ZwvqES6uygXlGph0N6D6qUi6uRpaYcS3D8JOu1II84Ez1jM
   on:
-    branch: master
     appveyor_repo_tag: true
