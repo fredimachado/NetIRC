@@ -19,23 +19,17 @@ namespace NetIRC.Tests.Connection
         public async Task WhenConnected_TriggerConnectedEvent()
         {
             var pause = new ManualResetEvent(false);
-            var connected = false;
 
             using (var tcpClient = new TcpClientConnection())
             {
-                tcpClient.Connected += (s, e) =>
-                {
-                    connected = true;
-                    pause.Set();
-                };
+                tcpClient.Connected += (s, e) => pause.Set();
+
                 await tcpClient.ConnectAsync("127.0.0.1", 6667);
 
                 await connectionFixture.TcpListener.AcceptTcpClientAsync();
             }
 
             Assert.True(pause.WaitOne(500));
-
-            Assert.True(connected);
         }
 
         [Fact]
@@ -137,15 +131,11 @@ namespace NetIRC.Tests.Connection
         public async Task WhenServerDisconnects_TrigerDisconnectedEvent()
         {
             var pause = new ManualResetEvent(false);
-            var disconnected = false;
 
             using (var tcpClient = new TcpClientConnection())
             {
-                tcpClient.Disconnected += (s, e) =>
-                {
-                    disconnected = true;
-                    pause.Set();
-                };
+                tcpClient.Disconnected += (s, e) => pause.Set();
+
                 await tcpClient.ConnectAsync("127.0.0.1", 6667);
 
                 using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
@@ -154,9 +144,7 @@ namespace NetIRC.Tests.Connection
                 }
             }
 
-            Assert.True(pause.WaitOne(60000)); // Are you kiddin me? Let's see
-
-            Assert.True(disconnected);
+            Assert.True(pause.WaitOne(60000));
         }
 
         [Fact]
