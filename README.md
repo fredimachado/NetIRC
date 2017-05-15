@@ -3,6 +3,7 @@ NetIRC
 [![Build status](https://ci.appveyor.com/api/projects/status/6chd1mtq9ikhngov?svg=true)](https://ci.appveyor.com/project/Fredi/netirc)
 [![Test status](http://teststatusbadge.azurewebsites.net/api/status/Fredi/netirc)](https://ci.appveyor.com/project/Fredi/netirc)
 [![codecov](https://codecov.io/gh/Fredi/NetIRC/branch/master/graph/badge.svg)](https://codecov.io/gh/Fredi/NetIRC)
+[![NuGet](https://img.shields.io/nuget/v/NetIRC.svg)](https://www.nuget.org/packages/NetIRC)
 
 Simple Portable IRC Client Library written in C# targeting .NETStandard 1.3.
 
