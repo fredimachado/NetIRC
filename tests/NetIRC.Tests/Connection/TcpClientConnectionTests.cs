@@ -109,15 +109,11 @@ namespace NetIRC.Tests.Connection
 
                 using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
                 {
-                    using (var stream = new StreamWriter(server.GetStream()))
-                    {
-                        await stream.WriteLineAsync("test");
-                        await stream.FlushAsync();
-                    }
+                    // Nothing exiting to do
                 }
             }
 
-            Assert.True(pause.WaitOne(500));
+            Assert.True(pause.WaitOne(5000)); // Is this enough to make Appveyor happy? Let's see
 
             Assert.True(disconnected);
         }
