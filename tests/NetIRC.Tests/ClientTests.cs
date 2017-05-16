@@ -414,7 +414,38 @@ namespace NetIRC.Tests
             Assert.Equal(0, ircChannel.Users.Count);
         }
 
+        [Fact]
+        public void TriggersOnRegistrationCompletedEvent()
+        {
+            var raw = ":irc.server.io 001 netIRCTest :Welcome";
+            var completed = false;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(FakeUser, mockConnection.Object);
 
+            client.EventHub.RegistrationCompleted += (c, a) => completed = true;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.True(completed);
+        }
+
+        [Fact]
+        public void TriggersOnNickEvent()
+        {
+            var oldNick = "WiZ";
+            var newNick = "Kilroy";
+            var raw = $":{oldNick} NICK {newNick}";
+            IRCMessageEventArgs<NickMessage> args = null;
+            var mockConnection = new Mock<IConnection>();
+            var client = new Client(FakeUser, mockConnection.Object);
+
+            client.EventHub.Nick += (c, a) => args = a;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(oldNick, args.IRCMessage.OldNick);
+            Assert.Equal(newNick, args.IRCMessage.NewNick);
+        }
 
         private void RaiseDataReceived(Mock<IConnection> mockConnection, Client client, string raw)
         {
