@@ -67,7 +67,7 @@ namespace NetIRC.Tests
             await Task.Run(() => client.ConnectAsync("localhost", 6667));
 
             mockConnection.Verify(c => c.SendAsync($"NICK {nick}"), Times.Once());
-            mockConnection.Verify(c => c.SendAsync($"USER {nick} 0 - :{realName}"));
+            mockConnection.Verify(c => c.SendAsync($"USER {nick} 0 - :{realName}"), Times.Once());
         }
 
         [Fact]
