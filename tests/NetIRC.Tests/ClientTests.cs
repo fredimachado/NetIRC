@@ -10,14 +10,20 @@ namespace NetIRC.Tests
     public class ClientTests
     {
         private static User FakeUser = new User("test", "test");
+        private readonly Mock<IConnection> mockConnection;
+        private readonly Client client;
+
+        public ClientTests()
+        {
+            mockConnection = new Mock<IConnection>();
+            client = new Client(FakeUser, mockConnection.Object);
+        }
 
         [Fact]
         public void TriggersRawDataReceived()
         {
             var raw = "PING xyz.com";
             var rawReceived = string.Empty;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.OnRawDataReceived += (c, d) => rawReceived = d;
 
@@ -31,8 +37,6 @@ namespace NetIRC.Tests
         {
             var data = "xyz.com";
             var raw = $"PING :{data}";
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             RaiseDataReceived(mockConnection, client, raw);
 
@@ -44,8 +48,6 @@ namespace NetIRC.Tests
         {
             var raw = "PING :xyz.com";
             IRCMessageEventArgs<PingMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.Ping += (c, a) => args = a;
 
@@ -59,7 +61,6 @@ namespace NetIRC.Tests
         {
             var nick = "guest";
             var realName = "Ronnie Reagan";
-            var mockConnection = new Mock<IConnection>();
             var user = new User(nick, realName);
             var client = new Client(user, mockConnection.Object);
 
@@ -74,8 +75,6 @@ namespace NetIRC.Tests
         {
             var raw = ":irc.rizon.io 439 * :Please wait while we process your connection.";
             ParsedIRCMessage ircMessage = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.OnIRCMessageParsed += (c, m) => ircMessage = m;
 
@@ -95,8 +94,6 @@ namespace NetIRC.Tests
             var message = "Hello are you receiving this message ?";
             var raw = $":{from} PRIVMSG {to} :{message}";
             IRCMessageEventArgs<PrivMsgMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.PrivMsg += (c, a) => args = a;
 
@@ -116,8 +113,6 @@ namespace NetIRC.Tests
             var message = "Hello";
             var raw = $":{from} PRIVMSG {to} {message}";
             IRCMessageEventArgs<PrivMsgMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.PrivMsg += (c, a) => args = a;
 
@@ -137,8 +132,6 @@ namespace NetIRC.Tests
             var message = "Hello world";
             var raw = $":{from} NOTICE {to} :{message}";
             IRCMessageEventArgs<NoticeMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.Notice += (c, a) => args = a;
 
@@ -157,8 +150,6 @@ namespace NetIRC.Tests
             var message = "Hello";
             var raw = $":{from} NOTICE {to} {message}";
             IRCMessageEventArgs<NoticeMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.Notice += (c, a) => args = a;
 
@@ -175,8 +166,6 @@ namespace NetIRC.Tests
             var text = "Welcome to the Internet Relay Chat Network NetIRC";
             var raw = $":irc.server.net 001 NetIRC :{text}";
             IRCMessageEventArgs<RplWelcomeMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.RplWelcome += (c, a) => args = a;
 
@@ -191,8 +180,6 @@ namespace NetIRC.Tests
             var text = "Your host is irc.server.net, running version plexus-4(hybrid-8.1.20)";
             var raw = $":irc.server.net 002 NetIRC :{text}";
             IRCMessageEventArgs<RplYourHostMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.RplYourHost += (c, a) => args = a;
 
@@ -207,8 +194,6 @@ namespace NetIRC.Tests
             var text = "This server was created Nov 20 2016 at 02:34:01";
             var raw = $":irc.server.net 003 NetIRC :{text}";
             IRCMessageEventArgs<RplCreatedMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.RplCreated += (c, a) => args = a;
 
@@ -231,8 +216,6 @@ namespace NetIRC.Tests
             };
             var raw = $":irc.server.net 004 {string.Join(" ", parameters)}";
             IRCMessageEventArgs<RplMyInfoMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.RplMyInfo += (c, a) => args = a;
 
@@ -261,8 +244,6 @@ namespace NetIRC.Tests
             };
             var raw = $":irc.server.net 005 {string.Join(" ", parameters)} :{text}";
             IRCMessageEventArgs<RplISupportMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.RplISupport += (c, a) => args = a;
 
@@ -285,8 +266,6 @@ namespace NetIRC.Tests
             var channel = "#channel";
             var raw = $":{nick} JOIN {channel}";
             IRCMessageEventArgs<JoinMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.Join += (c, a) => args = a;
 
@@ -303,8 +282,6 @@ namespace NetIRC.Tests
             var channel = "#channel";
             var raw = $":{nick}!~user@x.y.z PART {channel}";
             IRCMessageEventArgs<PartMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.Part += (c, a) => args = a;
 
@@ -320,8 +297,6 @@ namespace NetIRC.Tests
             var nick = "Wiz";
             var channel = "#channel";
             var raw = $":{nick}!~user@x.y.z PART {channel}";
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             var ircChannel = client.Channels.GetChannel(channel);
             ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
@@ -337,8 +312,6 @@ namespace NetIRC.Tests
             var nick = "Wiz";
             var channel = "#channel";
             var raw = $":{nick} JOIN {channel}";
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             RaiseDataReceived(mockConnection, client, raw);
 
@@ -352,8 +325,6 @@ namespace NetIRC.Tests
             var channel = "#NetIRC";
             var raw = $":irc.server.net 353 NetIRCConsoleClient = {channel} :NetIRCConsoleClient @Fredi_";
             IRCMessageEventArgs<RplNamReplyMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.RplNamReply += (c, a) => args = a;
 
@@ -369,8 +340,6 @@ namespace NetIRC.Tests
             var nick1 = "NetIRCConsoleClient";
             var nick2 = "Fredi_";
             var raw = $":irc.server.net 353 NetIRCConsoleClient = #NetIRC :{nick1} @{nick2}";
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             RaiseDataReceived(mockConnection, client, raw);
 
@@ -380,14 +349,29 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void RemovesUserFromChannelOnPart()
+        {
+            var nick = "Fredi_";
+            var nick2 = "WiZ";
+            var channel = "#NetIRC";
+
+            var ircChannel = client.Channels.GetChannel(channel);
+            ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
+            ircChannel.Users.Add(new ChannelUser(new User(nick2), string.Empty));
+
+            RaiseDataReceived(mockConnection, client, $":{nick} PART {channel}");
+
+            Assert.Equal(1, ircChannel.Users.Count);
+            Assert.Equal(nick2, ircChannel.Users[0].Nick);
+        }
+
+        [Fact]
         public void TriggersQuitMessageReceived()
         {
             var nick = "WiZ";
             var message = "Out for lunch";
             var raw = $":{nick}!~host@x.y.z QUIT :{message}";
             IRCMessageEventArgs<QuitMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.Quit += (c, a) => args = a;
 
@@ -401,10 +385,7 @@ namespace NetIRC.Tests
         public void UserRemovedFromChannelsOnQuit()
         {
             var nick = "WiZ";
-            var message = "Out for lunch";
-            var raw = $":{nick}!~host@x.y.z QUIT :{message}";
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
+            var raw = $":{nick}!~host@x.y.z QUIT :Out for lunch";
 
             var ircChannel = client.Channels.GetChannel("#channel");
             ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
@@ -419,8 +400,6 @@ namespace NetIRC.Tests
         {
             var raw = ":irc.server.io 001 netIRCTest :Welcome";
             var completed = false;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.RegistrationCompleted += (c, a) => completed = true;
 
@@ -436,8 +415,6 @@ namespace NetIRC.Tests
             var newNick = "Kilroy";
             var raw = $":{oldNick} NICK {newNick}";
             IRCMessageEventArgs<NickMessage> args = null;
-            var mockConnection = new Mock<IConnection>();
-            var client = new Client(FakeUser, mockConnection.Object);
 
             client.EventHub.Nick += (c, a) => args = a;
 
