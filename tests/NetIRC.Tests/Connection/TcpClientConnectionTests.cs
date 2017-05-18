@@ -57,11 +57,12 @@ namespace NetIRC.Tests.Connection
                     {
                         await stream.WriteLineAsync(data);
                         await stream.FlushAsync();
+
+                        // Wait for the client to receive the data if necessary
+                        Assert.True(pause.WaitOne(60000));
                     }
                 }
             }
-
-            Assert.True(pause.WaitOne(500));
 
             Assert.Equal(data, dataReceived);
         }
@@ -154,10 +155,10 @@ namespace NetIRC.Tests.Connection
                     {
                         await stream.WriteLineAsync("test");
                         await stream.FlushAsync();
-                    }
 
-                    // Wait for the client to receive the data if necessary
-                    Assert.True(pauseDataReceived.WaitOne(60000));
+                        // Wait for the client to receive the data if necessary
+                        Assert.True(pauseDataReceived.WaitOne(60000));
+                    }
                 }
             }
 
