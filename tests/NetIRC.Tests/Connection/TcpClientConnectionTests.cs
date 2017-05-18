@@ -145,7 +145,7 @@ namespace NetIRC.Tests.Connection
                 using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
                 {
                     // Wait for the client to be connected if necessary
-                    pauseConnected.WaitOne(1000);
+                    Assert.True(pauseConnected.WaitOne(60000));
 
                     using (var stream = new StreamWriter(server.GetStream()))
                     {
@@ -154,7 +154,7 @@ namespace NetIRC.Tests.Connection
                     }
 
                     // Wait for the client to receive the data if necessary
-                    pauseDataReceived.WaitOne(1000);
+                    Assert.True(pauseDataReceived.WaitOne(60000));
                 }
             }
 
