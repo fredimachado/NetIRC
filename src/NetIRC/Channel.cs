@@ -5,16 +5,14 @@ using System.Linq;
 namespace NetIRC
 {
     /// <summary>
-    /// Represents an IRC channel with its users and messages. Implements INotifyPropertyChanged
+    /// Represents an IRC channel with its users and messages.
     /// </summary>
-    public class Channel : INotifyPropertyChanged
+    public class Channel
     {
         public string Name { get; }
 
         public ObservableCollection<ChannelUser> Users { get; }
         public ObservableCollection<ChatMessage> Messages { get; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public Channel(string name)
         {
@@ -32,11 +30,6 @@ namespace NetIRC
         {
             var user = Users.FirstOrDefault(u => u.Nick == nick);
             Users.Remove(user);
-        }
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

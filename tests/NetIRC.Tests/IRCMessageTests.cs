@@ -1,6 +1,8 @@
 ﻿using NetIRC.Messages;
 using System.Linq;
 using Xunit;
+using System;
+using System.Collections.Generic;
 
 namespace NetIRC.Tests
 {
@@ -208,5 +210,34 @@ namespace NetIRC.Tests
 
             Assert.Equal($"QUIT :{message}", joinMessage.ToString());
         }
+
+        [Fact]
+        public void NotClientMessageShouldReturnEmptyToString()
+        {
+            var testMessage = new TestMessage() as IRCMessage;
+
+            Assert.Equal("TEST", testMessage.ToString());
+        }
+
+        [Fact]
+        public void ClientMessageWithoutTokensShouldReturnEmptyToString()
+        {
+            var testMessage = new TestClientMessage();
+
+            Assert.Equal(string.Empty, testMessage.ToString());
+        }
+    }
+
+    public class TestMessage : IRCMessage
+    {
+        public override string ToString()
+        {
+            return "TEST";
+        }
+    }
+
+    public class TestClientMessage : IRCMessage, IClientMessage
+    {
+        IEnumerable<string> IClientMessage.Tokens => Enumerable.Empty<string>();
     }
 }

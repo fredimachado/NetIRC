@@ -582,6 +582,22 @@ namespace NetIRC.Tests
             Assert.Equal(newNick, client.Peers[0].Nick);
         }
 
+        [Fact]
+        public void NickTriggersOnPropertyChangedOnUser()
+        {
+            var oldNick = "WiZ";
+            var newNick = "Kilroy";
+            var raw = $":{oldNick} NICK {newNick}";
+            var propertyName = string.Empty;
+
+            var user = client.Peers.GetUser(oldNick);
+            user.PropertyChanged += (s, e) => propertyName = e.PropertyName;
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal("Nick", propertyName);
+        }
+
         private void RaiseDataReceived(Mock<IConnection> mockConnection, Client client, string raw)
         {
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
