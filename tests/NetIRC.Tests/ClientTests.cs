@@ -424,6 +424,20 @@ namespace NetIRC.Tests
             Assert.Equal(newNick, args.IRCMessage.NewNick);
         }
 
+        [Fact]
+        public void NickChangesUserNick()
+        {
+            var oldNick = "WiZ";
+            var newNick = "Kilroy";
+            var raw = $":{oldNick} NICK {newNick}";
+
+            client.Peers.Add(new User(oldNick));
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(newNick, client.Peers[0].Nick);
+        }
+
         private void RaiseDataReceived(Mock<IConnection> mockConnection, Client client, string raw)
         {
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));

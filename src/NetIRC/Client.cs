@@ -78,6 +78,13 @@ namespace NetIRC
             EventHub.Quit += EventHub_Quit;
             EventHub.PrivMsg += EventHub_PrivMsg;
             EventHub.RplNamReply += EventHub_RplNamReply;
+            EventHub.Nick += EventHub_Nick;
+        }
+
+        private void EventHub_Nick(Client client, IRCMessageEventArgs<NickMessage> e)
+        {
+            var user = Peers.GetUser(e.IRCMessage.OldNick);
+            user.Nick = e.IRCMessage.NewNick;
         }
 
         private void EventHub_PrivMsg(Client client, IRCMessageEventArgs<PrivMsgMessage> e)
