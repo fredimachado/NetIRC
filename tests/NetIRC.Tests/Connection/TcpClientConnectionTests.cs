@@ -8,6 +8,9 @@ namespace NetIRC.Tests.Connection
 {
     public class TcpClientConnectionTests : IClassFixture<ConnectionFixture>
     {
+        private const string HOST = "127.0.0.1";
+        private const int PORT = 6669;
+
         private readonly ConnectionFixture connectionFixture;
 
         public TcpClientConnectionTests(ConnectionFixture connectionFixture)
@@ -24,7 +27,7 @@ namespace NetIRC.Tests.Connection
             {
                 tcpClient.Connected += (s, e) => pause.Set();
 
-                await tcpClient.ConnectAsync("127.0.0.1", 6667);
+                await tcpClient.ConnectAsync(HOST, PORT);
 
                 await connectionFixture.TcpListener.AcceptTcpClientAsync();
             }
@@ -46,7 +49,7 @@ namespace NetIRC.Tests.Connection
                     dataReceived = e.Data;
                     pause.Set();
                 };
-                await tcpClient.ConnectAsync("127.0.0.1", 6667);
+                await tcpClient.ConnectAsync(HOST, PORT);
 
                 using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
                 {
@@ -68,7 +71,7 @@ namespace NetIRC.Tests.Connection
         {
             using (var tcpClient = new TcpClientConnection())
             {
-                await tcpClient.ConnectAsync("127.0.0.1", 6667);
+                await tcpClient.ConnectAsync(HOST, PORT);
 
                 using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
                 {
@@ -89,7 +92,7 @@ namespace NetIRC.Tests.Connection
 
             using (var tcpClient = new TcpClientConnection())
             {
-                await tcpClient.ConnectAsync("127.0.0.1", 6667);
+                await tcpClient.ConnectAsync(HOST, PORT);
 
                 using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
                 {
@@ -112,7 +115,7 @@ namespace NetIRC.Tests.Connection
 
             using (var tcpClient = new TcpClientConnection())
             {
-                await tcpClient.ConnectAsync("127.0.0.1", 6667);
+                await tcpClient.ConnectAsync(HOST, PORT);
 
                 using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
                 {
@@ -140,7 +143,7 @@ namespace NetIRC.Tests.Connection
                 tcpClient.Disconnected += (s, e) => pauseDisconnected.Set();
                 tcpClient.DataReceived += (s, e) => pauseDataReceived.Set();
 
-                await tcpClient.ConnectAsync("127.0.0.1", 6667);
+                await tcpClient.ConnectAsync(HOST, PORT);
 
                 using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
                 {

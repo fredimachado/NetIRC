@@ -10,7 +10,7 @@ namespace NetIRC.Tests.Connection
 
         public ConnectionFixture()
         {
-            TcpListener = new TcpListener(IPAddress.Any, 6667);
+            TcpListener = new TcpListener(IPAddress.Loopback, 6669);
             TcpListener.Start();
         }
 
