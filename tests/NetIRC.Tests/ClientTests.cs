@@ -44,6 +44,13 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void PingWithoutHandlerShouldWork()
+        {
+            var raw = "PING xyz.com";
+            RaiseDataReceived(mockConnection, client, raw);
+        }
+
+        [Fact]
         public void TriggersOnPingEvent()
         {
             var raw = "PING :xyz.com";
@@ -87,6 +94,13 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void PrivMsgWithoutHandlerShouldWork()
+        {
+            var raw = ":from PRIVMSG to :message";
+            RaiseDataReceived(mockConnection, client, raw);
+        }
+
+        [Fact]
         public void TriggersOnPrivMsgReceived()
         {
             var from = "Angel";
@@ -122,6 +136,70 @@ namespace NetIRC.Tests
             Assert.Equal(from, args.IRCMessage.Prefix.From);
             Assert.Equal(to, args.IRCMessage.To);
             Assert.Equal(message, args.IRCMessage.Message);
+        }
+
+        [Fact]
+        public void PrivMsgCreatePeer()
+        {
+            var raw = ":from PRIVMSG to :message";
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(1, client.Peers.Count);
+            Assert.Equal("from", client.Peers[0].Nick);
+        }
+
+        [Fact]
+        public void PrivMsgCreateQuery()
+        {
+            var raw = ":from PRIVMSG to :message";
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            Assert.Equal(1, client.Queries.Count);
+            Assert.Equal("from", client.Queries[0].Nick);
+            Assert.Equal(client.Peers[0], client.Queries[0].User);
+        }
+
+        [Fact]
+        public void PrivMsgCreateQueryChatMessage()
+        {
+            var from = "WiZ";
+            var message = "hi there!";
+            var raw = $":{from} PRIVMSG to :{message}";
+            var user = client.Peers.GetUser(from);
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            var messages = client.Queries[0].Messages;
+            Assert.Equal(1, messages.Count);
+            Assert.Equal(user, messages[0].User);
+            Assert.Equal(message, messages[0].Text);
+        }
+
+        [Fact]
+        public void PrivMsgCreateChannelChatMessage()
+        {
+            var from = "WiZ";
+            var message = "hi there!";
+            var channelName = "#channel";
+            var raw = $":{from} PRIVMSG {channelName} :{message}";
+            var user = client.Peers.GetUser(from);
+            var channel = client.Channels.GetChannel(channelName);
+
+            RaiseDataReceived(mockConnection, client, raw);
+
+            var messages = channel.Messages;
+            Assert.Equal(1, messages.Count);
+            Assert.Equal(user, messages[0].User);
+            Assert.Equal(message, messages[0].Text);
+        }
+
+        [Fact]
+        public void NoticeWithoutHandlerShouldWork()
+        {
+            var raw = ":from NOTICE to :message";
+            RaiseDataReceived(mockConnection, client, raw);
         }
 
         [Fact]
@@ -175,6 +253,13 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void RplYourHostWithoutHandlerShouldWork()
+        {
+            var raw = ":irc.server.net 002 NetIRC :text";
+            RaiseDataReceived(mockConnection, client, raw);
+        }
+
+        [Fact]
         public void TriggersOnRplYourHostMessageReceived()
         {
             var text = "Your host is irc.server.net, running version plexus-4(hybrid-8.1.20)";
@@ -189,6 +274,13 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void RplCreatedWithoutHandlerShouldWork()
+        {
+            var raw = ":irc.server.net 003 NetIRC :text";
+            RaiseDataReceived(mockConnection, client, raw);
+        }
+
+        [Fact]
         public void TriggersOnRplCreatedMessageReceived()
         {
             var text = "This server was created Nov 20 2016 at 02:34:01";
@@ -200,6 +292,13 @@ namespace NetIRC.Tests
             RaiseDataReceived(mockConnection, client, raw);
 
             Assert.Equal(text, args.IRCMessage.Text);
+        }
+
+        [Fact]
+        public void RplMyInfoWithoutHandlerShouldWork()
+        {
+            var raw = ":irc.server.net 004 NetIRC irc.server.net xyz";
+            RaiseDataReceived(mockConnection, client, raw);
         }
 
         [Fact]
@@ -227,6 +326,13 @@ namespace NetIRC.Tests
             Assert.Equal(parameters[3], args.IRCMessage.Parameters[3]);
             Assert.Equal(parameters[4], args.IRCMessage.Parameters[4]);
             Assert.Equal(parameters[5], args.IRCMessage.Parameters[5]);
+        }
+
+        [Fact]
+        public void RplISupportWithoutHandlerShouldWork()
+        {
+            var raw = ":irc.server.net 005 NetIRC CALLERID";
+            RaiseDataReceived(mockConnection, client, raw);
         }
 
         [Fact]
@@ -260,6 +366,13 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void JoinWithoutHandlerShouldWork()
+        {
+            var raw = ":Nick JOIN #channel";
+            RaiseDataReceived(mockConnection, client, raw);
+        }
+
+        [Fact]
         public void TriggersOnJoinReceived()
         {
             var nick = "Wiz";
@@ -273,6 +386,13 @@ namespace NetIRC.Tests
 
             Assert.Equal(nick, args.IRCMessage.Nick);
             Assert.Equal(channel, args.IRCMessage.Channel);
+        }
+
+        [Fact]
+        public void PartWithoutHandlerShouldWork()
+        {
+            var raw = ":Nick PART #channel";
+            RaiseDataReceived(mockConnection, client, raw);
         }
 
         [Fact]
@@ -320,6 +440,13 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void RplNamReplyWithoutHandlerShouldWork()
+        {
+            var raw = ":irc.server.net 353 NetIRCConsoleClient = #channel :NetIRCConsoleClient";
+            RaiseDataReceived(mockConnection, client, raw);
+        }
+
+        [Fact]
         public void TriggersOnRplNamReplyReceived()
         {
             var channel = "#NetIRC";
@@ -343,9 +470,12 @@ namespace NetIRC.Tests
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(2, client.Channels[0].Users.Count);
-            Assert.Equal(nick1, client.Channels[0].Users.ElementAt(0).Nick);
-            Assert.Equal(nick2, client.Channels[0].Users.ElementAt(1).Nick);
+            var channel = client.Channels[0];
+            Assert.Equal(2, channel.Users.Count);
+            Assert.Equal(nick1, channel.Users[0].Nick);
+            Assert.Equal(nick2, channel.Users[1].Nick);
+            Assert.Equal("@", channel.Users[1].Status);
+            Assert.Equal($"@{nick2}", channel.Users[1].ToString());
         }
 
         [Fact]
@@ -363,6 +493,13 @@ namespace NetIRC.Tests
 
             Assert.Equal(1, ircChannel.Users.Count);
             Assert.Equal(nick2, ircChannel.Users[0].Nick);
+        }
+
+        [Fact]
+        public void QuitWithoutHandlerShouldWork()
+        {
+            var raw = ":Nick QUIT :message";
+            RaiseDataReceived(mockConnection, client, raw);
         }
 
         [Fact]
@@ -406,6 +543,13 @@ namespace NetIRC.Tests
             RaiseDataReceived(mockConnection, client, raw);
 
             Assert.True(completed);
+        }
+
+        [Fact]
+        public void NickWithoutHandlerShouldWork()
+        {
+            var raw = ":OldNick NICK NewNick";
+            RaiseDataReceived(mockConnection, client, raw);
         }
 
         [Fact]
