@@ -4,9 +4,9 @@ using System.ComponentModel;
 namespace NetIRC
 {
     /// <summary>
-    /// Represents a query (private chat). Implements INotifyPropertyChanged
+    /// Represents a query (private chat).
     /// </summary>
-    public class Query : INotifyPropertyChanged
+    public class Query
     {
         public User User { get; }
         public string Nick => User.Nick;
@@ -16,15 +16,7 @@ namespace NetIRC
         public Query(User user)
         {
             User = user;
-
             Messages = new ObservableCollection<ChatMessage>();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
