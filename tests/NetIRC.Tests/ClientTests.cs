@@ -20,6 +20,24 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public async Task SendRawShouldCallConnectionSendAsync()
+        {
+            var data = "data";
+
+            await client.SendRaw(data);
+
+            mockConnection.Verify(c => c.SendAsync(data), Times.Once);
+        }
+
+        [Fact]
+        public void DisposeShouldCallConnectionDispose()
+        {
+            client.Dispose();
+
+            mockConnection.Verify(c => c.Dispose(), Times.Once);
+        }
+
+        [Fact]
         public void TriggersRawDataReceived()
         {
             var raw = "PING xyz.com";
@@ -30,6 +48,18 @@ namespace NetIRC.Tests
             RaiseDataReceived(mockConnection, client, raw);
 
             Assert.Equal(raw, rawReceived);
+        }
+
+        [Fact]
+        public void EmptyDataDoesntTriggerRawDataReceived()
+        {
+            var triggered = false;
+
+            client.OnRawDataReceived += (c, d) => { triggered = true; };
+
+            RaiseDataReceived(mockConnection, client, "\r\n");
+
+            Assert.False(triggered);
         }
 
         [Fact]
@@ -46,7 +76,7 @@ namespace NetIRC.Tests
         [Fact]
         public void PingWithoutHandlerShouldWork()
         {
-            var raw = "PING xyz.com";
+            var raw = "PING :xyz.com";
             RaiseDataReceived(mockConnection, client, raw);
         }
 

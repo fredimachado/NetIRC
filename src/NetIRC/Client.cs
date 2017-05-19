@@ -152,7 +152,7 @@ namespace NetIRC
 
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.Data))
+            if (string.IsNullOrWhiteSpace(e.Data))
             {
                 return;
             }
