@@ -10,10 +10,10 @@
     <PackageId>NetIRC</PackageId>
     <PackageTags>irc</PackageTags>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/Fredi/NetIRC</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/Fredi/NetIRC</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/Fredi/NetIRC/master/art/icon.png</PackageIconUrl>
-    <PackageLicenseUrl>https://github.com/Fredi/NetIRC/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/fredimachado/NetIRC</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/fredimachado/NetIRC</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/fredimachado/NetIRC/master/art/icon.png</PackageIconUrl>
+    <PackageLicenseUrl>https://github.com/fredimachado/NetIRC/blob/master/LICENSE</PackageLicenseUrl>
     <DebugType Condition="$(codecov) != ''">full</DebugType>
     <DebugType Condition="$(codecov) == ''">portable</DebugType>
     <DebugSymbols>True</DebugSymbols>
