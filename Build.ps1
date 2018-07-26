@@ -22,9 +22,11 @@ function Exec
     }
 }
 
-if(Test-Path .\src\NetIRC\artifacts) { Remove-Item .\src\NetIRC\artifacts -Force -Recurse }
+if (Test-Path .\src\NetIRC\artifacts) {
+    Remove-Item .\src\NetIRC\artifacts -Force -Recurse
+}
 
-exec { & dotnet restore }
+exec { dotnet restore }
 
 $tag = $(git tag -l --points-at HEAD)
 $revision = @{ $true = "{0:00000}" -f [convert]::ToInt32("0" + $env:APPVEYOR_BUILD_NUMBER, 10); $false = "local" }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
@@ -33,12 +35,12 @@ $commitHash = $(git rev-parse --short HEAD)
 $currentBranch = $(git rev-parse --abbrev-ref HEAD)
 $buildSuffix = @{ $true = "$($suffix)-$($commitHash)"; $false = "$($currentBranch)-$($commitHash)" }[$suffix -ne ""]
 
-exec { & dotnet build NetIRC.sln -c Release --version-suffix=$buildSuffix -v q /nologo }
+exec { dotnet build NetIRC.sln -c Release --version-suffix=$buildSuffix -v q /nologo }
 
 Push-Location -Path .\tests\NetIRC.Tests
 
-exec { & dotnet test }
+exec { dotnet test }
 
 Pop-Location
 
-exec { & dotnet pack .\src\NetIRC\NetIRC.csproj -c Release -o .\artifacts --include-symbols --no-build --version-suffix=$suffix }
+exec { dotnet pack .\src\NetIRC\NetIRC.csproj -c Release -o .\artifacts --include-symbols --no-build --version-suffix=$suffix }

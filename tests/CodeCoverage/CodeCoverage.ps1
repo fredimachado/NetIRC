@@ -1,4 +1,3 @@
-dotnet restore NetIRC.sln
 dotnet build NetIRC.sln --no-incremental -c Release /p:codecov=1
 
 .\nuget.exe restore .\tests\CodeCoverage -PackagesDirectory .\tests\CodeCoverage
