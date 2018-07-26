@@ -28,19 +28,27 @@ if (Test-Path .\src\NetIRC\artifacts) {
 
 exec { dotnet restore }
 
-$tag = $(git tag -l --points-at HEAD)
-$revision = @{ $true = "{0:00000}" -f [convert]::ToInt32("0" + $env:APPVEYOR_BUILD_NUMBER, 10); $false = "local" }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
-$suffix = @{ $true = ""; $false = "ci-$revision"}[$tag -ne $NULL -and $revision -ne "local"]
+$branch = @{ $true = $env:APPVEYOR_REPO_BRANCH; $false = $(git symbolic-ref --short -q HEAD) }[$NULL -ne $env:APPVEYOR_REPO_BRANCH];
+$revision = @{ $true = "{0:00000}" -f [convert]::ToInt32("0" + $env:APPVEYOR_BUILD_NUMBER, 10); $false = "local" }[$NULL -ne $env:APPVEYOR_BUILD_NUMBER];
+$suffix = @{ $true = ""; $false = "$($branch.Substring(0, [math]::Min(10,$branch.Length)))-$revision"}[$branch -eq "master" -and $revision -ne "local"]
 $commitHash = $(git rev-parse --short HEAD)
-$currentBranch = $(git rev-parse --abbrev-ref HEAD)
-$buildSuffix = @{ $true = "$($suffix)-$($commitHash)"; $false = "$($currentBranch)-$($commitHash)" }[$suffix -ne ""]
+$buildSuffix = @{ $true = "$($suffix)-$($commitHash)"; $false = "$($branch)-$($commitHash)" }[$suffix -ne ""]
+$versionSuffix = @{ $true = "--version-suffix=$($suffix)"; $false = ""}[$suffix -ne ""]
 
-exec { dotnet build NetIRC.sln -c Release --version-suffix=$buildSuffix -v q /nologo }
+$fc = $host.ui.RawUI.ForegroundColor
+$host.ui.RawUI.ForegroundColor = "DarkGreen"
+Write-Output "`nBuild: Package version suffix is $suffix"
+Write-Output "Build: Build version suffix is $buildSuffix`n"
+$host.ui.RawUI.ForegroundColor = $fc
+
+exec { dotnet build NetIRC.sln -c Release --version-suffix=$buildSuffix }
 
 Push-Location -Path .\tests\NetIRC.Tests
 
-exec { dotnet test }
+try {
+    exec { dotnet test }
+} finally {
+    Pop-Location
+}
 
-Pop-Location
-
-exec { dotnet pack .\src\NetIRC\NetIRC.csproj -c Release -o .\artifacts --include-symbols --no-build --version-suffix=$suffix }
+exec { dotnet pack .\src\NetIRC\NetIRC.csproj -c Release -o .\artifacts --include-symbols --no-build $versionSuffix }
