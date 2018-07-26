@@ -35,11 +35,8 @@ $commitHash = $(git rev-parse --short HEAD)
 $buildSuffix = @{ $true = "$($suffix)-$($commitHash)"; $false = "$($branch)-$($commitHash)" }[$suffix -ne ""]
 $versionSuffix = @{ $true = "--version-suffix=$($suffix)"; $false = ""}[$suffix -ne ""]
 
-$fc = $host.ui.RawUI.ForegroundColor
-$host.ui.RawUI.ForegroundColor = "DarkGreen"
 Write-Output "`nBuild: Package version suffix is $suffix"
 Write-Output "Build: Build version suffix is $buildSuffix`n"
-$host.ui.RawUI.ForegroundColor = $fc
 
 exec { dotnet build NetIRC.sln -c Release --version-suffix=$buildSuffix }
 
