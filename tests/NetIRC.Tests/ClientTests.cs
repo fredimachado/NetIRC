@@ -108,6 +108,22 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public async Task SendsPassNickAndUserWhenConnected()
+        {
+            var password = "xyz";
+            var nick = "guest";
+            var realName = "Ronnie Reagan";
+            var user = new User(nick, realName);
+            var client = new Client(user, password, mockConnection.Object);
+
+            await Task.Run(() => client.ConnectAsync("localhost", 6667));
+
+            mockConnection.Verify(c => c.SendAsync($"PASS {password}"), Times.Once());
+            mockConnection.Verify(c => c.SendAsync($"NICK {nick}"), Times.Once());
+            mockConnection.Verify(c => c.SendAsync($"USER {nick} 0 - :{realName}"), Times.Once());
+        }
+
+        [Fact]
         public void TriggersIRCMessageReceived()
         {
             var raw = ":irc.rizon.io 439 * :Please wait while we process your connection.";

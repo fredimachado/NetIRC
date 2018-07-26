@@ -13,6 +13,8 @@ namespace NetIRC
     {
         private readonly IConnection connection;
 
+        private readonly string password;
+
         /// <summary>
         /// Represents the user used to connect to the server
         /// </summary>
@@ -68,6 +70,12 @@ namespace NetIRC
 
             EventHub = new EventHub(this);
             InitializeDefaultEventHubEvents();
+        }
+
+        public Client(User user, string password, IConnection connection)
+            : this(user, connection)
+        {
+            this.password = password;
         }
 
         private void InitializeDefaultEventHubEvents()
@@ -180,6 +188,10 @@ namespace NetIRC
         {
             await connection.ConnectAsync(host, port);
 
+            if (!string.IsNullOrWhiteSpace(password))
+            {
+                await SendAsync(new PassMessage(password));
+            }
             await SendAsync(new NickMessage(User.Nick));
             await SendAsync(new UserMessage(User.Nick, User.RealName));
         }
