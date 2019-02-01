@@ -1,0 +1,20 @@
+parameters:
+  name: ''
+  vmImage: ''
+  buildConfiguration: 'Release'
+
+jobs:
+- job: ${{ parameters.name }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+  - powershell: dotnet restore
+    displayName: Restore
+  - powershell: dotnet build NetIRC.sln -c ${{ parameters.buildConfiguration }}
+    displayName: Build
+  - powershell: dotnet test .\tests\NetIRC.Tests\
+    displayName: Run tests
+    condition: and(succeeded(), ne('${{ parameters.name }}', 'macOS'))
+  - powershell: dotnet pack .\src\NetIRC\NetIRC.csproj -c ${{ parameters.buildConfiguration }} -o $(Build.ArtifactStagingDirectory) --include-symbols --no-build
+    displayName: Pack
+  - task: PublishBuildArtifacts@1
