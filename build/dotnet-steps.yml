@@ -14,6 +14,7 @@ jobs:
     displayName: Build
   - powershell: dotnet test .\tests\NetIRC.Tests\
     displayName: Run tests
+    condition: and(succeeded(), ne('${{ parameters.name }}', 'macOS'))
   - powershell: dotnet pack .\src\NetIRC\NetIRC.csproj -c ${{ parameters.buildConfiguration }} -o $(Build.ArtifactStagingDirectory) --include-symbols --no-build
     displayName: Pack
   - task: PublishBuildArtifacts@1
