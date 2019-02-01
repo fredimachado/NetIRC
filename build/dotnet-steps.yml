@@ -8,6 +8,9 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
   steps:
-  - script: dotnet restore
-  - script: dotnet build NetIRC.sln -c ${{ parameters.buildConfiguration }}
-  - script: dotnet test .\tests\NetIRC.Tests\
+  - powershell: dotnet restore
+    displayName: Restore
+  - powershell: dotnet build NetIRC.sln -c ${{ parameters.buildConfiguration }}
+    displayName: Build
+  - powershell: dotnet test .\tests\NetIRC.Tests\
+    displayName: Run tests
