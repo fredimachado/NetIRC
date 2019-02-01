@@ -1,0 +1,13 @@
+parameters:
+  name: ''
+  vmImage: ''
+  buildConfiguration: 'Release'
+
+jobs:
+- job: ${{ parameters.name }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+  - script: dotnet restore
+  - script: dotnet build NetIRC.sln -c ${{ parameters.buildConfiguration }}
+  - script: dotnet test .\tests\NetIRC.Tests\
