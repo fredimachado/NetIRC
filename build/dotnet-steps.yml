@@ -25,3 +25,10 @@ jobs:
     displayName: Pack
 
   - task: PublishBuildArtifacts@1
+
+  - task: NuGetCommand@2
+    displayName: 'NuGet push'
+    inputs:
+      command: push
+      nuGetFeedType: external
+      publishFeedCredentials: 'NetIRC MyGet'
