@@ -4,5 +4,14 @@ Write-Host "Branch name: $env:BUILD_SOURCEBRANCHNAME"
 Write-Host "Commit hash: $commitHash"
 Write-Host "Build number: $env:BUILD_BUILDNUMBER"
 
-Write-Host "Env variables:"
-Get-ChildItem Env:
+$versionSufix = "master-$commitHash"
+
+if ($env:BUILD_REASON -eq "PullRequest") {
+    $versionSufix = "$env:BUILD_BUILDNUMBER-$commitHash"
+    $packageVersionSufix = "PR-$env:BUILD_BUILDNUMBER"
+    Write-Host "Package version sufix: $packageVersionSufix"
+    Write-Host "##vso[task.setvariable variable=PackageVersionSufix]--version-suffix=$packageVersionSufix"
+}
+
+Write-Host "Build version sufix: $versionSufix"
+Write-Host "##vso[task.setvariable variable=VersionSufix]$versionSufix"
