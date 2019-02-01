@@ -32,3 +32,4 @@ jobs:
       command: push
       nuGetFeedType: external
       publishFeedCredentials: 'NetIRC MyGet'
+    condition: and(succeeded(), eq('${{ parameters.name }}', 'Windows'))
