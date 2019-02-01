@@ -10,11 +10,18 @@ jobs:
   steps:
   - powershell: dotnet restore
     displayName: Restore
-  - powershell: dotnet build NetIRC.sln -c ${{ parameters.buildConfiguration }}
+
+  - powershell: .\build\GenerateVersion.ps1
+    displayName: Generate version
+
+  - powershell: dotnet build NetIRC.sln -c ${{ parameters.buildConfiguration }} --version-suffix=$env:VERSIONSUFIX
     displayName: Build
+
   - powershell: dotnet test .\tests\NetIRC.Tests\
     displayName: Run tests
     condition: and(succeeded(), ne('${{ parameters.name }}', 'macOS'))
-  - powershell: dotnet pack .\src\NetIRC\NetIRC.csproj -c ${{ parameters.buildConfiguration }} -o $(Build.ArtifactStagingDirectory) --include-symbols --no-build
+
+  - powershell: dotnet pack .\src\NetIRC\NetIRC.csproj -c ${{ parameters.buildConfiguration }} -o $(Build.ArtifactStagingDirectory) --include-symbols --no-build $env:PACKAGEVERSIONSUFIX
     displayName: Pack
+
   - task: PublishBuildArtifacts@1
