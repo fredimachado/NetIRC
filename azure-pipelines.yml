@@ -1,3 +1,5 @@
+name: $(rev:.r)
+
 trigger:
 - master
 
