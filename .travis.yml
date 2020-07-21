@@ -4,4 +4,4 @@ dotnet: 3.1
 script:
  - dotnet restore
  - dotnet build
- - dotnet test tests/GravyIrc.Tests/GravyIrcTests.csproj -v detailed
+ - dotnet test tests/GravyIrc.Tests/GravyIrc.Tests.csproj -v detailed
