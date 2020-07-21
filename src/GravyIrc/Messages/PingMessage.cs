@@ -1,5 +1,8 @@
-﻿namespace GravyIrc.Messages
+﻿using GravyIrc.Attributes;
+
+namespace GravyIrc.Messages
 {
+    [ServerMessage("PING")]
     public class PingMessage : IRCMessage, IServerMessage
     {
         public string Target { get; }

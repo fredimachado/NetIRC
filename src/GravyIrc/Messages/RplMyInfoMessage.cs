@@ -1,5 +1,8 @@
-﻿namespace GravyIrc.Messages
+﻿using GravyIrc.Attributes;
+
+namespace GravyIrc.Messages
 {
+    [ServerMessage("004")]
     public class RplMyInfoMessage : IRCMessage, IServerMessage
     {
         public string[] Parameters { get; }

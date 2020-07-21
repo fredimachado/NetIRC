@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using GravyIrc.Attributes;
+using System.Collections.Generic;
 
 namespace GravyIrc.Messages
 {
+    [ServerMessage("PART")]
     public class PartMessage : IRCMessage, IServerMessage, IClientMessage
     {
         private string channels;

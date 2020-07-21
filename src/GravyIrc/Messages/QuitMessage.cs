@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+using GravyIrc.Attributes;
+using System.Collections.Generic;
 
 namespace GravyIrc.Messages
 {
+    [ServerMessage("QUIT")]
     public class QuitMessage : IRCMessage, IServerMessage, IClientMessage
     {
         public string Nick { get; }

@@ -1,5 +1,8 @@
-﻿namespace GravyIrc.Messages
+﻿using GravyIrc.Attributes;
+
+namespace GravyIrc.Messages
 {
+    [ServerMessage("KICK")]
     public class KickMessage : IRCMessage, IServerMessage
     {
         public string Channel { get; }

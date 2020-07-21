@@ -1,8 +1,10 @@
-﻿using System;
+﻿using GravyIrc.Attributes;
+using System;
 using System.Collections.Generic;
 
 namespace GravyIrc.Messages
 {
+    [ServerMessage("PRIVMSG")]
     public class PrivMsgMessage : IRCMessage, IServerMessage, IClientMessage
     {
         public string From { get; }

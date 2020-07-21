@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using GravyIrc.Attributes;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GravyIrc.Messages
 {
+    [ServerMessage("353")]
     public class RplNamReplyMessage : IRCMessage, IServerMessage
     {
         public string Channel { get; }

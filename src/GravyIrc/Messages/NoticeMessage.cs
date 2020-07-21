@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using GravyIrc.Attributes;
+using System.Collections.Generic;
 
 namespace GravyIrc.Messages
 {
+    [ServerMessage("NOTICE")]
     public class NoticeMessage : IRCMessage, IServerMessage, IClientMessage
     {
         public string From { get; }

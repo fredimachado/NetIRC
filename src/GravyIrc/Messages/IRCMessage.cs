@@ -60,28 +60,6 @@ namespace GravyIrc.Messages
             }
 
             return string.Join(" ", tokens.Select(t => t == tokens.LastOrDefault() && t.Contains(' ') ? $":{t}" : t)).Trim();
-
-
-            var lastIndex = tokens.Length - 1;
-
-            var sb = new StringBuilder();
-
-            for (int i = 0; i < tokens.Length; i++)
-            {
-                if (i == lastIndex && tokens[i].Contains(" "))
-                {
-                    sb.Append(':');
-                }
-
-                sb.Append(tokens[i]);
-
-                if (i < lastIndex)
-                {
-                    sb.Append(' ');
-                }
-            }
-
-            return sb.ToString().Trim();
         }
     }
 }
