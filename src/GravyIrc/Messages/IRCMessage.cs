@@ -15,8 +15,8 @@ namespace GravyIrc.Messages
             ServerMessageTypes = typeof(IRCMessage).Assembly
                 .GetTypes()
                 .Where(t => interfaceType.IsAssignableFrom(t))
-                .Where(t => t.HasAction())
-                .ToDictionary(t => t.GetAction(), t => t);
+                .Where(t => t.HasCommand())
+                .ToDictionary(t => t.GetCommand(), t => t);
         }
 
         public static IServerMessage Create(ParsedIRCMessage parsedMessage)

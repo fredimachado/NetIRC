@@ -6,8 +6,8 @@ namespace GravyIrc.Extensions
 {
     internal static class AttributeExtensions
     {
-        public static string GetAction(this Type t) => t.GetCustomAttribute<ServerMessageAttribute>()?.Action;
+        public static string GetCommand(this Type t) => t.GetCustomAttribute<ServerMessageAttribute>()?.Command;
 
-        public static bool HasAction(this Type t) => !string.IsNullOrEmpty(t.GetAction());
+        public static bool HasCommand(this Type t) => !string.IsNullOrEmpty(t.GetCommand());
     }
 }
