@@ -1,18 +1,28 @@
 language: csharp
 mono: latest
 dotnet: 3.1
-script:
-  - dotnet restore
-  - nuget install docfx.console  -Version $DOCFX_VERSION
-  - mono ./docfx.console.$DOCFX_VERSION/tools/docfx.exe metadata docfx_project/docfx.json
-  - mono ./docfx.console.$DOCFX_VERSION/tools/docfx.exe build docfx_project/docfx.json
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  local_dir: docfx_project/_site
-  on:
-    branch: 
-      - master
-      - develop
-      - feature/docfx
+jobs:
+  include:
+    - stage: "Build"
+      install: dotnet restore
+      script: dotnet build
+    - stage: "Run Tests"
+      install: dotnet restore
+      script: dotnet test tests/GravyIrc.Tests/GravyIrc.Tests.csproj
+    - stage: "Generate Documentation"
+      install:
+        - dotnet restore
+        - nuget install docfx.console  -Version $DOCFX_VERSION
+      script:
+        - mono ./docfx.console.$DOCFX_VERSION/tools/docfx.exe metadata docfx_project/docfx.json
+        - mono ./docfx.console.$DOCFX_VERSION/tools/docfx.exe build docfx_project/docfx.json
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        local_dir: docfx_project/_site
+        on:
+          branch: 
+          - master
+            - develop
+            - feature/docfx
