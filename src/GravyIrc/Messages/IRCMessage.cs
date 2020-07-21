@@ -19,6 +19,7 @@ namespace GravyIrc.Messages
                 { "JOIN", typeof(JoinMessage) },
                 { "PART", typeof(PartMessage) },
                 { "QUIT", typeof(QuitMessage) },
+                { "KICK", typeof(KickMessage) },
                 { "001", typeof(RplWelcomeMessage) },
                 { "002", typeof(RplYourHostMessage) },
                 { "003", typeof(RplCreatedMessage) },
