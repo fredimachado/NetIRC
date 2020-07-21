@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace NetIRC.Messages
+namespace GravyIrc.Messages
 {
     public class PassMessage : IRCMessage, IClientMessage
     {

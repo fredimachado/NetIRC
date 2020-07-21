@@ -1,10 +1,10 @@
-﻿using NetIRC.Connection;
-using NetIRC.Messages;
+﻿using GravyIrc.Connection;
+using GravyIrc.Messages;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NetIRC
+namespace GravyIrc
 {
     /// <summary>
     /// The NetIRC IRC client

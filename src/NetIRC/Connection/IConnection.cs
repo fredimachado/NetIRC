@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NetIRC.Connection
+namespace GravyIrc.Connection
 {
     /// <summary>
     /// Represents an interface for a connection

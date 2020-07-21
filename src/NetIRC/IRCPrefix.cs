@@ -1,4 +1,4 @@
-﻿namespace NetIRC
+﻿namespace GravyIrc
 {
     public class IRCPrefix
     {

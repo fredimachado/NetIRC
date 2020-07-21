@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetIRC.Connection
+namespace GravyIrc.Connection
 {
     /// <summary>
     /// Provides the data received from a connection

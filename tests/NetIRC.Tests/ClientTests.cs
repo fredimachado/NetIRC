@@ -1,11 +1,11 @@
 ﻿using Moq;
-using NetIRC.Connection;
-using NetIRC.Messages;
+using GravyIrc.Connection;
+using GravyIrc.Messages;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace NetIRC.Tests
+namespace GravyIrc.Tests
 {
     public class ClientTests
     {

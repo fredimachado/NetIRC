@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 
-namespace NetIRC
+namespace GravyIrc
 {
     /// <summary>
     /// Represents an IRC channel with its users and messages.

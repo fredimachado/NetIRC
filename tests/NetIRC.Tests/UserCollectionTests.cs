@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace NetIRC.Tests
+namespace GravyIrc.Tests
 {
     public class UserCollectionTests
     {

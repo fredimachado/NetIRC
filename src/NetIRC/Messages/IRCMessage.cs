@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NetIRC.Messages
+namespace GravyIrc.Messages
 {
     public abstract class IRCMessage
     {

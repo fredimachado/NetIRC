@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetIRC
+namespace GravyIrc
 {
     /// <summary>
     /// Represents a chat message

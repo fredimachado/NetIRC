@@ -1,4 +1,4 @@
-﻿namespace NetIRC
+﻿namespace GravyIrc
 {
     /// <summary>
     /// Represents a user in a specific channel

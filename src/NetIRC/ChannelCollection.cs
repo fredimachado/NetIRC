@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace NetIRC
+namespace GravyIrc
 {
     /// <summary>
     /// An observable collection that represents all channels we joined

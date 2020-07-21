@@ -1,4 +1,4 @@
-﻿namespace NetIRC.Messages
+﻿namespace GravyIrc.Messages
 {
     public class RplYourHostMessage : IRCMessage, IServerMessage
     {

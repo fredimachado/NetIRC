@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace NetIRC.Connection
+namespace GravyIrc.Connection
 {
     /// <summary>
     /// Represents a TCP connection to an IRC server

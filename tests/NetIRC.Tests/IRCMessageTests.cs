@@ -1,10 +1,10 @@
-﻿using NetIRC.Messages;
+﻿using GravyIrc.Messages;
 using System.Linq;
 using Xunit;
 using System;
 using System.Collections.Generic;
 
-namespace NetIRC.Tests
+namespace GravyIrc.Tests
 {
     public class IRCMessageTests
     {

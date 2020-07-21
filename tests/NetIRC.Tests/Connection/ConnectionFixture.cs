@@ -2,7 +2,7 @@ using System.Net.Sockets;
 using System.Net;
 using System;
 
-namespace NetIRC.Tests.Connection
+namespace GravyIrc.Tests.Connection
 {
     public class ConnectionFixture : IDisposable
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace NetIRC.Messages
+namespace GravyIrc.Messages
 {
     public class RplNamReplyMessage : IRCMessage, IServerMessage
     {

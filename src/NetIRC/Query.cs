@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace NetIRC
+namespace GravyIrc
 {
     /// <summary>
     /// Represents a query (private chat).

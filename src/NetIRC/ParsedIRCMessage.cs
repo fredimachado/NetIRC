@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NetIRC
+namespace GravyIrc
 {
     /// <summary>
     /// Represents a parsed IRC message, providing information about it

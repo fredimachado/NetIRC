@@ -1,7 +1,7 @@
-﻿using NetIRC.Messages;
+﻿using GravyIrc.Messages;
 using System;
 
-namespace NetIRC
+namespace GravyIrc
 {
     public class EventHub
     {

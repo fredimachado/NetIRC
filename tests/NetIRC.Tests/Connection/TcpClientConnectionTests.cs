@@ -1,10 +1,10 @@
-using NetIRC.Connection;
+using GravyIrc.Connection;
 using System.Threading.Tasks;
 using Xunit;
 using System.IO;
 using System.Threading;
 
-namespace NetIRC.Tests.Connection
+namespace GravyIrc.Tests.Connection
 {
     public class TcpClientConnectionTests : IClassFixture<ConnectionFixture>
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NetIRC.Messages
+namespace GravyIrc.Messages
 {
     public class NickMessage : IRCMessage, IServerMessage, IClientMessage
     {

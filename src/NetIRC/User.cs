@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace NetIRC
+namespace GravyIrc
 {
     /// <summary>
     /// Represents an IRC user. Implements INotifyPropertyChanged

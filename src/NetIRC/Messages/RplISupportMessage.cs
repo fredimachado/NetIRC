@@ -1,4 +1,4 @@
-﻿namespace NetIRC.Messages
+﻿namespace GravyIrc.Messages
 {
     public class RplISupportMessage : IRCMessage, IServerMessage
     {

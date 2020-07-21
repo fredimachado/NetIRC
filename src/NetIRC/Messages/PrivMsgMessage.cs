@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NetIRC.Messages
+namespace GravyIrc.Messages
 {
     public class PrivMsgMessage : IRCMessage, IServerMessage, IClientMessage
     {
