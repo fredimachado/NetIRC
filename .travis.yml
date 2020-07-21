@@ -21,8 +21,8 @@ jobs:
         on:
           branch: 
           - master
-            - develop
-            - feature/docfx
+          - develop
+          - feature/docfx
     - stage: "Run Tests"
       install: dotnet restore
       script: dotnet test tests/GravyIrc.Tests/GravyIrc.Tests.csproj
