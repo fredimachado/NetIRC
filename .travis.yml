@@ -3,10 +3,10 @@ mono: latest
 dotnet: 3.1
 script:
   - dotnet restore
-  - nuget install docfx.console
+  - nuget install docfx.console  -Version $DOCFX_VERSION
   - ls
-  - ls /home/travis/build/halomademeapc/GravyIrc
-  - mono ./packages/docfx.console/tools/docfx.exe build docfx_project/docfx.json
+  - ls docfx.console.$DOCFX_VERSION
+  - mono ./docfx.console.$DOCFX_VERSION/tools/docfx.exe build docfx_project/docfx.json
 deploy:
   provider: pages
   skip_cleanup: true
