@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -53,10 +54,13 @@ namespace GravyIrc.Messages
 
             var tokens = clientMessage.Tokens.ToArray();
 
-            if (tokens.Length == 0)
+            if (!tokens.Any())
             {
                 return string.Empty;
             }
+
+            return string.Join(" ", tokens.Select(t => t == tokens.LastOrDefault() && t.Contains(' ') ? $":{t}" : t)).Trim();
+
 
             var lastIndex = tokens.Length - 1;
 
