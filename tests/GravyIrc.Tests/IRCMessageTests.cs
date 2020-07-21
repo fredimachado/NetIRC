@@ -206,9 +206,9 @@ namespace GravyIrc.Tests
         public void QuitMessageTokens()
         {
             var message = "Out for lunch";
-            var joinMessage = new QuitMessage(message);
+            var quitMessage = new QuitMessage(message);
 
-            Assert.Equal($"QUIT :{message}", joinMessage.ToString());
+            Assert.Equal($"QUIT :{message}", quitMessage.ToString());
         }
 
         [Fact]

@@ -1,41 +1,28 @@
-﻿using System;
+﻿using GravyIrc.Extensions;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace GravyIrc.Messages
 {
     public abstract class IRCMessage
     {
-        private static readonly Dictionary<string, Type> messageMapping;
+        private static readonly Dictionary<string, Type> ServerMessageTypes;
+
         static IRCMessage()
         {
-            messageMapping = new Dictionary<string, Type>
-            {
-                { "PING", typeof(PingMessage) },
-                { "PRIVMSG", typeof(PrivMsgMessage) },
-                { "NOTICE", typeof(NoticeMessage) },
-                { "NICK", typeof(NickMessage) },
-                { "JOIN", typeof(JoinMessage) },
-                { "PART", typeof(PartMessage) },
-                { "QUIT", typeof(QuitMessage) },
-                { "KICK", typeof(KickMessage) },
-                { "001", typeof(RplWelcomeMessage) },
-                { "002", typeof(RplYourHostMessage) },
-                { "003", typeof(RplCreatedMessage) },
-                { "004", typeof(RplMyInfoMessage) },
-                { "005", typeof(RplISupportMessage) },
-                { "353", typeof(RplNamReplyMessage) },
-            };
+            var interfaceType = typeof(IServerMessage);
+            ServerMessageTypes = typeof(IRCMessage).Assembly
+                .GetTypes()
+                .Where(t => interfaceType.IsAssignableFrom(t))
+                .Where(t => t.HasAction())
+                .ToDictionary(t => t.GetAction(), t => t);
         }
 
-        // Not using reflection yet because of .NET Standard
-        // Will be updated when .NET Standard 2.0 gets released
         public static IServerMessage Create(ParsedIRCMessage parsedMessage)
         {
-            var messageType = messageMapping.ContainsKey(parsedMessage.Command)
-                ? messageMapping[parsedMessage.Command]
+            var messageType = ServerMessageTypes.ContainsKey(parsedMessage.Command)
+                ? ServerMessageTypes[parsedMessage.Command]
                 : null;
 
             return messageType != null
