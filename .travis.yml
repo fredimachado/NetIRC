@@ -12,18 +12,8 @@ deploy:
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
   local_dir: docfx_project/_site
-#  on:
-#    branch: master
-#jobs:
-#  include:
-#    - stage: "Build"
-#    - script:
-#      - dotnet restore
-#      - dotnet build
-#    - stage: "Test"
-#    - script:
-#      - dotnet restore
-#      - dotnet test tests/GravyIrc.Tests/GravyIrc.Tests.csproj
-#    - stage: "Docs"
-#    - script:
-#      - nuget install docfx.console
+  on:
+    branch: 
+      - master
+      - develop
+      - feature/docfx
