@@ -6,9 +6,6 @@ jobs:
     - stage: "Build"
       install: dotnet restore
       script: dotnet build
-    - stage: "Run Tests"
-      install: dotnet restore
-      script: dotnet test tests/GravyIrc.Tests/GravyIrc.Tests.csproj
     - stage: "Generate Documentation"
       install:
         - dotnet restore
@@ -26,3 +23,6 @@ jobs:
           - master
             - develop
             - feature/docfx
+    - stage: "Run Tests"
+      install: dotnet restore
+      script: dotnet test tests/GravyIrc.Tests/GravyIrc.Tests.csproj
