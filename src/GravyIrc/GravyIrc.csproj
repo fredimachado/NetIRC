@@ -5,7 +5,7 @@
     <Copyright>Copyright Fredi Machado</Copyright>
     <VersionPrefix>0.1.1</VersionPrefix>
     <Authors>Fredi Machado</Authors>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>NetIRC</AssemblyName>
     <PackageId>NetIRC</PackageId>
     <PackageTags>irc</PackageTags>

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\NetIRC\GravyIrc.csproj" />
+    <ProjectReference Include="..\..\src\GravyIrc\GravyIrc.csproj" />
   </ItemGroup>
 
   <ItemGroup>
