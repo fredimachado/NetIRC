@@ -6,7 +6,7 @@ script:
   - nuget install docfx.console
   - ls
   - ls /home/travis/build/halomademeapc/GravyIrc
-  - mono docfx.console/tools/docfx.exe build docfx_project/docfx.json
+  - mono ./packages/docfx.console/tools/docfx.exe build docfx_project/docfx.json
 deploy:
   provider: pages
   skip_cleanup: true
