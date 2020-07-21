@@ -1,13 +1,13 @@
 ﻿namespace GravyIrc
 {
-    public class IRCPrefix
+    public class IrcPrefix
     {
         public string Raw { get; }
         public string From { get; }
         public string User { get; }
         public string Host { get; }
 
-        public IRCPrefix(string prefixData)
+        public IrcPrefix(string prefixData)
         {
             Raw = prefixData;
             From = prefixData;

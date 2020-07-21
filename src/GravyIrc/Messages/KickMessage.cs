@@ -3,13 +3,13 @@
 namespace GravyIrc.Messages
 {
     [ServerMessage("KICK")]
-    public class KickMessage : IRCMessage, IServerMessage
+    public class KickMessage : IrcMessage, IServerMessage
     {
         public string Channel { get; }
         public string Nick { get; set; }
         public string KickedBy { get; set; }
 
-        public KickMessage(ParsedIRCMessage parsedMessage)
+        public KickMessage(ParsedIrcMessage parsedMessage)
         {
             Channel = parsedMessage.Parameters[0];
             Nick = parsedMessage.Parameters[1];
@@ -23,7 +23,7 @@ namespace GravyIrc.Messages
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnKick(new IRCMessageEventArgs<KickMessage>(this));
+            eventHub.OnKick(new IrcMessageEventArgs<KickMessage>(this));
         }
     }
 }

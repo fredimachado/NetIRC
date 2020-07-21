@@ -3,18 +3,18 @@
 namespace GravyIrc.Messages
 {
     [ServerMessage("004")]
-    public class RplMyInfoMessage : IRCMessage, IServerMessage
+    public class RplMyInfoMessage : IrcMessage, IServerMessage
     {
         public string[] Parameters { get; }
 
-        public RplMyInfoMessage(ParsedIRCMessage parsedMessage)
+        public RplMyInfoMessage(ParsedIrcMessage parsedMessage)
         {
             Parameters = parsedMessage.Parameters;
         }
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnRplMyInfo(new IRCMessageEventArgs<RplMyInfoMessage>(this));
+            eventHub.OnRplMyInfo(new IrcMessageEventArgs<RplMyInfoMessage>(this));
         }
     }
 }

@@ -26,8 +26,8 @@ namespace GravyIrc
         /// Indicates that we received a PING message from the server
         /// The client automatically sends a PONG message response
         /// </summary>
-        public event IRCMessageEventHandler<PingMessage> Ping;
-        internal void OnPing(IRCMessageEventArgs<PingMessage> e)
+        public event IrcMessageEventHandler<PingMessage> Ping;
+        internal void OnPing(IrcMessageEventArgs<PingMessage> e)
         {
             Ping?.Invoke(client, e);
         }
@@ -35,8 +35,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that we received a PRIVMSG message and provides you a PrivMsgMessage object
         /// </summary>
-        public event IRCMessageEventHandler<PrivMsgMessage> PrivMsg;
-        internal void OnPrivMsg(IRCMessageEventArgs<PrivMsgMessage> e)
+        public event IrcMessageEventHandler<PrivMsgMessage> PrivMsg;
+        internal void OnPrivMsg(IrcMessageEventArgs<PrivMsgMessage> e)
         {
             PrivMsg?.Invoke(client, e);
         }
@@ -44,8 +44,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that we received a NOTICE message and provides you a NoticeMessage object
         /// </summary>
-        public event IRCMessageEventHandler<NoticeMessage> Notice;
-        internal void OnNotice(IRCMessageEventArgs<NoticeMessage> e)
+        public event IrcMessageEventHandler<NoticeMessage> Notice;
+        internal void OnNotice(IrcMessageEventArgs<NoticeMessage> e)
         {
             Notice?.Invoke(client, e);
         }
@@ -53,8 +53,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that some peer changed his Nickname
         /// </summary>
-        public event IRCMessageEventHandler<NickMessage> Nick;
-        internal void OnNick(IRCMessageEventArgs<NickMessage> e)
+        public event IrcMessageEventHandler<NickMessage> Nick;
+        internal void OnNick(IrcMessageEventArgs<NickMessage> e)
         {
             Nick?.Invoke(client, e);
         }
@@ -62,8 +62,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that we received a 001 (RPL_WELCOME) numeric reply message
         /// </summary>
-        public event IRCMessageEventHandler<RplWelcomeMessage> RplWelcome;
-        internal void OnRplWelcome(IRCMessageEventArgs<RplWelcomeMessage> e)
+        public event IrcMessageEventHandler<RplWelcomeMessage> RplWelcome;
+        internal void OnRplWelcome(IrcMessageEventArgs<RplWelcomeMessage> e)
         {
             RplWelcome?.Invoke(client, e);
             OnRegistrationCompleted();
@@ -72,8 +72,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that we received a 002 (RPL_YOURHOST) numeric reply message
         /// </summary>
-        public event IRCMessageEventHandler<RplYourHostMessage> RplYourHost;
-        internal void OnRplYourHost(IRCMessageEventArgs<RplYourHostMessage> e)
+        public event IrcMessageEventHandler<RplYourHostMessage> RplYourHost;
+        internal void OnRplYourHost(IrcMessageEventArgs<RplYourHostMessage> e)
         {
             RplYourHost?.Invoke(client, e);
         }
@@ -81,8 +81,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that we received a 003 (RPL_CREATED) numeric reply message
         /// </summary>
-        public event IRCMessageEventHandler<RplCreatedMessage> RplCreated;
-        internal void OnRplCreated(IRCMessageEventArgs<RplCreatedMessage> e)
+        public event IrcMessageEventHandler<RplCreatedMessage> RplCreated;
+        internal void OnRplCreated(IrcMessageEventArgs<RplCreatedMessage> e)
         {
             RplCreated?.Invoke(client, e);
         }
@@ -90,8 +90,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that we received a 004 (RPL_MYINFO) numeric reply message
         /// </summary>
-        public event IRCMessageEventHandler<RplMyInfoMessage> RplMyInfo;
-        internal void OnRplMyInfo(IRCMessageEventArgs<RplMyInfoMessage> e)
+        public event IrcMessageEventHandler<RplMyInfoMessage> RplMyInfo;
+        internal void OnRplMyInfo(IrcMessageEventArgs<RplMyInfoMessage> e)
         {
             RplMyInfo?.Invoke(client, e);
         }
@@ -99,8 +99,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that we received a 005 (RPL_ISUPPORT) numeric reply message
         /// </summary>
-        public event IRCMessageEventHandler<RplISupportMessage> RplISupport;
-        internal void OnRplISupport(IRCMessageEventArgs<RplISupportMessage> e)
+        public event IrcMessageEventHandler<RplISupportMessage> RplISupport;
+        internal void OnRplISupport(IrcMessageEventArgs<RplISupportMessage> e)
         {
             RplISupport?.Invoke(client, e);
         }
@@ -108,8 +108,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that some peer has joined a channel
         /// </summary>
-        public event IRCMessageEventHandler<JoinMessage> Join;
-        internal void OnJoin(IRCMessageEventArgs<JoinMessage> e)
+        public event IrcMessageEventHandler<JoinMessage> Join;
+        internal void OnJoin(IrcMessageEventArgs<JoinMessage> e)
         {
             Join?.Invoke(client, e);
         }
@@ -117,8 +117,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that some peer has left a channel
         /// </summary>
-        public event IRCMessageEventHandler<PartMessage> Part;
-        internal void OnPart(IRCMessageEventArgs<PartMessage> e)
+        public event IrcMessageEventHandler<PartMessage> Part;
+        internal void OnPart(IrcMessageEventArgs<PartMessage> e)
         {
             Part?.Invoke(client, e);
         }
@@ -127,8 +127,8 @@ namespace GravyIrc
         /// Indicates we received a 353 (RPL_NAMREPLY) numeric reply
         /// which contains the list of all users in a channel
         /// </summary>
-        public event IRCMessageEventHandler<RplNamReplyMessage> RplNamReply;
-        internal void OnRplNamReply(IRCMessageEventArgs<RplNamReplyMessage> e)
+        public event IrcMessageEventHandler<RplNamReplyMessage> RplNamReply;
+        internal void OnRplNamReply(IrcMessageEventArgs<RplNamReplyMessage> e)
         {
             RplNamReply?.Invoke(client, e);
         }
@@ -136,8 +136,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that some peer has quit the server
         /// </summary>
-        public event IRCMessageEventHandler<QuitMessage> Quit;
-        internal void OnQuit(IRCMessageEventArgs<QuitMessage> e)
+        public event IrcMessageEventHandler<QuitMessage> Quit;
+        internal void OnQuit(IrcMessageEventArgs<QuitMessage> e)
         {
             Quit?.Invoke(client, e);
         }
@@ -145,8 +145,8 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that the bot has been kicked from a channel
         /// </summary>
-        public event IRCMessageEventHandler<KickMessage> Kick;
-        internal void OnKick(IRCMessageEventArgs<KickMessage> e)
+        public event IrcMessageEventHandler<KickMessage> Kick;
+        internal void OnKick(IrcMessageEventArgs<KickMessage> e)
         {
             Kick?.Invoke(client, e);
         }

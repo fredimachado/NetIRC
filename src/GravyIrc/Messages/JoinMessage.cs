@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace GravyIrc.Messages
 {
     [ServerMessage("JOIN")]
-    public class JoinMessage : IRCMessage, IServerMessage, IClientMessage
+    public class JoinMessage : IrcMessage, IServerMessage, IClientMessage
     {
         private string channels;
         private string keys;
@@ -13,7 +13,7 @@ namespace GravyIrc.Messages
         public string Nick { get; }
         public string Channel { get; }
 
-        public JoinMessage(ParsedIRCMessage parsedMessage)
+        public JoinMessage(ParsedIrcMessage parsedMessage)
         {
             Nick = parsedMessage.Prefix.From;
             Channel = parsedMessage.Parameters[0];
@@ -29,7 +29,7 @@ namespace GravyIrc.Messages
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnJoin(new IRCMessageEventArgs<JoinMessage>(this));
+            eventHub.OnJoin(new IrcMessageEventArgs<JoinMessage>(this));
         }
     }
 }

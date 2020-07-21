@@ -5,14 +5,14 @@ using System.Linq;
 namespace GravyIrc.Messages
 {
     [ServerMessage("353")]
-    public class RplNamReplyMessage : IRCMessage, IServerMessage
+    public class RplNamReplyMessage : IrcMessage, IServerMessage
     {
         public string Channel { get; }
         public Dictionary<string, string> Nicks { get; }
 
         private static char[] userStatuses = new[] { '@', '+' };
 
-        public RplNamReplyMessage(ParsedIRCMessage parsedMessage)
+        public RplNamReplyMessage(ParsedIrcMessage parsedMessage)
         {
             Nicks = new Dictionary<string, string>();
 
@@ -34,7 +34,7 @@ namespace GravyIrc.Messages
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnRplNamReply(new IRCMessageEventArgs<RplNamReplyMessage>(this));
+            eventHub.OnRplNamReply(new IrcMessageEventArgs<RplNamReplyMessage>(this));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace GravyIrc
 {
-    public enum IRCNumericReply
+    public enum IrcNumericReply
     {
         UNKNOWN,
         RPL_WELCOME = 001,

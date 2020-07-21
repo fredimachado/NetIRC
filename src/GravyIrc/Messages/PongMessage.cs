@@ -2,7 +2,7 @@
 
 namespace GravyIrc.Messages
 {
-    public class PongMessage : IRCMessage, IClientMessage
+    public class PongMessage : IrcMessage, IClientMessage
     {
         public string Target { get; }
 

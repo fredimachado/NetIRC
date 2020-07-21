@@ -2,7 +2,7 @@
 
 namespace GravyIrc.Messages
 {
-    public class ModeMessage : IRCMessage, IClientMessage
+    public class ModeMessage : IrcMessage, IClientMessage
     {
         private readonly string mode;
         private readonly string nick;

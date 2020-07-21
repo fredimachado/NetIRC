@@ -2,7 +2,7 @@
 
 namespace GravyIrc.Messages
 {
-    public class UserMessage : IRCMessage, IClientMessage
+    public class UserMessage : IrcMessage, IClientMessage
     {
         public string UserName { get; }
         public string RealName { get; }

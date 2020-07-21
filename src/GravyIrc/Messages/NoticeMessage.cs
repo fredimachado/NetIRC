@@ -4,13 +4,13 @@ using System.Collections.Generic;
 namespace GravyIrc.Messages
 {
     [ServerMessage("NOTICE")]
-    public class NoticeMessage : IRCMessage, IServerMessage, IClientMessage
+    public class NoticeMessage : IrcMessage, IServerMessage, IClientMessage
     {
         public string From { get; }
         public string Target { get; }
         public string Message { get; }
 
-        public NoticeMessage(ParsedIRCMessage parsedMessage)
+        public NoticeMessage(ParsedIrcMessage parsedMessage)
         {
             From = parsedMessage.Prefix.From;
             Target = parsedMessage.Parameters[0];
@@ -25,7 +25,7 @@ namespace GravyIrc.Messages
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnNotice(new IRCMessageEventArgs<NoticeMessage>(this));
+            eventHub.OnNotice(new IrcMessageEventArgs<NoticeMessage>(this));
         }
 
         public IEnumerable<string> Tokens => new[] { "NOTICE", Target, Message };

@@ -18,7 +18,7 @@ namespace GravyIrc
         /// <summary>
         /// Represents the user used to connect to the server
         /// </summary>
-        public User User { get;}
+        public User User { get; }
 
         /// <summary>
         /// An observable collection representing the channels we joined
@@ -39,13 +39,13 @@ namespace GravyIrc
         /// <summary>
         /// Indicates that we received raw data from the server and gives you access to the data
         /// </summary>
-        public event IRCRawDataHandler OnRawDataReceived;
+        public event IrcRawDataHandler OnRawDataReceived;
 
         /// <summary>
         /// Indicates that we have parsed the message and gives you a strong typed representation of it
         /// You get the prefix, command, parameters and some other goodies
         /// </summary>
-        public event ParsedIRCMessageHandler OnIRCMessageParsed;
+        public event ParsedIrcMessageHandler OnIrcMessageParsed;
 
         /// <summary>
         /// Provides you a way to handle various IRC events like OnPing and OnPrivMsg
@@ -90,20 +90,20 @@ namespace GravyIrc
             EventHub.Nick += EventHub_Nick;
         }
 
-        private void EventHub_Nick(Client client, IRCMessageEventArgs<NickMessage> e)
+        private void EventHub_Nick(Client client, IrcMessageEventArgs<NickMessage> e)
         {
-            var user = Peers.GetUser(e.IRCMessage.OldNick);
-            user.Nick = e.IRCMessage.NewNick;
+            var user = Peers.GetUser(e.IrcMessage.OldNick);
+            user.Nick = e.IrcMessage.NewNick;
         }
 
-        private void EventHub_PrivMsg(Client client, IRCMessageEventArgs<PrivMsgMessage> e)
+        private void EventHub_PrivMsg(Client client, IrcMessageEventArgs<PrivMsgMessage> e)
         {
-            var user = Peers.GetUser(e.IRCMessage.From);
-            var message = new ChatMessage(user, e.IRCMessage.Message);
+            var user = Peers.GetUser(e.IrcMessage.From);
+            var message = new ChatMessage(user, e.IrcMessage.Message);
 
-            if (e.IRCMessage.IsChannelMessage)
+            if (e.IrcMessage.IsChannelMessage)
             {
-                var channel = Channels.GetChannel(e.IRCMessage.To);
+                var channel = Channels.GetChannel(e.IrcMessage.To);
                 channel.Messages.Add(message);
             }
             else
@@ -113,10 +113,10 @@ namespace GravyIrc
             }
         }
 
-        private void EventHub_RplNamReply(Client client, IRCMessageEventArgs<RplNamReplyMessage> e)
+        private void EventHub_RplNamReply(Client client, IrcMessageEventArgs<RplNamReplyMessage> e)
         {
-            var channel = Channels.GetChannel(e.IRCMessage.Channel);
-            foreach (var nick in e.IRCMessage.Nicks)
+            var channel = Channels.GetChannel(e.IrcMessage.Channel);
+            foreach (var nick in e.IrcMessage.Nicks)
             {
                 var user = Peers.GetUser(nick.Key);
                 if (!channel.Users.Any(u => u.User.Nick == nick.Key))
@@ -126,49 +126,49 @@ namespace GravyIrc
             }
         }
 
-        private void EventHub_Quit(Client client, IRCMessageEventArgs<QuitMessage> e)
+        private void EventHub_Quit(Client client, IrcMessageEventArgs<QuitMessage> e)
         {
             foreach (var channel in Channels)
             {
-                var user = channel.Users.FirstOrDefault(u => u.Nick == e.IRCMessage.Nick);
-                if (user != null)
-                {
-                    channel.Users.Remove(user);
-                }
+                channel.RemoveUser(e.IrcMessage.Nick);
             }
         }
 
-        private void EventHub_Kick(Client client, IRCMessageEventArgs<KickMessage> e)
+        private void EventHub_Kick(Client client, IrcMessageEventArgs<KickMessage> e)
         {
-            if (e.IRCMessage.Nick == User.Nick)
+            var channel = Channels.FirstOrDefault(c => c.Name == e.IrcMessage.Channel);
+            if (channel != null)
             {
-                var channel = Channels.FirstOrDefault(c => c.Name == e.IRCMessage.Channel);
-                if (channel != null)
+                if (e.IrcMessage.Nick == User.Nick)
                 {
                     Channels.Remove(channel);
                 }
+                else
+                {
+                    channel.RemoveUser(e.IrcMessage.Nick);
+                }
             }
         }
 
-        private void EventHub_Part(Client client, IRCMessageEventArgs<PartMessage> e)
+        private void EventHub_Part(Client client, IrcMessageEventArgs<PartMessage> e)
         {
-            var channel = Channels.GetChannel(e.IRCMessage.Channel);
-            channel.RemoveUser(e.IRCMessage.Nick);
+            var channel = Channels.GetChannel(e.IrcMessage.Channel);
+            channel.RemoveUser(e.IrcMessage.Nick);
         }
 
-        private void EventHub_Join(Client client, IRCMessageEventArgs<JoinMessage> e)
+        private void EventHub_Join(Client client, IrcMessageEventArgs<JoinMessage> e)
         {
-            var channel = Channels.GetChannel(e.IRCMessage.Channel);
-            if (e.IRCMessage.Nick != User.Nick)
+            var channel = Channels.GetChannel(e.IrcMessage.Channel);
+            if (e.IrcMessage.Nick != User.Nick)
             {
-                var user = Peers.GetUser(e.IRCMessage.Nick);
+                var user = Peers.GetUser(e.IrcMessage.Nick);
                 channel.AddUser(user, string.Empty);
             }
         }
 
-        private async void EventHub_Ping(object sender, IRCMessageEventArgs<PingMessage> e)
+        private async void EventHub_Ping(object sender, IrcMessageEventArgs<PingMessage> e)
         {
-            await SendAsync(new PongMessage(e.IRCMessage.Target));
+            await SendAsync(new PongMessage(e.IrcMessage.Target));
         }
 
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
@@ -182,11 +182,11 @@ namespace GravyIrc
 
             OnRawDataReceived?.Invoke(this, e.Data);
 
-            var parsedIRCMessage = new ParsedIRCMessage(rawData);
+            var parsedIRCMessage = new ParsedIrcMessage(rawData);
 
-            OnIRCMessageParsed?.Invoke(this, parsedIRCMessage);
+            OnIrcMessageParsed?.Invoke(this, parsedIRCMessage);
 
-            var serverMessage = IRCMessage.Create(parsedIRCMessage);
+            var serverMessage = IrcMessage.Create(parsedIRCMessage);
 
             serverMessage?.TriggerEvent(EventHub);
         }

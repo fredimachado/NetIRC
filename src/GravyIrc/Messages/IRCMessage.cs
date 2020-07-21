@@ -5,21 +5,21 @@ using System.Linq;
 
 namespace GravyIrc.Messages
 {
-    public abstract class IRCMessage
+    public abstract class IrcMessage
     {
         private static readonly Dictionary<string, Type> ServerMessageTypes;
 
-        static IRCMessage()
+        static IrcMessage()
         {
             var interfaceType = typeof(IServerMessage);
-            ServerMessageTypes = typeof(IRCMessage).Assembly
+            ServerMessageTypes = typeof(IrcMessage).Assembly
                 .GetTypes()
                 .Where(t => interfaceType.IsAssignableFrom(t))
                 .Where(t => t.HasCommand())
                 .ToDictionary(t => t.GetCommand(), t => t);
         }
 
-        public static IServerMessage Create(ParsedIRCMessage parsedMessage)
+        public static IServerMessage Create(ParsedIrcMessage parsedMessage)
         {
             var messageType = ServerMessageTypes.ContainsKey(parsedMessage.Command)
                 ? ServerMessageTypes[parsedMessage.Command]

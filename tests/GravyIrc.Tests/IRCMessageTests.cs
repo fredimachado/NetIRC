@@ -13,8 +13,8 @@ namespace GravyIrc.Tests
         {
             var command = "PING";
             var parameter = "tolsun.oulu.fi";
-            var parsedIRCMessage = new ParsedIRCMessage($"{command} {parameter}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var parsedIRCMessage = new ParsedIrcMessage($"{command} {parameter}");
+            var ircMessage = IrcMessage.Create(parsedIRCMessage);
 
             Assert.IsType<PingMessage>(ircMessage);
         }
@@ -34,8 +34,8 @@ namespace GravyIrc.Tests
             var command = "PRIVMSG";
             var target = "WiZ";
             var text = "Are you receiving this message ?";
-            var parsedIRCMessage = new ParsedIRCMessage($":{prefix} {command} {target} :{text}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var parsedIRCMessage = new ParsedIrcMessage($":{prefix} {command} {target} :{text}");
+            var ircMessage = IrcMessage.Create(parsedIRCMessage);
 
             var privMsgMessage = Assert.IsType<PrivMsgMessage>(ircMessage);
 
@@ -61,8 +61,8 @@ namespace GravyIrc.Tests
             var command = "NOTICE";
             var target = "WiZ";
             var text = "Are you receiving this message ?";
-            var parsedIRCMessage = new ParsedIRCMessage($":{from} {command} {target} :{text}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var parsedIRCMessage = new ParsedIrcMessage($":{from} {command} {target} :{text}");
+            var ircMessage = IrcMessage.Create(parsedIRCMessage);
 
             var privMsgMessage = Assert.IsType<NoticeMessage>(ircMessage);
 
@@ -86,8 +86,8 @@ namespace GravyIrc.Tests
         {
             var oldNick = "WiZ";
             var newNick = "Kilroy";
-            var parsedIRCMessage = new ParsedIRCMessage($":{oldNick} NICK {newNick}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var parsedIRCMessage = new ParsedIrcMessage($":{oldNick} NICK {newNick}");
+            var ircMessage = IrcMessage.Create(parsedIRCMessage);
 
             var nickMessage = Assert.IsType<NickMessage>(ircMessage);
 
@@ -119,8 +119,8 @@ namespace GravyIrc.Tests
         {
             var nick = "WiZ";
             var channel = "#Twilight_zone";
-            var parsedIRCMessage = new ParsedIRCMessage($":{nick} JOIN {channel}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var parsedIRCMessage = new ParsedIrcMessage($":{nick} JOIN {channel}");
+            var ircMessage = IrcMessage.Create(parsedIRCMessage);
 
             var joinMessage = Assert.IsType<JoinMessage>(ircMessage);
 
@@ -152,8 +152,8 @@ namespace GravyIrc.Tests
         {
             var nick = "WiZ";
             var channel = "#NetIRC";
-            var parsedIRCMessage = new ParsedIRCMessage($":{nick}!~user@x.y.z PART {channel}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var parsedIRCMessage = new ParsedIrcMessage($":{nick}!~user@x.y.z PART {channel}");
+            var ircMessage = IrcMessage.Create(parsedIRCMessage);
 
             var partMessage = Assert.IsType<PartMessage>(ircMessage);
 
@@ -176,8 +176,8 @@ namespace GravyIrc.Tests
             var channel = "#NetIRC";
             var nick1 = "NetIRCConsoleClient";
             var nick2 = "Fredi_";
-            var parsedIRCMessage = new ParsedIRCMessage($":irc.server.net 353 NetIRCConsoleClient = {channel} :{nick1} @{nick2}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var parsedIRCMessage = new ParsedIrcMessage($":irc.server.net 353 NetIRCConsoleClient = {channel} :{nick1} @{nick2}");
+            var ircMessage = IrcMessage.Create(parsedIRCMessage);
 
             var rplNamReplyMessage = Assert.IsType<RplNamReplyMessage>(ircMessage);
 
@@ -193,8 +193,8 @@ namespace GravyIrc.Tests
         {
             var nick = "WiZ";
             var message = "Out for lunch";
-            var parsedIRCMessage = new ParsedIRCMessage($":{nick}!~user@x.y.z QUIT :{message}");
-            var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var parsedIRCMessage = new ParsedIrcMessage($":{nick}!~user@x.y.z QUIT :{message}");
+            var ircMessage = IrcMessage.Create(parsedIRCMessage);
 
             var quitMessage = Assert.IsType<QuitMessage>(ircMessage);
 
@@ -214,7 +214,7 @@ namespace GravyIrc.Tests
         [Fact]
         public void NotClientMessageShouldReturnEmptyToString()
         {
-            var testMessage = new TestMessage() as IRCMessage;
+            var testMessage = new TestMessage() as IrcMessage;
 
             Assert.Equal("TEST", testMessage.ToString());
         }
@@ -228,7 +228,7 @@ namespace GravyIrc.Tests
         }
     }
 
-    public class TestMessage : IRCMessage
+    public class TestMessage : IrcMessage
     {
         public override string ToString()
         {
@@ -236,7 +236,7 @@ namespace GravyIrc.Tests
         }
     }
 
-    public class TestClientMessage : IRCMessage, IClientMessage
+    public class TestClientMessage : IrcMessage, IClientMessage
     {
         IEnumerable<string> IClientMessage.Tokens => Enumerable.Empty<string>();
     }

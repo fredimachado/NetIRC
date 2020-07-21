@@ -3,12 +3,12 @@
 namespace GravyIrc.Messages
 {
     [ServerMessage("005")]
-    public class RplISupportMessage : IRCMessage, IServerMessage
+    public class RplISupportMessage : IrcMessage, IServerMessage
     {
         public string[] Parameters { get; }
         public string Text { get; }
 
-        public RplISupportMessage(ParsedIRCMessage parsedMessage)
+        public RplISupportMessage(ParsedIrcMessage parsedMessage)
         {
             Parameters = parsedMessage.Parameters;
             Text = parsedMessage.Trailing;
@@ -16,7 +16,7 @@ namespace GravyIrc.Messages
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnRplISupport(new IRCMessageEventArgs<RplISupportMessage>(this));
+            eventHub.OnRplISupport(new IrcMessageEventArgs<RplISupportMessage>(this));
         }
     }
 }

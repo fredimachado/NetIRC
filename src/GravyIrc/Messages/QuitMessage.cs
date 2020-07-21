@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace GravyIrc.Messages
 {
     [ServerMessage("QUIT")]
-    public class QuitMessage : IRCMessage, IServerMessage, IClientMessage
+    public class QuitMessage : IrcMessage, IServerMessage, IClientMessage
     {
         public string Nick { get; }
         public string Message { get; }
 
-        public QuitMessage(ParsedIRCMessage parsedMessage)
+        public QuitMessage(ParsedIrcMessage parsedMessage)
         {
             Nick = parsedMessage.Prefix.From;
             Message = parsedMessage.Trailing;
@@ -24,7 +24,7 @@ namespace GravyIrc.Messages
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnQuit(new IRCMessageEventArgs<QuitMessage>(this));
+            eventHub.OnQuit(new IrcMessageEventArgs<QuitMessage>(this));
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace GravyIrc.Messages
 {
     [ServerMessage("PART")]
-    public class PartMessage : IRCMessage, IServerMessage, IClientMessage
+    public class PartMessage : IrcMessage, IServerMessage, IClientMessage
     {
         private string channels;
 
@@ -12,7 +12,7 @@ namespace GravyIrc.Messages
         public string Nick { get; }
         public string Channel { get; }
 
-        public PartMessage(ParsedIRCMessage parsedMessage)
+        public PartMessage(ParsedIrcMessage parsedMessage)
         {
             Nick = parsedMessage.Prefix.From;
             Channel = parsedMessage.Parameters[0];
@@ -27,7 +27,7 @@ namespace GravyIrc.Messages
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnPart(new IRCMessageEventArgs<PartMessage>(this));
+            eventHub.OnPart(new IrcMessageEventArgs<PartMessage>(this));
         }
     }
 }

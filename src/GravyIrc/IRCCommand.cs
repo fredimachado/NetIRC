@@ -1,6 +1,6 @@
 ﻿namespace GravyIrc
 {
-    public enum IRCCommand
+    public enum IrcCommand
     {
         UNKNOWN,
         NICK,

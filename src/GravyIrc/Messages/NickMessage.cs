@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace GravyIrc.Messages
 {
     [ServerMessage("NICK")]
-    public class NickMessage : IRCMessage, IServerMessage, IClientMessage
+    public class NickMessage : IrcMessage, IServerMessage, IClientMessage
     {
         public string OldNick { get; }
         public string NewNick { get; }
 
-        public NickMessage(ParsedIRCMessage parsedMessage)
+        public NickMessage(ParsedIrcMessage parsedMessage)
         {
             OldNick = parsedMessage.Prefix.From;
             NewNick = parsedMessage.Parameters[0];
@@ -24,7 +24,7 @@ namespace GravyIrc.Messages
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnNick(new IRCMessageEventArgs<NickMessage>(this));
+            eventHub.OnNick(new IrcMessageEventArgs<NickMessage>(this));
         }
     }
 }

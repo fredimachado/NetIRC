@@ -3,18 +3,18 @@ using System;
 
 namespace GravyIrc
 {
-    public delegate void IRCRawDataHandler(Client client, string rawData);
-    public delegate void ParsedIRCMessageHandler(Client client, ParsedIRCMessage ircMessage);
+    public delegate void IrcRawDataHandler(Client client, string rawData);
+    public delegate void ParsedIrcMessageHandler(Client client, ParsedIrcMessage ircMessage);
 
-    public delegate void IRCMessageEventHandler<T>(Client client, IRCMessageEventArgs<T> e) where T : IRCMessage;
+    public delegate void IrcMessageEventHandler<T>(Client client, IrcMessageEventArgs<T> e) where T : IrcMessage;
 
-    public class IRCMessageEventArgs<T> : EventArgs where T : IRCMessage
+    public class IrcMessageEventArgs<T> : EventArgs where T : IrcMessage
     {
-        public T IRCMessage { get; }
+        public T IrcMessage { get; }
 
-        public IRCMessageEventArgs(T ircMessage)
+        public IrcMessageEventArgs(T ircMessage)
         {
-            IRCMessage = ircMessage;
+            IrcMessage = ircMessage;
         }
     }
 }

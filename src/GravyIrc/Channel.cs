@@ -28,7 +28,10 @@ namespace GravyIrc
         internal void RemoveUser(string nick)
         {
             var user = Users.FirstOrDefault(u => u.Nick == nick);
-            Users.Remove(user);
+            if (user != null)
+                Users.Remove(user);
         }
+
+        public ChannelUser GetUser(string nick) => Users.FirstOrDefault(u => u.Nick.ToLower() == nick.ToLower());
     }
 }

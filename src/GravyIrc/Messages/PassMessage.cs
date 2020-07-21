@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GravyIrc.Messages
 {
-    public class PassMessage : IRCMessage, IClientMessage
+    public class PassMessage : IrcMessage, IClientMessage
     {
         private readonly string password;
 

@@ -84,13 +84,13 @@ namespace GravyIrc.Tests
         public void TriggersOnPingEvent()
         {
             var raw = "PING :xyz.com";
-            IRCMessageEventArgs<PingMessage> args = null;
+            IrcMessageEventArgs<PingMessage> args = null;
 
             client.EventHub.Ping += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal("xyz.com", args.IRCMessage.Target);
+            Assert.Equal("xyz.com", args.IrcMessage.Target);
         }
 
         [Fact]
@@ -127,9 +127,9 @@ namespace GravyIrc.Tests
         public void TriggersIRCMessageReceived()
         {
             var raw = ":irc.rizon.io 439 * :Please wait while we process your connection.";
-            ParsedIRCMessage ircMessage = null;
+            ParsedIrcMessage ircMessage = null;
 
-            client.OnIRCMessageParsed += (c, m) => ircMessage = m;
+            client.OnIrcMessageParsed += (c, m) => ircMessage = m;
 
             RaiseDataReceived(mockConnection, client, raw);
 
@@ -153,16 +153,16 @@ namespace GravyIrc.Tests
             var to = "Wiz";
             var message = "Hello are you receiving this message ?";
             var raw = $":{from} PRIVMSG {to} :{message}";
-            IRCMessageEventArgs<PrivMsgMessage> args = null;
+            IrcMessageEventArgs<PrivMsgMessage> args = null;
 
             client.EventHub.PrivMsg += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(from, args.IRCMessage.From);
-            Assert.Equal(from, args.IRCMessage.Prefix.From);
-            Assert.Equal(to, args.IRCMessage.To);
-            Assert.Equal(message, args.IRCMessage.Message);
+            Assert.Equal(from, args.IrcMessage.From);
+            Assert.Equal(from, args.IrcMessage.Prefix.From);
+            Assert.Equal(to, args.IrcMessage.To);
+            Assert.Equal(message, args.IrcMessage.Message);
         }
 
         [Fact]
@@ -172,16 +172,16 @@ namespace GravyIrc.Tests
             var to = "Wiz";
             var message = "Hello";
             var raw = $":{from} PRIVMSG {to} {message}";
-            IRCMessageEventArgs<PrivMsgMessage> args = null;
+            IrcMessageEventArgs<PrivMsgMessage> args = null;
 
             client.EventHub.PrivMsg += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(from, args.IRCMessage.From);
-            Assert.Equal(from, args.IRCMessage.Prefix.From);
-            Assert.Equal(to, args.IRCMessage.To);
-            Assert.Equal(message, args.IRCMessage.Message);
+            Assert.Equal(from, args.IrcMessage.From);
+            Assert.Equal(from, args.IrcMessage.Prefix.From);
+            Assert.Equal(to, args.IrcMessage.To);
+            Assert.Equal(message, args.IrcMessage.Message);
         }
 
         [Fact]
@@ -255,15 +255,15 @@ namespace GravyIrc.Tests
             var to = "WiZ";
             var message = "Hello world";
             var raw = $":{from} NOTICE {to} :{message}";
-            IRCMessageEventArgs<NoticeMessage> args = null;
+            IrcMessageEventArgs<NoticeMessage> args = null;
 
             client.EventHub.Notice += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(from, args.IRCMessage.From);
-            Assert.Equal(to, args.IRCMessage.Target);
-            Assert.Equal(message, args.IRCMessage.Message);
+            Assert.Equal(from, args.IrcMessage.From);
+            Assert.Equal(to, args.IrcMessage.Target);
+            Assert.Equal(message, args.IrcMessage.Message);
         }
 
         [Fact]
@@ -273,15 +273,15 @@ namespace GravyIrc.Tests
             var to = "WiZ";
             var message = "Hello";
             var raw = $":{from} NOTICE {to} {message}";
-            IRCMessageEventArgs<NoticeMessage> args = null;
+            IrcMessageEventArgs<NoticeMessage> args = null;
 
             client.EventHub.Notice += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(from, args.IRCMessage.From);
-            Assert.Equal(to, args.IRCMessage.Target);
-            Assert.Equal(message, args.IRCMessage.Message);
+            Assert.Equal(from, args.IrcMessage.From);
+            Assert.Equal(to, args.IrcMessage.Target);
+            Assert.Equal(message, args.IrcMessage.Message);
         }
 
         [Fact]
@@ -289,13 +289,13 @@ namespace GravyIrc.Tests
         {
             var text = "Welcome to the Internet Relay Chat Network NetIRC";
             var raw = $":irc.server.net 001 NetIRC :{text}";
-            IRCMessageEventArgs<RplWelcomeMessage> args = null;
+            IrcMessageEventArgs<RplWelcomeMessage> args = null;
 
             client.EventHub.RplWelcome += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(text, args.IRCMessage.Text);
+            Assert.Equal(text, args.IrcMessage.Text);
         }
 
         [Fact]
@@ -310,13 +310,13 @@ namespace GravyIrc.Tests
         {
             var text = "Your host is irc.server.net, running version plexus-4(hybrid-8.1.20)";
             var raw = $":irc.server.net 002 NetIRC :{text}";
-            IRCMessageEventArgs<RplYourHostMessage> args = null;
+            IrcMessageEventArgs<RplYourHostMessage> args = null;
 
             client.EventHub.RplYourHost += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(text, args.IRCMessage.Text);
+            Assert.Equal(text, args.IrcMessage.Text);
         }
 
         [Fact]
@@ -331,13 +331,13 @@ namespace GravyIrc.Tests
         {
             var text = "This server was created Nov 20 2016 at 02:34:01";
             var raw = $":irc.server.net 003 NetIRC :{text}";
-            IRCMessageEventArgs<RplCreatedMessage> args = null;
+            IrcMessageEventArgs<RplCreatedMessage> args = null;
 
             client.EventHub.RplCreated += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(text, args.IRCMessage.Text);
+            Assert.Equal(text, args.IrcMessage.Text);
         }
 
         [Fact]
@@ -360,18 +360,18 @@ namespace GravyIrc.Tests
                 "Iabehkloqv"
             };
             var raw = $":irc.server.net 004 {string.Join(" ", parameters)}";
-            IRCMessageEventArgs<RplMyInfoMessage> args = null;
+            IrcMessageEventArgs<RplMyInfoMessage> args = null;
 
             client.EventHub.RplMyInfo += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(parameters[0], args.IRCMessage.Parameters[0]);
-            Assert.Equal(parameters[1], args.IRCMessage.Parameters[1]);
-            Assert.Equal(parameters[2], args.IRCMessage.Parameters[2]);
-            Assert.Equal(parameters[3], args.IRCMessage.Parameters[3]);
-            Assert.Equal(parameters[4], args.IRCMessage.Parameters[4]);
-            Assert.Equal(parameters[5], args.IRCMessage.Parameters[5]);
+            Assert.Equal(parameters[0], args.IrcMessage.Parameters[0]);
+            Assert.Equal(parameters[1], args.IrcMessage.Parameters[1]);
+            Assert.Equal(parameters[2], args.IrcMessage.Parameters[2]);
+            Assert.Equal(parameters[3], args.IrcMessage.Parameters[3]);
+            Assert.Equal(parameters[4], args.IrcMessage.Parameters[4]);
+            Assert.Equal(parameters[5], args.IrcMessage.Parameters[5]);
         }
 
         [Fact]
@@ -395,20 +395,20 @@ namespace GravyIrc.Tests
                 "MAXTARGETS=4"
             };
             var raw = $":irc.server.net 005 {string.Join(" ", parameters)} :{text}";
-            IRCMessageEventArgs<RplISupportMessage> args = null;
+            IrcMessageEventArgs<RplISupportMessage> args = null;
 
             client.EventHub.RplISupport += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(parameters[0], args.IRCMessage.Parameters[0]);
-            Assert.Equal(parameters[1], args.IRCMessage.Parameters[1]);
-            Assert.Equal(parameters[2], args.IRCMessage.Parameters[2]);
-            Assert.Equal(parameters[3], args.IRCMessage.Parameters[3]);
-            Assert.Equal(parameters[4], args.IRCMessage.Parameters[4]);
-            Assert.Equal(parameters[5], args.IRCMessage.Parameters[5]);
-            Assert.Equal(text, args.IRCMessage.Parameters[6]);
-            Assert.Equal(text, args.IRCMessage.Text);
+            Assert.Equal(parameters[0], args.IrcMessage.Parameters[0]);
+            Assert.Equal(parameters[1], args.IrcMessage.Parameters[1]);
+            Assert.Equal(parameters[2], args.IrcMessage.Parameters[2]);
+            Assert.Equal(parameters[3], args.IrcMessage.Parameters[3]);
+            Assert.Equal(parameters[4], args.IrcMessage.Parameters[4]);
+            Assert.Equal(parameters[5], args.IrcMessage.Parameters[5]);
+            Assert.Equal(text, args.IrcMessage.Parameters[6]);
+            Assert.Equal(text, args.IrcMessage.Text);
         }
 
         [Fact]
@@ -424,14 +424,14 @@ namespace GravyIrc.Tests
             var nick = "Wiz";
             var channel = "#channel";
             var raw = $":{nick} JOIN {channel}";
-            IRCMessageEventArgs<JoinMessage> args = null;
+            IrcMessageEventArgs<JoinMessage> args = null;
 
             client.EventHub.Join += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(nick, args.IRCMessage.Nick);
-            Assert.Equal(channel, args.IRCMessage.Channel);
+            Assert.Equal(nick, args.IrcMessage.Nick);
+            Assert.Equal(channel, args.IrcMessage.Channel);
         }
 
         [Fact]
@@ -447,14 +447,14 @@ namespace GravyIrc.Tests
             var nick = "Wiz";
             var channel = "#channel";
             var raw = $":{nick}!~user@x.y.z PART {channel}";
-            IRCMessageEventArgs<PartMessage> args = null;
+            IrcMessageEventArgs<PartMessage> args = null;
 
             client.EventHub.Part += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(nick, args.IRCMessage.Nick);
-            Assert.Equal(channel, args.IRCMessage.Channel);
+            Assert.Equal(nick, args.IrcMessage.Nick);
+            Assert.Equal(channel, args.IrcMessage.Channel);
         }
 
         [Fact]
@@ -497,14 +497,14 @@ namespace GravyIrc.Tests
         {
             var channel = "#NetIRC";
             var raw = $":irc.server.net 353 NetIRCConsoleClient = {channel} :NetIRCConsoleClient @Fredi_";
-            IRCMessageEventArgs<RplNamReplyMessage> args = null;
+            IrcMessageEventArgs<RplNamReplyMessage> args = null;
 
             client.EventHub.RplNamReply += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(channel, args.IRCMessage.Channel);
-            Assert.Equal(2, args.IRCMessage.Nicks.Count);
+            Assert.Equal(channel, args.IrcMessage.Channel);
+            Assert.Equal(2, args.IrcMessage.Nicks.Count);
         }
 
         [Fact]
@@ -554,14 +554,14 @@ namespace GravyIrc.Tests
             var nick = "WiZ";
             var message = "Out for lunch";
             var raw = $":{nick}!~host@x.y.z QUIT :{message}";
-            IRCMessageEventArgs<QuitMessage> args = null;
+            IrcMessageEventArgs<QuitMessage> args = null;
 
             client.EventHub.Quit += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(nick, args.IRCMessage.Nick);
-            Assert.Equal(message, args.IRCMessage.Message);
+            Assert.Equal(nick, args.IrcMessage.Nick);
+            Assert.Equal(message, args.IrcMessage.Message);
         }
 
         [Fact]
@@ -604,14 +604,14 @@ namespace GravyIrc.Tests
             var oldNick = "WiZ";
             var newNick = "Kilroy";
             var raw = $":{oldNick} NICK {newNick}";
-            IRCMessageEventArgs<NickMessage> args = null;
+            IrcMessageEventArgs<NickMessage> args = null;
 
             client.EventHub.Nick += (c, a) => args = a;
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(oldNick, args.IRCMessage.OldNick);
-            Assert.Equal(newNick, args.IRCMessage.NewNick);
+            Assert.Equal(oldNick, args.IrcMessage.OldNick);
+            Assert.Equal(newNick, args.IrcMessage.NewNick);
         }
 
         [Fact]

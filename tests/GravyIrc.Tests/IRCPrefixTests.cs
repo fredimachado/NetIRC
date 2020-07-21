@@ -8,7 +8,7 @@ namespace GravyIrc.Tests
         public void CanParseSimplePrefix()
         {
             var prefix = "Nick123";
-            var ircPrefix = new IRCPrefix(prefix);
+            var ircPrefix = new IrcPrefix(prefix);
 
             Assert.Equal(prefix, ircPrefix.From);
         }
@@ -17,7 +17,7 @@ namespace GravyIrc.Tests
         public void CanParsePrefixWithHost()
         {
             var prefix = "Nick123@host.com";
-            var ircPrefix = new IRCPrefix(prefix);
+            var ircPrefix = new IrcPrefix(prefix);
 
             Assert.Equal("Nick123", ircPrefix.From);
             Assert.Equal("host.com", ircPrefix.Host);
@@ -27,7 +27,7 @@ namespace GravyIrc.Tests
         public void CanParsePrefixWithUserAndHost()
         {
             var prefix = "Nick123!user@host.com";
-            var ircPrefix = new IRCPrefix(prefix);
+            var ircPrefix = new IrcPrefix(prefix);
 
             Assert.Equal("Nick123", ircPrefix.From);
             Assert.Equal("user", ircPrefix.User);
@@ -38,7 +38,7 @@ namespace GravyIrc.Tests
         public void ToStringReturnsRawPrefix()
         {
             var prefix = "Nick123!user@host.com";
-            var ircPrefix = new IRCPrefix(prefix);
+            var ircPrefix = new IrcPrefix(prefix);
 
             Assert.Equal(prefix, ircPrefix.ToString());
         }

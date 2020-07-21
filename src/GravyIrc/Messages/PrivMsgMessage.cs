@@ -5,14 +5,14 @@ using System.Collections.Generic;
 namespace GravyIrc.Messages
 {
     [ServerMessage("PRIVMSG")]
-    public class PrivMsgMessage : IRCMessage, IServerMessage, IClientMessage
+    public class PrivMsgMessage : IrcMessage, IServerMessage, IClientMessage
     {
         public string From { get; }
-        public IRCPrefix Prefix { get; }
+        public IrcPrefix Prefix { get; }
         public string To { get; }
         public string Message { get; }
 
-        public PrivMsgMessage(ParsedIRCMessage parsedMessage)
+        public PrivMsgMessage(ParsedIrcMessage parsedMessage)
         {
             From = parsedMessage.Prefix.From;
             Prefix = parsedMessage.Prefix;
@@ -28,7 +28,7 @@ namespace GravyIrc.Messages
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnPrivMsg(new IRCMessageEventArgs<PrivMsgMessage>(this));
+            eventHub.OnPrivMsg(new IrcMessageEventArgs<PrivMsgMessage>(this));
         }
 
         public bool IsChannelMessage => To[0] == '#';

@@ -3,18 +3,18 @@
 namespace GravyIrc.Messages
 {
     [ServerMessage("PING")]
-    public class PingMessage : IRCMessage, IServerMessage
+    public class PingMessage : IrcMessage, IServerMessage
     {
         public string Target { get; }
 
-        public PingMessage(ParsedIRCMessage parsedMessage)
+        public PingMessage(ParsedIrcMessage parsedMessage)
         {
             Target = parsedMessage.Trailing ?? parsedMessage.Parameters[0];
         }
 
         public void TriggerEvent(EventHub eventHub)
         {
-            eventHub.OnPing(new IRCMessageEventArgs<PingMessage>(this));
+            eventHub.OnPing(new IrcMessageEventArgs<PingMessage>(this));
         }
     }
 }
