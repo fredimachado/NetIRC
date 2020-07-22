@@ -18,6 +18,7 @@ jobs:
         skip_cleanup: true
         github_token: $GITHUB_TOKEN
         local_dir: docfx_project/_site
+        fqdn: gravyirc.halomademeapc.com
         on:
           branch: 
           - master

@@ -1,22 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Simple open-source Portable IRC Client Library written in C# targeting .NETStandard 1.3</Description>
-    <Copyright>Copyright Fredi Machado</Copyright>
+    <Description>IRC client library for .NET Standard 2.0.  Forked from NetIRC.</Description>
+    <Copyright></Copyright>
     <VersionPrefix>0.1.1</VersionPrefix>
-    <Authors>Fredi Machado</Authors>
+    <Authors>Alex Griffith</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>NetIRC</AssemblyName>
-    <PackageId>NetIRC</PackageId>
-    <PackageTags>irc</PackageTags>
+    <PackageId>GravyIrc</PackageId>
+    <PackageTags>irc,irc-client</PackageTags>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/fredimachado/NetIRC</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/fredimachado/NetIRC</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/fredimachado/NetIRC/master/art/icon.png</PackageIconUrl>
-    <PackageLicenseUrl>https://github.com/fredimachado/NetIRC/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/halomademeapc/GravyIrc</RepositoryUrl>
+    <PackageProjectUrl>https://gravyirc.halomademeapc.com</PackageProjectUrl>
     <DebugType Condition="$(codecov) != ''">full</DebugType>
     <DebugType Condition="$(codecov) == ''">portable</DebugType>
     <DebugSymbols>True</DebugSymbols>
+    <Version>0.1.0-alpha</Version>
+    <Product>GravyIrc</Product>
+    <PackageReleaseNotes>Initial release; testing travis deploy</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>
