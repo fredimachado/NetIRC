@@ -26,3 +26,11 @@ jobs:
     - stage: "Run Tests"
       install: dotnet restore
       script: dotnet test tests/GravyIrc.Tests/GravyIrc.Tests.csproj
+    - stage: "Publish to NuGet"
+      if: branch = master
+      install: dotnet restore
+      script: 
+        - dotnet build
+        - dotnet publish -c release
+        - dotnet pack -c release --include-symbols -o publish
+        - for f in publish/*.nupkg ; do dotnet nuget push --skip-duplicate -k $NUGET_TOKEN $f ; done
