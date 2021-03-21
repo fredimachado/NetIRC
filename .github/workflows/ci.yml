@@ -6,6 +6,7 @@ on:
     - '**.md'
     - 'art/**'
     - 'docs/**'
+    - '.vscode/**'
     branches:
     - master
   pull_request:
@@ -13,6 +14,7 @@ on:
     - '**.md'
     - 'art/**'
     - 'docs/**'
+    - '.vscode/**'
     branches:
       - master
 
