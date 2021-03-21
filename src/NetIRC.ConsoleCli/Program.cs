@@ -18,7 +18,7 @@ namespace NetIRC.ConsoleCli
                 client.EventHub.PrivMsg += EventHub_PrivMsg;
                 Task.Run(() => client.ConnectAsync("irc.rizon.net", 6667));
 
-                Console.ReadKey();
+                Console.Read();
             }
         }
 

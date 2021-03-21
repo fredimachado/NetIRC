@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}\\src\\NetIRC.ConsoleCli\\bin\\Debug\\netcoreapp1.1\\NetIRC.ConsoleCli.dll",
+            "program": "${workspaceRoot}\\src\\NetIRC.ConsoleCli\\bin\\Debug\\netcoreapp3.1\\NetIRC.ConsoleCli.dll",
             "args": [],
             "cwd": "${workspaceRoot}",
             "console": "internalConsole",
