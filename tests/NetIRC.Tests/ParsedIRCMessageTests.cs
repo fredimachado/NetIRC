@@ -106,7 +106,7 @@ namespace NetIRC.Tests
         {
             var data = "001";
             var ircMessage = new ParsedIRCMessage(data);
-            Assert.Equal(true, ircMessage.IsNumeric);
+            Assert.True(ircMessage.IsNumeric);
         }
     }
 }

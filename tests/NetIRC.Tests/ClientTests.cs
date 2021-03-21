@@ -191,7 +191,7 @@ namespace NetIRC.Tests
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(1, client.Peers.Count);
+            Assert.Single(client.Peers);
             Assert.Equal("from", client.Peers[0].Nick);
         }
 
@@ -202,7 +202,7 @@ namespace NetIRC.Tests
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(1, client.Queries.Count);
+            Assert.Single(client.Queries);
             Assert.Equal("from", client.Queries[0].Nick);
             Assert.Equal(client.Peers[0], client.Queries[0].User);
         }
@@ -218,7 +218,7 @@ namespace NetIRC.Tests
             RaiseDataReceived(mockConnection, client, raw);
 
             var messages = client.Queries[0].Messages;
-            Assert.Equal(1, messages.Count);
+            Assert.Single(messages);
             Assert.Equal(user, messages[0].User);
             Assert.Equal(message, messages[0].Text);
         }
@@ -236,7 +236,7 @@ namespace NetIRC.Tests
             RaiseDataReceived(mockConnection, client, raw);
 
             var messages = channel.Messages;
-            Assert.Equal(1, messages.Count);
+            Assert.Single(messages);
             Assert.Equal(user, messages[0].User);
             Assert.Equal(message, messages[0].Text);
         }
@@ -469,7 +469,7 @@ namespace NetIRC.Tests
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(0, ircChannel.Users.Count);
+            Assert.Empty(ircChannel.Users);
         }
 
         [Fact]
@@ -537,7 +537,7 @@ namespace NetIRC.Tests
 
             RaiseDataReceived(mockConnection, client, $":{nick} PART {channel}");
 
-            Assert.Equal(1, ircChannel.Users.Count);
+            Assert.Single(ircChannel.Users);
             Assert.Equal(nick2, ircChannel.Users[0].Nick);
         }
 
@@ -575,7 +575,7 @@ namespace NetIRC.Tests
 
             RaiseDataReceived(mockConnection, client, raw);
 
-            Assert.Equal(0, ircChannel.Users.Count);
+            Assert.Empty(ircChannel.Users);
         }
 
         [Fact]
