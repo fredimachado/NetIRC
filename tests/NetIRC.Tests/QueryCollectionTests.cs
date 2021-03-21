@@ -14,7 +14,7 @@ namespace NetIRC.Tests
             collection.Add(query);
             var query2 = collection.GetQuery(user);
 
-            Assert.Equal(1, collection.Count);
+            Assert.Single(collection);
             Assert.Same(query, query2);
         }
     }

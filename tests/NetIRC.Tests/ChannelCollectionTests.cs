@@ -13,7 +13,7 @@ namespace NetIRC.Tests
             collection.Add(channel);
             var channel2 = collection.GetChannel("#test");
 
-            Assert.Equal(1, collection.Count);
+            Assert.Single(collection);
             Assert.Same(channel, channel2);
         }
     }
