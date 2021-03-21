@@ -59,7 +59,7 @@ namespace NetIRC.Tests.Connection
                         await stream.FlushAsync();
 
                         // Wait for the client to receive the data if necessary
-                        Assert.True(pause.WaitOne(60000));
+                        Assert.True(pause.WaitOne(500));
                     }
                 }
             }
@@ -131,7 +131,7 @@ namespace NetIRC.Tests.Connection
             Assert.Equal(data, dataReceived);
         }
 
-        [Fact(Skip = "Keeps failing. I need to figure out why.")]
+        [Fact]
         public async Task WhenServerDisconnects_TrigerDisconnectedEvent()
         {
             var pauseConnected = new ManualResetEvent(false);
@@ -149,7 +149,7 @@ namespace NetIRC.Tests.Connection
                 using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
                 {
                     // Wait for the client to be connected if necessary
-                    Assert.True(pauseConnected.WaitOne(60000));
+                    Assert.True(pauseConnected.WaitOne(500));
 
                     using (var stream = new StreamWriter(server.GetStream()))
                     {
@@ -157,19 +157,12 @@ namespace NetIRC.Tests.Connection
                         await stream.FlushAsync();
 
                         // Wait for the client to receive the data if necessary
-                        Assert.True(pauseDataReceived.WaitOne(60000));
+                        Assert.True(pauseDataReceived.WaitOne(500));
                     }
                 }
             }
 
-            Assert.True(pauseDisconnected.WaitOne(60000));
-        }
-
-        [Fact]
-        public void WhenDisposingBeforeConnecting_ItShouldBeOK()
-        {
-            var tcpClient = new TcpClientConnection();
-            tcpClient.Dispose();
+            Assert.True(pauseDisconnected.WaitOne(500));
         }
     }
 }
