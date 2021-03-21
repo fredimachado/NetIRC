@@ -12,8 +12,8 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/fredimachado/NetIRC</RepositoryUrl>
     <PackageProjectUrl>https://github.com/fredimachado/NetIRC</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/fredimachado/NetIRC/master/art/icon.png</PackageIconUrl>
-    <PackageLicenseUrl>https://github.com/fredimachado/NetIRC/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <DebugType Condition="$(codecov) != ''">full</DebugType>
     <DebugType Condition="$(codecov) == ''">portable</DebugType>
     <IncludeSymbols>true</IncludeSymbols>
@@ -22,6 +22,10 @@
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\art\icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
