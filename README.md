@@ -1,6 +1,7 @@
 NetIRC
 ======
 [![Build status](https://github.com/fredimachado/NetIRC/workflows/CI/badge.svg)](https://github.com/fredimachado/NetIRC/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/fredimachado/NetIRC/badge.svg)](https://coveralls.io/github/fredimachado/NetIRC)
 [![NuGet](https://img.shields.io/nuget/dt/NetIRC.svg)](https://www.nuget.org/packages/NetIRC)
 [![NuGet](https://img.shields.io/nuget/vpre/NetIRC.svg)](https://www.nuget.org/packages/NetIRC)
 [![MyGet](https://img.shields.io/myget/netirc/v/NetIRC.svg)](https://www.myget.org/feed/netirc/package/nuget/NetIRC)
