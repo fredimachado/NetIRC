@@ -37,7 +37,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       uses: coverallsapp/github-action@v1.1.2
       with:
-        github-token: ${{ secrets.COVERALLS_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: tests/NetIRC.Tests/TestResults/coverage.info
     - name: Push to MyGet
       if: matrix.os == 'ubuntu-latest'
