@@ -155,7 +155,8 @@ namespace NetIRC
 
         private async void EventHub_Ping(object sender, IRCMessageEventArgs<PingMessage> e)
         {
-            await SendAsync(new PongMessage(e.IRCMessage.Target));
+            await SendAsync(new PongMessage(e.IRCMessage.Target))
+                .ConfigureAwait(false);
         }
 
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
@@ -186,14 +187,18 @@ namespace NetIRC
         /// <returns>The task object representing the asynchronous operation</returns>
         public async Task ConnectAsync(string host, int port = 6667)
         {
-            await connection.ConnectAsync(host, port);
+            await connection.ConnectAsync(host, port)
+                .ConfigureAwait(false);
 
             if (!string.IsNullOrWhiteSpace(password))
             {
-                await SendAsync(new PassMessage(password));
+                await SendAsync(new PassMessage(password))
+                    .ConfigureAwait(false);
             }
-            await SendAsync(new NickMessage(User.Nick));
-            await SendAsync(new UserMessage(User.Nick, User.RealName));
+            await SendAsync(new NickMessage(User.Nick))
+                    .ConfigureAwait(false);
+            await SendAsync(new UserMessage(User.Nick, User.RealName))
+                    .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -201,9 +206,9 @@ namespace NetIRC
         /// </summary>
         /// <param name="rawData">The raw data to be sent</param>
         /// <returns>The task object representing the asynchronous operation</returns>
-        public async Task SendRaw(string rawData)
+        public Task SendRaw(string rawData)
         {
-            await connection.SendAsync(rawData);
+            return connection.SendAsync(rawData);
         }
 
         /// <summary>
@@ -211,9 +216,9 @@ namespace NetIRC
         /// </summary>
         /// <param name="message">An implementation of IClientMessage. Check NetIRC.Messages namespace</param>
         /// <returns>The task object representing the asynchronous operation</returns>
-        public async Task SendAsync(IClientMessage message)
+        public Task SendAsync(IClientMessage message)
         {
-            await connection.SendAsync(message.ToString());
+            return connection.SendAsync(message.ToString());
         }
 
         /// <summary>

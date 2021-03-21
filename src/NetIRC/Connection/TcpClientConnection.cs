@@ -41,7 +41,8 @@ namespace NetIRC.Connection
         /// <returns>The task object representing the asynchronous operation</returns>
         public async Task ConnectAsync(string address, int port)
         {
-            await tcpClient.ConnectAsync(address, port);
+            await tcpClient.ConnectAsync(address, port)
+                .ConfigureAwait(false);
 
             streamReader = new StreamReader(tcpClient.GetStream());
             streamWriter = new StreamWriter(tcpClient.GetStream());
@@ -80,8 +81,10 @@ namespace NetIRC.Connection
                 data += crlf;
             }
 
-            await streamWriter.WriteAsync(data);
-            await streamWriter.FlushAsync();
+            await streamWriter.WriteAsync(data)
+                .ConfigureAwait(false);
+            await streamWriter.FlushAsync()
+                .ConfigureAwait(false);
         }
 
         /// <summary>
