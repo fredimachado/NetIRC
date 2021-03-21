@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetIRC.Extensions;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -49,24 +50,22 @@ namespace NetIRC.Connection
 
             Connected?.Invoke(this, EventArgs.Empty);
 
-            RunDataReceiver();
+            RunDataReceiver()
+                .SafeFireAndForget(
+                    continueOnCapturedContext: false,
+                    onException: ex => Disconnected?.Invoke(this, EventArgs.Empty));
         }
 
-        private async void RunDataReceiver()
+        private async Task RunDataReceiver()
         {
             string line;
 
-            try
+            while ((line = await streamReader.ReadLineAsync().ConfigureAwait(false)) != null)
             {
-                while ((line = await streamReader.ReadLineAsync()) != null)
-                {
-                    DataReceived?.Invoke(this, new DataReceivedEventArgs(line));
-                }
+                DataReceived?.Invoke(this, new DataReceivedEventArgs(line));
             }
-            finally
-            {
-                Disconnected?.Invoke(this, EventArgs.Empty);
-            }
+
+            Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
