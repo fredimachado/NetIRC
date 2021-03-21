@@ -2,25 +2,21 @@ name: CI
 
 on:
   push:
-    paths-ignore:
-    - '**.md'
-    - 'art/**'
-    - 'docs/**'
-    - '.vscode/**'
+    paths-ignore: ['**.md', 'art/**', 'docs/**', '.vscode/**']
     branches:
     - master
   pull_request:
-    paths-ignore:
-    - '**.md'
-    - 'art/**'
-    - 'docs/**'
-    - '.vscode/**'
+    paths-ignore: ['**.md', 'art/**', 'docs/**', '.vscode/**']
     branches:
       - master
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -38,7 +34,8 @@ jobs:
       run: ./Build.ps1
       shell: pwsh
     - name: Push to MyGet
-      run: dotnet nuget push artifacts/*.nupkg -s https://www.myget.org/F/netirc/api/v3/index.json -k ${{secrets.MYGET_TOKEN}}
+      if: startsWith(${{ matrix.os }}, 'ubuntu')
+      run: dotnet nuget push artifacts/*.nupkg -s https://www.myget.org/F/netirc/api/v3/index.json -k ${{ secrets.MYGET_TOKEN }}
     - name: Artifacts
       uses: actions/upload-artifact@v2
       with:
