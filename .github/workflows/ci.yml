@@ -35,7 +35,7 @@ jobs:
       shell: pwsh
     - name: Publish coverage report to coveralls.io
       if: matrix.os == 'ubuntu-latest'
-      uses: coverallsapp/github-action@master
+      uses: coverallsapp/github-action@v1.1.2
       with:
         github-token: ${{ secrets.COVERALLS_TOKEN }}
         path-to-lcov: tests/NetIRC.Tests/TestResults/coverage.info
