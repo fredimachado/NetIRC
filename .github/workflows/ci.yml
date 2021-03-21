@@ -33,6 +33,12 @@ jobs:
     - name: Build and Test
       run: ./Build.ps1
       shell: pwsh
+    - name: Publish coverage report to coveralls.io
+      if: matrix.os == 'ubuntu-latest'
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.COVERALLS_TOKEN }}
+        path-to-lcov: tests/NetIRC.Tests/TestResults/coverage.info
     - name: Push to MyGet
       if: matrix.os == 'ubuntu-latest'
       run: dotnet nuget push artifacts/*.nupkg -s https://www.myget.org/F/netirc/api/v3/index.json -k ${{ secrets.MYGET_TOKEN }}
