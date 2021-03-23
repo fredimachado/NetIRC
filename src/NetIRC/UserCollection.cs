@@ -13,7 +13,7 @@ namespace NetIRC
         {
             var user = Items.FirstOrDefault(u => u.Nick == nick);
 
-            if (user == null)
+            if (user is null)
             {
                 user = new User(nick);
                 Add(user);

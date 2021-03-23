@@ -15,6 +15,8 @@ namespace NetIRC
 
         private readonly string password;
 
+        private readonly MessageHandlerContainer messageHandlerContainer;
+
         /// <summary>
         /// Represents the user used to connect to the server
         /// </summary>
@@ -48,9 +50,14 @@ namespace NetIRC
         public event ParsedIRCMessageHandler OnIRCMessageParsed;
 
         /// <summary>
-        /// Provides you a way to handle various IRC events like OnPing and OnPrivMsg
+        /// Indicates that we are properly registered on the server
+        /// It happens when the server sends a 001 (Welcome) reply to a user upon successful registration
         /// </summary>
-        public EventHub EventHub { get; }
+        public event EventHandler RegistrationCompleted;
+        internal void OnRegistrationCompleted()
+        {
+            RegistrationCompleted?.Invoke(this, EventArgs.Empty);
+        }
 
         /// <summary>
         /// Initializes a new instance of the IRC client with a User and an IConnection implementation
@@ -68,8 +75,7 @@ namespace NetIRC
             Queries = new QueryCollection();
             Peers = new UserCollection();
 
-            EventHub = new EventHub(this);
-            InitializeDefaultEventHubEvents();
+            messageHandlerContainer = new MessageHandlerContainer(this);
         }
 
         public Client(User user, string password, IConnection connection)
@@ -78,88 +84,12 @@ namespace NetIRC
             this.password = password;
         }
 
-        private void InitializeDefaultEventHubEvents()
+        public void RegisterCustomMessageHandler(Type type)
         {
-            EventHub.Ping += EventHub_Ping;
-            EventHub.Join += EventHub_Join;
-            EventHub.Part += EventHub_Part;
-            EventHub.Quit += EventHub_Quit;
-            EventHub.PrivMsg += EventHub_PrivMsg;
-            EventHub.RplNamReply += EventHub_RplNamReply;
-            EventHub.Nick += EventHub_Nick;
+            messageHandlerContainer.RegisterCustomMessageHandler(type);
         }
 
-        private void EventHub_Nick(Client client, IRCMessageEventArgs<NickMessage> e)
-        {
-            var user = Peers.GetUser(e.IRCMessage.OldNick);
-            user.Nick = e.IRCMessage.NewNick;
-        }
-
-        private void EventHub_PrivMsg(Client client, IRCMessageEventArgs<PrivMsgMessage> e)
-        {
-            var user = Peers.GetUser(e.IRCMessage.From);
-            var message = new ChatMessage(user, e.IRCMessage.Message);
-
-            if (e.IRCMessage.IsChannelMessage)
-            {
-                var channel = Channels.GetChannel(e.IRCMessage.To);
-                channel.Messages.Add(message);
-            }
-            else
-            {
-                var query = Queries.GetQuery(user);
-                query.Messages.Add(message);
-            }
-        }
-
-        private void EventHub_RplNamReply(Client client, IRCMessageEventArgs<RplNamReplyMessage> e)
-        {
-            var channel = Channels.GetChannel(e.IRCMessage.Channel);
-            foreach (var nick in e.IRCMessage.Nicks)
-            {
-                var user = Peers.GetUser(nick.Key);
-                if (!channel.Users.Any(u => u.User.Nick == nick.Key))
-                {
-                    channel.AddUser(user, nick.Value);
-                }
-            }
-        }
-
-        private void EventHub_Quit(Client client, IRCMessageEventArgs<QuitMessage> e)
-        {
-            foreach (var channel in Channels)
-            {
-                var user = channel.Users.FirstOrDefault(u => u.Nick == e.IRCMessage.Nick);
-                if (user != null)
-                {
-                    channel.Users.Remove(user);
-                }
-            }
-        }
-
-        private void EventHub_Part(Client client, IRCMessageEventArgs<PartMessage> e)
-        {
-            var channel = Channels.GetChannel(e.IRCMessage.Channel);
-            channel.RemoveUser(e.IRCMessage.Nick);
-        }
-
-        private void EventHub_Join(Client client, IRCMessageEventArgs<JoinMessage> e)
-        {
-            var channel = Channels.GetChannel(e.IRCMessage.Channel);
-            if (e.IRCMessage.Nick != User.Nick)
-            {
-                var user = Peers.GetUser(e.IRCMessage.Nick);
-                channel.AddUser(user, string.Empty);
-            }
-        }
-
-        private async void EventHub_Ping(object sender, IRCMessageEventArgs<PingMessage> e)
-        {
-            await SendAsync(new PongMessage(e.IRCMessage.Target))
-                .ConfigureAwait(false);
-        }
-
-        private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
+        private async void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.Data))
             {
@@ -174,9 +104,8 @@ namespace NetIRC
 
             OnIRCMessageParsed?.Invoke(this, parsedIRCMessage);
 
-            var serverMessage = IRCMessage.Create(parsedIRCMessage);
-
-            serverMessage?.TriggerEvent(EventHub);
+            await messageHandlerContainer.HandleAsync(parsedIRCMessage)
+                .ConfigureAwait(false);
         }
 
         /// <summary>

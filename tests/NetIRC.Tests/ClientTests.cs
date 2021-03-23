@@ -74,26 +74,6 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void PingWithoutHandlerShouldWork()
-        {
-            var raw = "PING :xyz.com";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnPingEvent()
-        {
-            var raw = "PING :xyz.com";
-            IRCMessageEventArgs<PingMessage> args = null;
-
-            client.EventHub.Ping += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal("xyz.com", args.IRCMessage.Target);
-        }
-
-        [Fact]
         public async Task SendsNickAndUserWhenConnected()
         {
             var nick = "guest";
@@ -137,51 +117,6 @@ namespace NetIRC.Tests
             Assert.Equal("439", ircMessage.Command);
             Assert.Equal("*", ircMessage.Parameters[0]);
             Assert.Equal("Please wait while we process your connection.", ircMessage.Trailing);
-        }
-
-        [Fact]
-        public void PrivMsgWithoutHandlerShouldWork()
-        {
-            var raw = ":from PRIVMSG to :message";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnPrivMsgReceived()
-        {
-            var from = "Angel";
-            var to = "Wiz";
-            var message = "Hello are you receiving this message ?";
-            var raw = $":{from} PRIVMSG {to} :{message}";
-            IRCMessageEventArgs<PrivMsgMessage> args = null;
-
-            client.EventHub.PrivMsg += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(from, args.IRCMessage.From);
-            Assert.Equal(from, args.IRCMessage.Prefix.From);
-            Assert.Equal(to, args.IRCMessage.To);
-            Assert.Equal(message, args.IRCMessage.Message);
-        }
-
-        [Fact]
-        public void TriggersOnPrivMsgReceivedWithoutTrailing()
-        {
-            var from = "Angel";
-            var to = "Wiz";
-            var message = "Hello";
-            var raw = $":{from} PRIVMSG {to} {message}";
-            IRCMessageEventArgs<PrivMsgMessage> args = null;
-
-            client.EventHub.PrivMsg += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(from, args.IRCMessage.From);
-            Assert.Equal(from, args.IRCMessage.Prefix.From);
-            Assert.Equal(to, args.IRCMessage.To);
-            Assert.Equal(message, args.IRCMessage.Message);
         }
 
         [Fact]
@@ -242,222 +177,6 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void NoticeWithoutHandlerShouldWork()
-        {
-            var raw = ":from NOTICE to :message";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnNoticeReceived()
-        {
-            var from = "irc.server.net";
-            var to = "WiZ";
-            var message = "Hello world";
-            var raw = $":{from} NOTICE {to} :{message}";
-            IRCMessageEventArgs<NoticeMessage> args = null;
-
-            client.EventHub.Notice += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(from, args.IRCMessage.From);
-            Assert.Equal(to, args.IRCMessage.Target);
-            Assert.Equal(message, args.IRCMessage.Message);
-        }
-
-        [Fact]
-        public void TriggersOnNoticeReceivedWithoutTrailing()
-        {
-            var from = "irc.server.net";
-            var to = "WiZ";
-            var message = "Hello";
-            var raw = $":{from} NOTICE {to} {message}";
-            IRCMessageEventArgs<NoticeMessage> args = null;
-
-            client.EventHub.Notice += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(from, args.IRCMessage.From);
-            Assert.Equal(to, args.IRCMessage.Target);
-            Assert.Equal(message, args.IRCMessage.Message);
-        }
-
-        [Fact]
-        public void TriggersOnRplWelcomeMessageReceived()
-        {
-            var text = "Welcome to the Internet Relay Chat Network NetIRC";
-            var raw = $":irc.server.net 001 NetIRC :{text}";
-            IRCMessageEventArgs<RplWelcomeMessage> args = null;
-
-            client.EventHub.RplWelcome += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(text, args.IRCMessage.Text);
-        }
-
-        [Fact]
-        public void RplYourHostWithoutHandlerShouldWork()
-        {
-            var raw = ":irc.server.net 002 NetIRC :text";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnRplYourHostMessageReceived()
-        {
-            var text = "Your host is irc.server.net, running version plexus-4(hybrid-8.1.20)";
-            var raw = $":irc.server.net 002 NetIRC :{text}";
-            IRCMessageEventArgs<RplYourHostMessage> args = null;
-
-            client.EventHub.RplYourHost += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(text, args.IRCMessage.Text);
-        }
-
-        [Fact]
-        public void RplCreatedWithoutHandlerShouldWork()
-        {
-            var raw = ":irc.server.net 003 NetIRC :text";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnRplCreatedMessageReceived()
-        {
-            var text = "This server was created Nov 20 2016 at 02:34:01";
-            var raw = $":irc.server.net 003 NetIRC :{text}";
-            IRCMessageEventArgs<RplCreatedMessage> args = null;
-
-            client.EventHub.RplCreated += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(text, args.IRCMessage.Text);
-        }
-
-        [Fact]
-        public void RplMyInfoWithoutHandlerShouldWork()
-        {
-            var raw = ":irc.server.net 004 NetIRC irc.server.net xyz";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnRplMyInfoMessageReceived()
-        {
-            var parameters = new[]
-            {
-                "NetIRC",
-                "irc.server.net",
-                "plexus-4(hybrid-8.1.20)",
-                "CDGNRSUWagilopqrswxyz",
-                "BCIMNORSabcehiklmnopqstvz",
-                "Iabehkloqv"
-            };
-            var raw = $":irc.server.net 004 {string.Join(" ", parameters)}";
-            IRCMessageEventArgs<RplMyInfoMessage> args = null;
-
-            client.EventHub.RplMyInfo += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(parameters[0], args.IRCMessage.Parameters[0]);
-            Assert.Equal(parameters[1], args.IRCMessage.Parameters[1]);
-            Assert.Equal(parameters[2], args.IRCMessage.Parameters[2]);
-            Assert.Equal(parameters[3], args.IRCMessage.Parameters[3]);
-            Assert.Equal(parameters[4], args.IRCMessage.Parameters[4]);
-            Assert.Equal(parameters[5], args.IRCMessage.Parameters[5]);
-        }
-
-        [Fact]
-        public void RplISupportWithoutHandlerShouldWork()
-        {
-            var raw = ":irc.server.net 005 NetIRC CALLERID";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnRplISupportMessageReceived()
-        {
-            var text = "are supported by this server";
-            var parameters = new[]
-            {
-                "NetIRC",
-                "CALLERID",
-                "CASEMAPPING=rfc1459",
-                "DEAF=D",
-                "NICKLEN=30",
-                "MAXTARGETS=4"
-            };
-            var raw = $":irc.server.net 005 {string.Join(" ", parameters)} :{text}";
-            IRCMessageEventArgs<RplISupportMessage> args = null;
-
-            client.EventHub.RplISupport += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(parameters[0], args.IRCMessage.Parameters[0]);
-            Assert.Equal(parameters[1], args.IRCMessage.Parameters[1]);
-            Assert.Equal(parameters[2], args.IRCMessage.Parameters[2]);
-            Assert.Equal(parameters[3], args.IRCMessage.Parameters[3]);
-            Assert.Equal(parameters[4], args.IRCMessage.Parameters[4]);
-            Assert.Equal(parameters[5], args.IRCMessage.Parameters[5]);
-            Assert.Equal(text, args.IRCMessage.Parameters[6]);
-            Assert.Equal(text, args.IRCMessage.Text);
-        }
-
-        [Fact]
-        public void JoinWithoutHandlerShouldWork()
-        {
-            var raw = ":Nick JOIN #channel";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnJoinReceived()
-        {
-            var nick = "Wiz";
-            var channel = "#channel";
-            var raw = $":{nick} JOIN {channel}";
-            IRCMessageEventArgs<JoinMessage> args = null;
-
-            client.EventHub.Join += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(nick, args.IRCMessage.Nick);
-            Assert.Equal(channel, args.IRCMessage.Channel);
-        }
-
-        [Fact]
-        public void PartWithoutHandlerShouldWork()
-        {
-            var raw = ":Nick PART #channel";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnPartReceived()
-        {
-            var nick = "Wiz";
-            var channel = "#channel";
-            var raw = $":{nick}!~user@x.y.z PART {channel}";
-            IRCMessageEventArgs<PartMessage> args = null;
-
-            client.EventHub.Part += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(nick, args.IRCMessage.Nick);
-            Assert.Equal(channel, args.IRCMessage.Channel);
-        }
-
-        [Fact]
         public void RemovesUserFromChannel()
         {
             var nick = "Wiz";
@@ -483,28 +202,6 @@ namespace NetIRC.Tests
 
             Assert.Equal(channel, client.Channels[0].Name);
             Assert.Equal(nick, client.Channels[0].Users.ElementAt(0).Nick);
-        }
-
-        [Fact]
-        public void RplNamReplyWithoutHandlerShouldWork()
-        {
-            var raw = ":irc.server.net 353 NetIRCConsoleClient = #channel :NetIRCConsoleClient";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnRplNamReplyReceived()
-        {
-            var channel = "#NetIRC";
-            var raw = $":irc.server.net 353 NetIRCConsoleClient = {channel} :NetIRCConsoleClient @Fredi_";
-            IRCMessageEventArgs<RplNamReplyMessage> args = null;
-
-            client.EventHub.RplNamReply += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(channel, args.IRCMessage.Channel);
-            Assert.Equal(2, args.IRCMessage.Nicks.Count);
         }
 
         [Fact]
@@ -542,29 +239,6 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void QuitWithoutHandlerShouldWork()
-        {
-            var raw = ":Nick QUIT :message";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersQuitMessageReceived()
-        {
-            var nick = "WiZ";
-            var message = "Out for lunch";
-            var raw = $":{nick}!~host@x.y.z QUIT :{message}";
-            IRCMessageEventArgs<QuitMessage> args = null;
-
-            client.EventHub.Quit += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(nick, args.IRCMessage.Nick);
-            Assert.Equal(message, args.IRCMessage.Message);
-        }
-
-        [Fact]
         public void UserRemovedFromChannelsOnQuit()
         {
             var nick = "WiZ";
@@ -584,34 +258,11 @@ namespace NetIRC.Tests
             var raw = ":irc.server.io 001 netIRCTest :Welcome";
             var completed = false;
 
-            client.EventHub.RegistrationCompleted += (c, a) => completed = true;
+            client.RegistrationCompleted += (c, a) => completed = true;
 
             RaiseDataReceived(mockConnection, client, raw);
 
             Assert.True(completed);
-        }
-
-        [Fact]
-        public void NickWithoutHandlerShouldWork()
-        {
-            var raw = ":OldNick NICK NewNick";
-            RaiseDataReceived(mockConnection, client, raw);
-        }
-
-        [Fact]
-        public void TriggersOnNickEvent()
-        {
-            var oldNick = "WiZ";
-            var newNick = "Kilroy";
-            var raw = $":{oldNick} NICK {newNick}";
-            IRCMessageEventArgs<NickMessage> args = null;
-
-            client.EventHub.Nick += (c, a) => args = a;
-
-            RaiseDataReceived(mockConnection, client, raw);
-
-            Assert.Equal(oldNick, args.IRCMessage.OldNick);
-            Assert.Equal(newNick, args.IRCMessage.NewNick);
         }
 
         [Fact]

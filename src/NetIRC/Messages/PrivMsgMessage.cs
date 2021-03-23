@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace NetIRC.Messages
 {
@@ -22,11 +21,6 @@ namespace NetIRC.Messages
         {
             To = target;
             Message = text;
-        }
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnPrivMsg(new IRCMessageEventArgs<PrivMsgMessage>(this));
         }
 
         public bool IsChannelMessage => To[0] == '#';

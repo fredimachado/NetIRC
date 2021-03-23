@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 
 namespace NetIRC
@@ -10,6 +9,7 @@ namespace NetIRC
     public class Channel
     {
         public string Name { get; }
+        public string Topic { get; private set; }
 
         public ObservableCollection<ChannelUser> Users { get; }
         public ObservableCollection<ChatMessage> Messages { get; }
@@ -30,6 +30,11 @@ namespace NetIRC
         {
             var user = Users.FirstOrDefault(u => u.Nick == nick);
             Users.Remove(user);
+        }
+
+        internal void SetTopic(string topic)
+        {
+            Topic = topic;
         }
     }
 }

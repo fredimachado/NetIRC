@@ -22,10 +22,5 @@ namespace NetIRC.Messages
         }
 
         public IEnumerable<string> Tokens => new[] { "PART", channels };
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnPart(new IRCMessageEventArgs<PartMessage>(this));
-        }
     }
 }

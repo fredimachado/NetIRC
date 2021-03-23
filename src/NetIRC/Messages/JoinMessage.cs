@@ -24,10 +24,5 @@ namespace NetIRC.Messages
         }
 
         public IEnumerable<string> Tokens => new[] { "JOIN", channels, keys };
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnJoin(new IRCMessageEventArgs<JoinMessage>(this));
-        }
     }
 }

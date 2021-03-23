@@ -19,10 +19,5 @@ namespace NetIRC.Messages
         }
 
         public IEnumerable<string> Tokens => new[] { "NICK", NewNick };
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnNick(new IRCMessageEventArgs<NickMessage>(this));
-        }
     }
 }

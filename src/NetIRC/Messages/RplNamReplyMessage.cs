@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NetIRC.Messages
@@ -28,11 +29,6 @@ namespace NetIRC.Messages
                     Nicks.Add(nick, string.Empty);
                 }
             }
-        }
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnRplNamReply(new IRCMessageEventArgs<RplNamReplyMessage>(this));
         }
     }
 }

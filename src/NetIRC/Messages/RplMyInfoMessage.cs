@@ -8,10 +8,5 @@
         {
             Parameters = parsedMessage.Parameters;
         }
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnRplMyInfo(new IRCMessageEventArgs<RplMyInfoMessage>(this));
-        }
     }
 }

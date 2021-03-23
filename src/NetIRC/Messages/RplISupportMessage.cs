@@ -10,10 +10,5 @@
             Parameters = parsedMessage.Parameters;
             Text = parsedMessage.Trailing;
         }
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnRplISupport(new IRCMessageEventArgs<RplISupportMessage>(this));
-        }
     }
 }

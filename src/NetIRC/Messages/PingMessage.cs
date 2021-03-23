@@ -8,10 +8,5 @@
         {
             Target = parsedMessage.Trailing ?? parsedMessage.Parameters[0];
         }
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnPing(new IRCMessageEventArgs<PingMessage>(this));
-        }
     }
 }
