@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NetIRC\NetIRC.csproj" />
+    <ProjectReference Include="..\..\src\NetIRC\NetIRC.csproj" />
   </ItemGroup>
 
 </Project>
