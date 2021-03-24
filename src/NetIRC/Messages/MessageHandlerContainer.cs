@@ -57,6 +57,18 @@ namespace NetIRC
                     modifiers: null) != null;
         }
 
+        public void RegisterCustomMessageHandlers(Assembly assembly)
+        {
+            var customHandlers = assembly
+                .GetExportedTypes()
+                .Where(t => t.BaseType.IsGenericType && !t.IsAbstract && t.BaseType.GetGenericTypeDefinition() == typeof(CustomMessageHandler<>));
+
+            foreach (var handler in customHandlers)
+            {
+                RegisterCustomMessageHandler(handler);
+            }
+        }
+
         private void RegisterDefaultMessageHandlers()
         {
             var handlers = typeof(MessageHandlerContainer).Assembly

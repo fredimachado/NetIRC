@@ -1,7 +1,7 @@
 ﻿using NetIRC.Connection;
 using NetIRC.Messages;
 using System;
-using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NetIRC
@@ -107,11 +107,6 @@ namespace NetIRC
             this.password = password;
         }
 
-        public void RegisterCustomMessageHandler(Type type)
-        {
-            messageHandlerContainer.RegisterCustomMessageHandler(type);
-        }
-
         private async void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.Data))
@@ -179,6 +174,25 @@ namespace NetIRC
         public void Dispose()
         {
             connection.Dispose();
+        }
+
+        /// <summary>
+        /// Adds a custom message handler of the type specified in TCustomMessageHandler
+        /// </summary>
+        /// <typeparam name="TCustomMessageHandler">The type of the custom message handler to add.</typeparam>
+        public void RegisterCustomMessageHandler<TCustomMessageHandler>()
+            where TCustomMessageHandler : ICustomHandler
+        {
+            messageHandlerContainer.RegisterCustomMessageHandler(typeof(TCustomMessageHandler));
+        }
+
+        /// <summary>
+        /// Adds all custom message handlers present in a specific assembly
+        /// </summary>
+        /// <param name="assembly">The assembly containing custom message handlers to add.</param>
+        public void RegisterCustomMessageHandlers(Assembly assembly)
+        {
+            messageHandlerContainer.RegisterCustomMessageHandlers(assembly);
         }
     }
 }

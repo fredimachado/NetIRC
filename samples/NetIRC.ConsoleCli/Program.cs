@@ -29,8 +29,11 @@ namespace NetIRC.ConsoleCli
 
                 client.RegistrationCompleted += EventHub_RegistrationCompleted;
 
-                client.RegisterCustomMessageHandler(typeof(PrivMsgHandler));
-                client.RegisterCustomMessageHandler(typeof(RplMotdStartHandler));
+                // Handy method to register all custom message handlers in an assembly
+                client.RegisterCustomMessageHandlers(typeof(Program).Assembly);
+
+                // Custom message handlers can also be manually registered
+                //client.RegisterCustomMessageHandler<PrivMsgHandler>();
 
                 Task.Run(() => client.ConnectAsync("irc.rizon.net", 6667));
 
