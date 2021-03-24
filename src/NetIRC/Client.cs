@@ -1,7 +1,7 @@
 ﻿using NetIRC.Connection;
 using NetIRC.Messages;
 using System;
-using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NetIRC
@@ -15,10 +15,12 @@ namespace NetIRC
 
         private readonly string password;
 
+        private readonly MessageHandlerContainer messageHandlerContainer;
+
         /// <summary>
         /// Represents the user used to connect to the server
         /// </summary>
-        public User User { get;}
+        public User User { get; }
 
         /// <summary>
         /// An observable collection representing the channels we joined
@@ -48,9 +50,31 @@ namespace NetIRC
         public event ParsedIRCMessageHandler OnIRCMessageParsed;
 
         /// <summary>
-        /// Provides you a way to handle various IRC events like OnPing and OnPrivMsg
+        /// Indicates that we are properly registered on the server
+        /// It happens when the server sends a 001 (Welcome) reply to a user upon successful registration
         /// </summary>
-        public EventHub EventHub { get; }
+        public event EventHandler RegistrationCompleted;
+        internal void OnRegistrationCompleted()
+        {
+            RegistrationCompleted?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the IRC client with a User and a default IConnection implementation (TcpClientConnection)
+        /// </summary>
+        /// <param name="user">User who wishes to connect to the server</param>
+        public Client(User user)
+            : this(user, new TcpClientConnection())
+        {}
+
+        /// <summary>
+        /// Initializes a new instance of the IRC client with a User, password and a default IConnection implementation (TcpClientConnection)
+        /// </summary>
+        /// <param name="user">User who wishes to connect to the server</param>
+        /// <param name="password">Password to use when connecting to the server</param>
+        public Client(User user, string password)
+            : this(user, password, new TcpClientConnection())
+        { }
 
         /// <summary>
         /// Initializes a new instance of the IRC client with a User and an IConnection implementation
@@ -68,98 +92,22 @@ namespace NetIRC
             Queries = new QueryCollection();
             Peers = new UserCollection();
 
-            EventHub = new EventHub(this);
-            InitializeDefaultEventHubEvents();
+            messageHandlerContainer = new MessageHandlerContainer(this);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the IRC client with a User, password and an IConnection implementation
+        /// </summary>
+        /// <param name="user">User who wishes to connect to the server</param>
+        /// <param name="password">Password to use when connecting to the server</param>
+        /// <param name="connection">IConnection implementation</param>
         public Client(User user, string password, IConnection connection)
             : this(user, connection)
         {
             this.password = password;
         }
 
-        private void InitializeDefaultEventHubEvents()
-        {
-            EventHub.Ping += EventHub_Ping;
-            EventHub.Join += EventHub_Join;
-            EventHub.Part += EventHub_Part;
-            EventHub.Quit += EventHub_Quit;
-            EventHub.PrivMsg += EventHub_PrivMsg;
-            EventHub.RplNamReply += EventHub_RplNamReply;
-            EventHub.Nick += EventHub_Nick;
-        }
-
-        private void EventHub_Nick(Client client, IRCMessageEventArgs<NickMessage> e)
-        {
-            var user = Peers.GetUser(e.IRCMessage.OldNick);
-            user.Nick = e.IRCMessage.NewNick;
-        }
-
-        private void EventHub_PrivMsg(Client client, IRCMessageEventArgs<PrivMsgMessage> e)
-        {
-            var user = Peers.GetUser(e.IRCMessage.From);
-            var message = new ChatMessage(user, e.IRCMessage.Message);
-
-            if (e.IRCMessage.IsChannelMessage)
-            {
-                var channel = Channels.GetChannel(e.IRCMessage.To);
-                channel.Messages.Add(message);
-            }
-            else
-            {
-                var query = Queries.GetQuery(user);
-                query.Messages.Add(message);
-            }
-        }
-
-        private void EventHub_RplNamReply(Client client, IRCMessageEventArgs<RplNamReplyMessage> e)
-        {
-            var channel = Channels.GetChannel(e.IRCMessage.Channel);
-            foreach (var nick in e.IRCMessage.Nicks)
-            {
-                var user = Peers.GetUser(nick.Key);
-                if (!channel.Users.Any(u => u.User.Nick == nick.Key))
-                {
-                    channel.AddUser(user, nick.Value);
-                }
-            }
-        }
-
-        private void EventHub_Quit(Client client, IRCMessageEventArgs<QuitMessage> e)
-        {
-            foreach (var channel in Channels)
-            {
-                var user = channel.Users.FirstOrDefault(u => u.Nick == e.IRCMessage.Nick);
-                if (user != null)
-                {
-                    channel.Users.Remove(user);
-                }
-            }
-        }
-
-        private void EventHub_Part(Client client, IRCMessageEventArgs<PartMessage> e)
-        {
-            var channel = Channels.GetChannel(e.IRCMessage.Channel);
-            channel.RemoveUser(e.IRCMessage.Nick);
-        }
-
-        private void EventHub_Join(Client client, IRCMessageEventArgs<JoinMessage> e)
-        {
-            var channel = Channels.GetChannel(e.IRCMessage.Channel);
-            if (e.IRCMessage.Nick != User.Nick)
-            {
-                var user = Peers.GetUser(e.IRCMessage.Nick);
-                channel.AddUser(user, string.Empty);
-            }
-        }
-
-        private async void EventHub_Ping(object sender, IRCMessageEventArgs<PingMessage> e)
-        {
-            await SendAsync(new PongMessage(e.IRCMessage.Target))
-                .ConfigureAwait(false);
-        }
-
-        private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
+        private async void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.Data))
             {
@@ -174,9 +122,8 @@ namespace NetIRC
 
             OnIRCMessageParsed?.Invoke(this, parsedIRCMessage);
 
-            var serverMessage = IRCMessage.Create(parsedIRCMessage);
-
-            serverMessage?.TriggerEvent(EventHub);
+            await messageHandlerContainer.HandleAsync(parsedIRCMessage)
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -227,6 +174,25 @@ namespace NetIRC
         public void Dispose()
         {
             connection.Dispose();
+        }
+
+        /// <summary>
+        /// Adds a custom message handler of the type specified in TCustomMessageHandler
+        /// </summary>
+        /// <typeparam name="TCustomMessageHandler">The type of the custom message handler to add.</typeparam>
+        public void RegisterCustomMessageHandler<TCustomMessageHandler>()
+            where TCustomMessageHandler : ICustomHandler
+        {
+            messageHandlerContainer.RegisterCustomMessageHandler(typeof(TCustomMessageHandler));
+        }
+
+        /// <summary>
+        /// Adds all custom message handlers present in a specific assembly
+        /// </summary>
+        /// <param name="assembly">The assembly containing custom message handlers to add.</param>
+        public void RegisterCustomMessageHandlers(Assembly assembly)
+        {
+            messageHandlerContainer.RegisterCustomMessageHandlers(assembly);
         }
     }
 }

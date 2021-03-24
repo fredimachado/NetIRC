@@ -12,7 +12,7 @@ namespace NetIRC
         {
             var query = Items.FirstOrDefault(q => q.User.Nick == user.Nick);
 
-            if (query == null)
+            if (query is null)
             {
                 query = new Query(user);
                 Add(query);

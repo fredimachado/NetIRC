@@ -12,7 +12,7 @@ namespace NetIRC
         {
             var channel = Items.FirstOrDefault(c => c.Name == name);
 
-            if (channel == null)
+            if (channel is null)
             {
                 channel = new Channel(name);
                 Add(channel);

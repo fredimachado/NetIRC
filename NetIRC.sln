@@ -7,6 +7,28 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC", "src\NetIRC\NetIRC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DD8B0777-C0B2-40D4-88C7-93DB8100FA5A}"
 	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC.Tests", "tests\NetIRC.Tests\NetIRC.Tests.csproj", "{736219C1-A67F-4DD5-A39D-3BEC57CEB089}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8639025F-DAE7-45E3-8AC9-D9A465DB8C53}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC.ConsoleCli", "samples\NetIRC.ConsoleCli\NetIRC.ConsoleCli.csproj", "{4898A6A6-2C2D-4B91-B2E3-2BF86412BF74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{7E4B26E3-5FC6-4384-85AE-4E48198A041A}"
+	ProjectSection(SolutionItems) = preProject
+		Build.ps1 = Build.ps1
+		.github\workflows\ci.yml = .github\workflows\ci.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CABFA839-B58A-46D9-B070-6E81DAEEFDF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{13935FDE-4AEA-4703-B142-EA9A47D21562}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "protocol", "protocol", "{1D0216A0-881C-4A66-B064-5568C1D2D312}"
+	ProjectSection(SolutionItems) = preProject
 		docs\ctcp.txt = docs\ctcp.txt
 		docs\dcc-resume.txt = docs\dcc-resume.txt
 		docs\irc2numericlist.html = docs\irc2numericlist.html
@@ -16,10 +38,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DD8B0777-C
 		docs\rfc2812.txt = docs\rfc2812.txt
 		docs\rizon_raw_data.txt = docs\rizon_raw_data.txt
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC.ConsoleCli", "src\NetIRC.ConsoleCli\NetIRC.ConsoleCli.csproj", "{D170A1CE-6E58-4FC3-9A4D-AA49E3695258}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetIRC.Tests", "tests\NetIRC.Tests\NetIRC.Tests.csproj", "{736219C1-A67F-4DD5-A39D-3BEC57CEB089}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,17 +49,23 @@ Global
 		{710FB175-CE6D-4480-81F4-57330F5DB038}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{710FB175-CE6D-4480-81F4-57330F5DB038}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{710FB175-CE6D-4480-81F4-57330F5DB038}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D170A1CE-6E58-4FC3-9A4D-AA49E3695258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D170A1CE-6E58-4FC3-9A4D-AA49E3695258}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D170A1CE-6E58-4FC3-9A4D-AA49E3695258}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D170A1CE-6E58-4FC3-9A4D-AA49E3695258}.Release|Any CPU.Build.0 = Release|Any CPU
 		{736219C1-A67F-4DD5-A39D-3BEC57CEB089}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{736219C1-A67F-4DD5-A39D-3BEC57CEB089}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{736219C1-A67F-4DD5-A39D-3BEC57CEB089}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{736219C1-A67F-4DD5-A39D-3BEC57CEB089}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4898A6A6-2C2D-4B91-B2E3-2BF86412BF74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4898A6A6-2C2D-4B91-B2E3-2BF86412BF74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4898A6A6-2C2D-4B91-B2E3-2BF86412BF74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4898A6A6-2C2D-4B91-B2E3-2BF86412BF74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{710FB175-CE6D-4480-81F4-57330F5DB038} = {CABFA839-B58A-46D9-B070-6E81DAEEFDF3}
+		{736219C1-A67F-4DD5-A39D-3BEC57CEB089} = {13935FDE-4AEA-4703-B142-EA9A47D21562}
+		{4898A6A6-2C2D-4B91-B2E3-2BF86412BF74} = {8639025F-DAE7-45E3-8AC9-D9A465DB8C53}
+		{1D0216A0-881C-4A66-B064-5568C1D2D312} = {DD8B0777-C0B2-40D4-88C7-93DB8100FA5A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8F3D618A-89AB-46A1-B9CB-507703C255E5}

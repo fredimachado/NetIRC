@@ -8,10 +8,5 @@
         {
             Text = parsedMessage.Trailing;
         }
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnRplWelcome(new IRCMessageEventArgs<RplWelcomeMessage>(this));
-        }
     }
 }

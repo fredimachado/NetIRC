@@ -21,11 +21,6 @@ namespace NetIRC.Messages
             Message = text;
         }
 
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnNotice(new IRCMessageEventArgs<NoticeMessage>(this));
-        }
-
         public IEnumerable<string> Tokens => new[] { "NOTICE", Target, Message };
     }
 }

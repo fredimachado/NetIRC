@@ -20,6 +20,9 @@ namespace NetIRC
         private IRCCommand ircCommand = IRCCommand.UNKNOWN;
         private IRCNumericReply numericReply = IRCNumericReply.UNKNOWN;
 
+        private readonly static char[] TrailingPrefix = { ' ', ':' };
+        private readonly static char[] Space = { ' ' };
+
         /// <summary>
         /// The prefix of the message
         /// </summary>
@@ -62,7 +65,7 @@ namespace NetIRC
         public ParsedIRCMessage(string rawData)
         {
             Raw = rawData;
-            Parse(rawData);
+            Parse(rawData.AsSpan());
             ParseIRCEnums();
         }
 
@@ -87,29 +90,29 @@ namespace NetIRC
             }
         }
 
-        private void Parse(string rawData)
+        private void Parse(ReadOnlySpan<char> rawData)
         {
             var trailing = string.Empty;
             var indexOfNextSpace = 0;
 
             if (RawDataHasPrefix)
             {
-                indexOfNextSpace = rawData.IndexOf(' ');
-                var prefixData = rawData.Substring(1, indexOfNextSpace - 1);
-                prefix = new IRCPrefix(prefixData);
-                rawData = rawData.Substring(indexOfNextSpace + 1);
+                indexOfNextSpace = rawData.IndexOf(Space);
+                var prefixData = rawData.Slice(1, indexOfNextSpace - 1);
+                prefix = new IRCPrefix(prefixData.ToString());
+                rawData = rawData.Slice(indexOfNextSpace + 1);
             }
 
-            var indexOfTrailingStart = rawData.IndexOf(" :");
+            var indexOfTrailingStart = rawData.IndexOf(TrailingPrefix);
             if (indexOfTrailingStart > -1)
             {
-                trailing = rawData.Substring(indexOfTrailingStart + 2);
-                rawData = rawData.Substring(0, indexOfTrailingStart);
+                trailing = rawData.Slice(indexOfTrailingStart + 2).ToString();
+                rawData = rawData.Slice(0, indexOfTrailingStart);
             }
 
             if (DataDoesNotContainSpaces(rawData))
             {
-                command = rawData;
+                command = rawData.ToString();
 
                 if (!string.IsNullOrEmpty(trailing))
                 {
@@ -119,11 +122,22 @@ namespace NetIRC
                 return;
             }
 
-            indexOfNextSpace = rawData.IndexOf(' ');
-            command = rawData.Remove(indexOfNextSpace);
-            rawData = rawData.Substring(indexOfNextSpace + 1);
+            indexOfNextSpace = rawData.IndexOf(Space);
+            command = rawData.Slice(0, indexOfNextSpace).ToString();
+            rawData = rawData.Slice(indexOfNextSpace + 1);
 
-            var parameters = new List<string>(rawData.Split(' '));
+            var parameters = new List<string>();
+
+            while ((indexOfNextSpace = rawData.IndexOf(Space)) > -1)
+            {
+                parameters.Add(rawData.Slice(0, indexOfNextSpace).ToString());
+                rawData = rawData.Slice(indexOfNextSpace + 1);
+            }
+
+            if (!rawData.IsWhiteSpace())
+            {
+                parameters.Add(rawData.ToString());
+            }
 
             if (!string.IsNullOrEmpty(trailing))
             {
@@ -135,7 +149,7 @@ namespace NetIRC
 
         private bool RawDataHasPrefix => Raw.StartsWith(":");
 
-        private bool DataDoesNotContainSpaces(string data) => !data.Contains(" ");
+        private bool DataDoesNotContainSpaces(ReadOnlySpan<char> data) => !data.Contains(Space, StringComparison.InvariantCultureIgnoreCase);
 
         private bool IsNumericReply(string command) => command.Length == 3 && command.ToCharArray().All(char.IsDigit);
 

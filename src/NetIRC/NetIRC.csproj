@@ -5,7 +5,7 @@
     <Copyright>Copyright Fredi Machado</Copyright>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <Authors>Fredi Machado</Authors>
-    <TargetFrameworks>net46;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <AssemblyName>NetIRC</AssemblyName>
     <PackageId>NetIRC</PackageId>
     <PackageTags>irc</PackageTags>
@@ -30,6 +30,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="MinVer" Version="2.5.0" PrivateAssets="All" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
 
 </Project>

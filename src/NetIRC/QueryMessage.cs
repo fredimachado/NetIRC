@@ -3,15 +3,15 @@
 namespace NetIRC
 {
     /// <summary>
-    /// Represents a chat message
+    /// Represents a query message (private message)
     /// </summary>
-    public class ChatMessage : EventArgs
+    public class QueryMessage : EventArgs
     {
         public User User { get; }
         public string Text { get; }
         public DateTime Date { get; }
 
-        public ChatMessage(User user, string text)
+        public QueryMessage(User user, string text)
         {
             User = user;
             Text = text;

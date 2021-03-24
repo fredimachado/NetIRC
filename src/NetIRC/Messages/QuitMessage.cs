@@ -19,10 +19,5 @@ namespace NetIRC.Messages
         }
 
         public IEnumerable<string> Tokens => new[] { "QUIT", Message };
-
-        public void TriggerEvent(EventHub eventHub)
-        {
-            eventHub.OnQuit(new IRCMessageEventArgs<QuitMessage>(this));
-        }
     }
 }

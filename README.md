@@ -6,7 +6,7 @@ NetIRC
 [![NuGet](https://img.shields.io/nuget/vpre/NetIRC.svg)](https://www.nuget.org/packages/NetIRC)
 [![MyGet](https://img.shields.io/myget/netirc/v/NetIRC.svg)](https://www.myget.org/feed/netirc/package/nuget/NetIRC)
 
-Simple Portable IRC Client Library written in C# targeting .NETStandard 1.3.
+Simple Portable IRC Client Library written in C# targeting .NETStandard 2.0 and .NET Framework 4.6.1.
 
 ## Installing NetIRC
 Install [NetIRC with NuGet](https://www.nuget.org/packages/NetIRC):
@@ -16,6 +16,11 @@ Install [NetIRC with NuGet](https://www.nuget.org/packages/NetIRC):
 Or via the .NET Core CLI:
 
     dotnet add package NetIRC
+
+## Quick Start
+Check `samples\NetIRC.ConsoleCli` project. It's a simple and heavily commented IRC Bot implementation.
+
+Documentation will be created soon.
 
 ### Pre-release
 You can download [pre-release packages in MyGet](https://www.myget.org/feed/netirc/package/nuget/NetIRC).
