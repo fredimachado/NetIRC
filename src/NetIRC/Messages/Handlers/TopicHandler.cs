@@ -2,10 +2,9 @@
 
 namespace NetIRC.Messages.Handlers
 {
-    [Command("332")]
-    public class RplTopicHandler : MessageHandler<RplTopicMessage>
+    public class TopicHandler : MessageHandler<TopicMessage>
     {
-        public override Task HandleAsync(RplTopicMessage serverMessage, Client client)
+        public override Task HandleAsync(TopicMessage serverMessage, Client client)
         {
             var channel = client.Channels.GetChannel(serverMessage.Channel);
             channel.SetTopic(serverMessage.Topic);
