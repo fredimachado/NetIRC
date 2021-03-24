@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NetIRC.Connection;
 using NetIRC.Messages;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -45,7 +46,7 @@ namespace NetIRC.Tests
 
             client.OnRawDataReceived += (c, d) => rawReceived = d;
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.Equal(raw, rawReceived);
         }
@@ -57,7 +58,7 @@ namespace NetIRC.Tests
 
             client.OnRawDataReceived += (c, d) => { triggered = true; };
 
-            RaiseDataReceived(mockConnection, client, "\r\n");
+            RaiseDataReceived("\r\n");
 
             Assert.False(triggered);
         }
@@ -68,7 +69,7 @@ namespace NetIRC.Tests
             var data = "xyz.com";
             var raw = $"PING :{data}";
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             mockConnection.Verify(c => c.SendAsync($"PONG {data}"), Times.Once());
         }
@@ -111,7 +112,7 @@ namespace NetIRC.Tests
 
             client.OnIRCMessageParsed += (c, m) => ircMessage = m;
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.Equal("irc.rizon.io", ircMessage.Prefix.From);
             Assert.Equal("439", ircMessage.Command);
@@ -124,7 +125,7 @@ namespace NetIRC.Tests
         {
             var raw = ":from PRIVMSG to :message";
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.Single(client.Peers);
             Assert.Equal("from", client.Peers[0].Nick);
@@ -135,7 +136,7 @@ namespace NetIRC.Tests
         {
             var raw = ":from PRIVMSG to :message";
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.Single(client.Queries);
             Assert.Equal("from", client.Queries[0].Nick);
@@ -150,12 +151,13 @@ namespace NetIRC.Tests
             var raw = $":{from} PRIVMSG to :{message}";
             var user = client.Peers.GetUser(from);
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             var messages = client.Queries[0].Messages;
             Assert.Single(messages);
             Assert.Equal(user, messages[0].User);
             Assert.Equal(message, messages[0].Text);
+            Assert.Equal(DateTime.Now, messages[0].Date, TimeSpan.FromSeconds(1));
         }
 
         [Fact]
@@ -168,12 +170,14 @@ namespace NetIRC.Tests
             var user = client.Peers.GetUser(from);
             var channel = client.Channels.GetChannel(channelName);
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             var messages = channel.Messages;
             Assert.Single(messages);
             Assert.Equal(user, messages[0].User);
+            Assert.Equal(channelName, messages[0].Channel.Name);
             Assert.Equal(message, messages[0].Text);
+            Assert.Equal(DateTime.Now, messages[0].Date, TimeSpan.FromSeconds(1));
         }
 
         [Fact]
@@ -186,7 +190,7 @@ namespace NetIRC.Tests
             var ircChannel = client.Channels.GetChannel(channel);
             ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.Empty(ircChannel.Users);
         }
@@ -198,7 +202,7 @@ namespace NetIRC.Tests
             var channel = "#channel";
             var raw = $":{nick} JOIN {channel}";
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.Equal(channel, client.Channels[0].Name);
             Assert.Equal(nick, client.Channels[0].Users.ElementAt(0).Nick);
@@ -211,7 +215,7 @@ namespace NetIRC.Tests
             var nick2 = "Fredi_";
             var raw = $":irc.server.net 353 NetIRCConsoleClient = #NetIRC :{nick1} @{nick2}";
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             var channel = client.Channels[0];
             Assert.Equal(2, channel.Users.Count);
@@ -232,7 +236,7 @@ namespace NetIRC.Tests
             ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
             ircChannel.Users.Add(new ChannelUser(new User(nick2), string.Empty));
 
-            RaiseDataReceived(mockConnection, client, $":{nick} PART {channel}");
+            RaiseDataReceived($":{nick} PART {channel}");
 
             Assert.Single(ircChannel.Users);
             Assert.Equal(nick2, ircChannel.Users[0].Nick);
@@ -247,7 +251,7 @@ namespace NetIRC.Tests
             var ircChannel = client.Channels.GetChannel("#channel");
             ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.Empty(ircChannel.Users);
         }
@@ -260,7 +264,7 @@ namespace NetIRC.Tests
 
             client.RegistrationCompleted += (c, a) => completed = true;
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.True(completed);
         }
@@ -274,7 +278,7 @@ namespace NetIRC.Tests
 
             client.Peers.Add(new User(oldNick));
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.Equal(newNick, client.Peers[0].Nick);
         }
@@ -290,14 +294,71 @@ namespace NetIRC.Tests
             var user = client.Peers.GetUser(oldNick);
             user.PropertyChanged += (s, e) => propertyName = e.PropertyName;
 
-            RaiseDataReceived(mockConnection, client, raw);
+            RaiseDataReceived(raw);
 
             Assert.Equal("Nick", propertyName);
         }
 
-        private void RaiseDataReceived(Mock<IConnection> mockConnection, Client client, string raw)
+        [Fact]
+        public void CustomMessageHandlerRegistration_ShouldWork()
+        {
+            NoticeHandler.Called = false;
+            client.RegisterCustomMessageHandler<NoticeHandler>();
+
+            RaiseDataReceived(":irc.server.net NOTICE AUTH :*** Looking up your hostname...");
+
+            Assert.True(NoticeHandler.Called);
+        }
+
+        [Fact]
+        public void CustomMessageHandlerRegistrationWithAttribute_ShouldWork()
+        {
+            EndOfMotdHandler.Called = false;
+            client.RegisterCustomMessageHandler<EndOfMotdHandler>();
+
+            RaiseDataReceived(":irc.server.net 376 netIRCTest :End of /MOTD command.");
+
+            Assert.True(EndOfMotdHandler.Called);
+        }
+
+        [Fact]
+        public void CustomMessageHandlerAssemblyRegistration_ShouldWork()
+        {
+            NoticeHandler.Called = false;
+            EndOfMotdHandler.Called = false;
+            client.RegisterCustomMessageHandlers(typeof(ClientTests).Assembly);
+
+            RaiseDataReceived(":irc.server.net NOTICE AUTH :*** Looking up your hostname...");
+            RaiseDataReceived(":irc.server.net 376 netIRCTest :End of /MOTD command.");
+
+            Assert.True(NoticeHandler.Called);
+            Assert.True(EndOfMotdHandler.Called);
+        }
+
+        private void RaiseDataReceived(string raw)
         {
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
+        }
+    }
+
+    public class NoticeHandler : CustomMessageHandler<NoticeMessage>
+    {
+        public static bool Called;
+        public override Task HandleAsync(NoticeMessage serverMessage, Client client)
+        {
+            Called = true;
+            return Task.CompletedTask;
+        }
+    }
+
+    [Command("376")]
+    public class EndOfMotdHandler : CustomMessageHandler<NoticeMessage>
+    {
+        public static bool Called;
+        public override Task HandleAsync(NoticeMessage serverMessage, Client client)
+        {
+            Called = true;
+            return Task.CompletedTask;
         }
     }
 }

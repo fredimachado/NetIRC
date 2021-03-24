@@ -234,5 +234,21 @@ namespace NetIRC.Tests
             Assert.Equal(oldNick, ircMessage.OldNick);
             Assert.Equal(newNick, ircMessage.NewNick);
         }
+
+        [Fact]
+        public async Task HandlesTopicMessage()
+        {
+            var channel = "#NetIRC";
+            var topic = "NetIRC is nice!";
+            var raw = $":irc.server.net TOPIC {channel} :{topic}";
+            var parsedIRCMessage = new ParsedIRCMessage(raw);
+
+            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            var handler = Assert.IsType<TopicHandler>(result);
+            var ircMessage = Assert.IsType<TopicMessage>(handler.Message);
+            Assert.Equal(channel, ircMessage.Channel);
+            Assert.Equal(topic, ircMessage.Topic);
+        }
     }
 }

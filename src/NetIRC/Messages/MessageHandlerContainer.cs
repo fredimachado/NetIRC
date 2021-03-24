@@ -19,15 +19,19 @@ namespace NetIRC
         private const string HandlerNameSuffix = "Handler";
 
         internal MessageHandlerContainer(Client client)
+            : this(client, typeof(MessageHandlerContainer).Assembly)
+        {}
+
+        internal MessageHandlerContainer(Client client, Assembly assembly)
         {
             this.client = client;
 
-            RegisterDefaultMessageHandlers();
+            RegisterDefaultMessageHandlers(assembly);
         }
 
         public void RegisterCustomMessageHandler(Type type)
         {
-            if (!IsMessageHandler(type))
+            if (!IsCustomMessageHandler(type))
             {
                 throw new InvalidOperationException($"{type.Name} must implement IMessageHandler<TServerMessage>.");
             }
@@ -61,7 +65,7 @@ namespace NetIRC
         {
             var customHandlers = assembly
                 .GetExportedTypes()
-                .Where(t => t.BaseType.IsGenericType && !t.IsAbstract && t.BaseType.GetGenericTypeDefinition() == typeof(CustomMessageHandler<>));
+                .Where(t => IsCustomMessageHandler(t));
 
             foreach (var handler in customHandlers)
             {
@@ -69,11 +73,11 @@ namespace NetIRC
             }
         }
 
-        private void RegisterDefaultMessageHandlers()
+        private void RegisterDefaultMessageHandlers(Assembly assembly)
         {
-            var handlers = typeof(MessageHandlerContainer).Assembly
+            var handlers = assembly
                 .GetExportedTypes()
-                .Where(t => IsMessageHandler(t))
+                .Where(t => !t.IsInterface && !t.IsAbstract && t.BaseType.IsGenericType && t.BaseType.GetGenericTypeDefinition() == typeof(MessageHandler<>))
                 .SelectMany(t => t.GetInterfaces(), (parent, child) => new MessageHandler(parent, child.GetGenericArguments().First()))
                 .ToArray();
 
@@ -85,14 +89,12 @@ namespace NetIRC
             }
         }
 
-        private static bool IsMessageHandler(Type t)
+        private bool IsCustomMessageHandler(Type t)
         {
-            return t.GetInterfaces()
-                .Where(i => i.IsGenericType && !t.IsAbstract)
-                .Any(i => i.GetGenericTypeDefinition() == typeof(IMessageHandler<>));
+            return !t.IsInterface && !t.IsAbstract && t.BaseType.IsGenericType && t.BaseType.GetGenericTypeDefinition() == typeof(CustomMessageHandler<>);
         }
 
-        private static string GetCommand(MessageHandler handler)
+        private string GetCommand(MessageHandler handler)
         {
             var command = handler.HandlerType.GetCustomAttribute<CommandAttribute>()?.Command;
 

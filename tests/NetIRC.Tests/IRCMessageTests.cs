@@ -28,20 +28,35 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void PrivMsgMessageFromServer()
+        public void TestPrivMsgMessage()
         {
             var prefix = "Angel!wings@irc.org";
-            var command = "PRIVMSG";
             var target = "WiZ";
             var text = "Are you receiving this message ?";
-            var parsedIRCMessage = new ParsedIRCMessage($":{prefix} {command} {target} :{text}");
-            //var ircMessage = IRCMessage.Create(parsedIRCMessage);
+            var raw = $":{prefix} PRIVMSG {target} :{text}";
+            var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            //var privMsgMessage = Assert.IsType<PrivMsgMessage>(ircMessage);
+            var privMsgMessage = new PrivMsgMessage(parsedIRCMessage);
 
-            //Assert.Equal(prefix, privMsgMessage.Prefix.Raw);
-            //Assert.Equal(target, privMsgMessage.To);
-            //Assert.Equal(text, privMsgMessage.Message);
+            Assert.Equal(prefix, privMsgMessage.Prefix.Raw);
+            Assert.Equal(target, privMsgMessage.To);
+            Assert.Equal(text, privMsgMessage.Message);
+        }
+
+        [Fact]
+        public void TestNoticeMessage()
+        {
+            var from = "irc.server.net";
+            var target = "WiZ";
+            var text = "Are you receiving this message ?";
+            var raw = $":{from} NOTICE {target} :{text}";
+            var parsedIRCMessage = new ParsedIRCMessage(raw);
+
+            var noticeMessage = new NoticeMessage(parsedIRCMessage);
+
+            Assert.Equal(from, noticeMessage.From);
+            Assert.Equal(target, noticeMessage.Target);
+            Assert.Equal(text, noticeMessage.Message);
         }
 
         [Fact]
@@ -55,23 +70,6 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void NoticeMessageFromServer()
-        {
-            var from = "irc.server.net";
-            var command = "NOTICE";
-            var target = "WiZ";
-            var text = "Are you receiving this message ?";
-            var parsedIRCMessage = new ParsedIRCMessage($":{from} {command} {target} :{text}");
-            //var ircMessage = IRCMessage.Create(parsedIRCMessage);
-
-            //var privMsgMessage = Assert.IsType<NoticeMessage>(ircMessage);
-
-            //Assert.Equal(from, privMsgMessage.From);
-            //Assert.Equal(target, privMsgMessage.Target);
-            //Assert.Equal(text, privMsgMessage.Message);
-        }
-
-        [Fact]
         public void NoticeMessageFromClient()
         {
             var target = "WiZ";
@@ -79,20 +77,6 @@ namespace NetIRC.Tests
             var privMsgMessage = new NoticeMessage(target, message);
 
             Assert.Equal($"NOTICE {target} :{message}", privMsgMessage.ToString());
-        }
-
-        [Fact]
-        public void NickMessageFromServer()
-        {
-            var oldNick = "WiZ";
-            var newNick = "Kilroy";
-            var parsedIRCMessage = new ParsedIRCMessage($":{oldNick} NICK {newNick}");
-            //var ircMessage = IRCMessage.Create(parsedIRCMessage);
-
-            //var nickMessage = Assert.IsType<NickMessage>(ircMessage);
-
-            //Assert.Equal(oldNick, nickMessage.OldNick);
-            //Assert.Equal(newNick, nickMessage.NewNick);
         }
 
         [Fact]
@@ -115,20 +99,6 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void JoinMessageFromServer()
-        {
-            var nick = "WiZ";
-            var channel = "#Twilight_zone";
-            var parsedIRCMessage = new ParsedIRCMessage($":{nick} JOIN {channel}");
-            //var ircMessage = IRCMessage.Create(parsedIRCMessage);
-
-            //var joinMessage = Assert.IsType<JoinMessage>(ircMessage);
-
-            //Assert.Equal(nick, joinMessage.Nick);
-            //Assert.Equal(channel, joinMessage.Channel);
-        }
-
-        [Fact]
         public void JoinMessageTokens()
         {
             var channel = "#chan";
@@ -148,58 +118,12 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void PartMessageFromServer()
-        {
-            var nick = "WiZ";
-            var channel = "#NetIRC";
-            var parsedIRCMessage = new ParsedIRCMessage($":{nick}!~user@x.y.z PART {channel}");
-            //var ircMessage = IRCMessage.Create(parsedIRCMessage);
-
-            //var partMessage = Assert.IsType<PartMessage>(ircMessage);
-
-            //Assert.Equal(nick, partMessage.Nick);
-            //Assert.Equal(channel, partMessage.Channel);
-        }
-
-        [Fact]
         public void PartMessageTokens()
         {
             var channel = "#chan";
             var joinMessage = new PartMessage(channel);
 
             Assert.Equal($"PART {channel}", joinMessage.ToString());
-        }
-
-        [Fact]
-        public void RplNamReplyMessage()
-        {
-            var channel = "#NetIRC";
-            var nick1 = "NetIRCConsoleClient";
-            var nick2 = "Fredi_";
-            var parsedIRCMessage = new ParsedIRCMessage($":irc.server.net 353 NetIRCConsoleClient = {channel} :{nick1} @{nick2}");
-            //var ircMessage = IRCMessage.Create(parsedIRCMessage);
-
-            //var rplNamReplyMessage = Assert.IsType<RplNamReplyMessage>(ircMessage);
-
-            //Assert.Equal(channel, rplNamReplyMessage.Channel);
-            //Assert.Equal(2, rplNamReplyMessage.Nicks.Count);
-            //Assert.Equal(nick1, rplNamReplyMessage.Nicks.Keys.ElementAt(0));
-            //Assert.Equal(nick2, rplNamReplyMessage.Nicks.Keys.ElementAt(1));
-            //Assert.Equal("@", rplNamReplyMessage.Nicks[nick2]);
-        }
-
-        [Fact]
-        public void QuitMessageFromServer()
-        {
-            var nick = "WiZ";
-            var message = "Out for lunch";
-            var parsedIRCMessage = new ParsedIRCMessage($":{nick}!~user@x.y.z QUIT :{message}");
-            //var ircMessage = IRCMessage.Create(parsedIRCMessage);
-
-            //var quitMessage = Assert.IsType<QuitMessage>(ircMessage);
-
-            //Assert.Equal(nick, quitMessage.Nick);
-            //Assert.Equal(message, quitMessage.Message);
         }
 
         [Fact]
@@ -217,6 +141,16 @@ namespace NetIRC.Tests
             var testMessage = new TestMessage() as IRCMessage;
 
             Assert.Equal("TEST", testMessage.ToString());
+        }
+
+        [Fact]
+        public void TopicMessageTokens()
+        {
+            var channel = "#NetIRC";
+            var topic = "NetIRC is nice!";
+            var topicMessage = new TopicMessage(channel, topic);
+
+            Assert.Equal($"TOPIC {channel} :{topic}", topicMessage.ToString());
         }
 
         [Fact]

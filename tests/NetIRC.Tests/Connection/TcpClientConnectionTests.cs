@@ -68,6 +68,32 @@ namespace NetIRC.Tests.Connection
         }
 
         [Fact]
+        public async Task WhenCatchingException_ShouldTriggerDisconnectedEvent()
+        {
+            var pause = new ManualResetEvent(false);
+
+            using (var tcpClient = new TcpClientConnection())
+            {
+                tcpClient.Disconnected += (s, e) => pause.Set();
+                tcpClient.DataReceived += (s, e) => throw new System.Exception(); ;
+
+                await tcpClient.ConnectAsync(HOST, PORT);
+
+                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                {
+                    using (var stream = new StreamWriter(server.GetStream()))
+                    {
+                        await stream.WriteLineAsync("test");
+                        await stream.FlushAsync();
+
+                        // Wait for the client to receive the data if necessary
+                        Assert.True(pause.WaitOne(500));
+                    }
+                }
+            }
+        }
+
+        [Fact]
         public async Task WhenReceivingDataWithNoDataReceivedHandler_ItShouldBeOK()
         {
             using (var tcpClient = new TcpClientConnection())
