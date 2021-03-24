@@ -18,7 +18,11 @@ namespace NetIRC.ConsoleCli
 
         static void Main(string[] args)
         {
-            using (client = new Client(new User(nickName, "NetIRC"), new TcpClientConnection()))
+            // User connecting to the IRC server
+            var user = new User(nickName, "NetIRC");
+
+            // Create IRC client instance, wrapped in a using statement so it gets properly disposed (IDisposable pattern)
+            using (client = new Client(user))
             {
                 client.OnRawDataReceived += Client_OnRawDataReceived;
                 client.Queries.CollectionChanged += Queries_CollectionChanged;

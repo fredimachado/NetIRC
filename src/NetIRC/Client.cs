@@ -20,7 +20,7 @@ namespace NetIRC
         /// <summary>
         /// Represents the user used to connect to the server
         /// </summary>
-        public User User { get;}
+        public User User { get; }
 
         /// <summary>
         /// An observable collection representing the channels we joined
@@ -60,6 +60,23 @@ namespace NetIRC
         }
 
         /// <summary>
+        /// Initializes a new instance of the IRC client with a User and a default IConnection implementation (TcpClientConnection)
+        /// </summary>
+        /// <param name="user">User who wishes to connect to the server</param>
+        public Client(User user)
+            : this(user, new TcpClientConnection())
+        {}
+
+        /// <summary>
+        /// Initializes a new instance of the IRC client with a User, password and a default IConnection implementation (TcpClientConnection)
+        /// </summary>
+        /// <param name="user">User who wishes to connect to the server</param>
+        /// <param name="password">Password to use when connecting to the server</param>
+        public Client(User user, string password)
+            : this(user, password, new TcpClientConnection())
+        { }
+
+        /// <summary>
         /// Initializes a new instance of the IRC client with a User and an IConnection implementation
         /// </summary>
         /// <param name="user">User who wishes to connect to the server</param>
@@ -78,6 +95,12 @@ namespace NetIRC
             messageHandlerContainer = new MessageHandlerContainer(this);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the IRC client with a User, password and an IConnection implementation
+        /// </summary>
+        /// <param name="user">User who wishes to connect to the server</param>
+        /// <param name="password">Password to use when connecting to the server</param>
+        /// <param name="connection">IConnection implementation</param>
         public Client(User user, string password, IConnection connection)
             : this(user, connection)
         {
