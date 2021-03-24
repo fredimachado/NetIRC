@@ -12,13 +12,13 @@ namespace NetIRC
         public string Topic { get; private set; }
 
         public ObservableCollection<ChannelUser> Users { get; }
-        public ObservableCollection<ChatMessage> Messages { get; }
+        public ObservableCollection<ChannelMessage> Messages { get; }
 
         public Channel(string name)
         {
             Name = name;
             Users = new ObservableCollection<ChannelUser>();
-            Messages = new ObservableCollection<ChatMessage>();
+            Messages = new ObservableCollection<ChannelMessage>();
         }
 
         internal void AddUser(User user, string status)

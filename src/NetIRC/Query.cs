@@ -10,12 +10,12 @@ namespace NetIRC
         public User User { get; }
         public string Nick => User.Nick;
 
-        public ObservableCollection<ChatMessage> Messages { get; }
+        public ObservableCollection<QueryMessage> Messages { get; }
 
         public Query(User user)
         {
             User = user;
-            Messages = new ObservableCollection<ChatMessage>();
+            Messages = new ObservableCollection<QueryMessage>();
         }
     }
 }
