@@ -58,7 +58,9 @@ namespace NetIRC.ConsoleCli
         {
             if (verbose)
             {
+#pragma warning disable CS0162 // Suppress warning: Unreachable code detected
                 WriteLine(rawData);
+#pragma warning restore CS0162 // Suppress warning: Unreachable code detected
             }
         }
 
