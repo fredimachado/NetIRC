@@ -31,6 +31,8 @@ namespace NetIRC.Tests
 
             Assert.Equal(nickMessage, await stream.ReadLineAsync());
             Assert.Equal(userMessage, await stream.ReadLineAsync());
+
+            tcpListener.Stop();
         }
 
         [Fact]
@@ -52,6 +54,8 @@ namespace NetIRC.Tests
             using var stream = new StreamReader(server.GetStream());
 
             Assert.Equal(passMessage, await stream.ReadLineAsync());
+
+            tcpListener.Stop();
         }
     }
 }
