@@ -1,10 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 
 namespace NetIRC.Messages
 {
     public abstract class IRCMessage
     {
+        /// <summary>
+        /// When this IRC message was created
+        /// </summary>
+        public DateTime CreatedDate { get; } = DateTime.Now;
+
         public override string ToString()
         {
             var clientMessage = this as IClientMessage;
