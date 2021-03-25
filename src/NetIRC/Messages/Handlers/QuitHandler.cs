@@ -9,11 +9,7 @@ namespace NetIRC.Messages.Handlers
         {
             foreach (var channel in client.Channels)
             {
-                var user = channel.Users.FirstOrDefault(u => u.Nick == serverMessage.Nick);
-                if (user != null)
-                {
-                    channel.Users.Remove(user);
-                }
+                channel.RemoveUser(serverMessage.Nick);
             }
 
             return Task.CompletedTask;

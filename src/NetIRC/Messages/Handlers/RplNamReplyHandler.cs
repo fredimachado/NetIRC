@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace NetIRC.Messages.Handlers
 {
@@ -12,7 +11,7 @@ namespace NetIRC.Messages.Handlers
             foreach (var nick in serverMessage.Nicks)
             {
                 var user = client.Peers.GetUser(nick.Key);
-                if (!channel.Users.Any(u => u.User.Nick == nick.Key))
+                if (channel.GetUser(nick.Key) is null)
                 {
                     channel.AddUser(user, nick.Value);
                 }

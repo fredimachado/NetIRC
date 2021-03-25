@@ -11,7 +11,7 @@ namespace NetIRC
     {
         public User GetUser(string nick)
         {
-            var user = Items.FirstOrDefault(u => u.Nick == nick);
+            var user = Items.FirstOrDefault(u => string.Equals(u.Nick, nick, StringComparison.InvariantCultureIgnoreCase));
 
             if (user is null)
             {

@@ -10,7 +10,7 @@ namespace NetIRC.Messages.Handlers
             if (serverMessage.Nick != client.User.Nick)
             {
                 var user = client.Peers.GetUser(serverMessage.Nick);
-                channel.AddUser(user, string.Empty);
+                channel.AddUser(user);
             }
 
             return Task.CompletedTask;
