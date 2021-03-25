@@ -196,11 +196,19 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void TestClientMessageWithoutTokensShouldReturnEmptyToString()
+        public void TestClientMessageWithoutTokens_ShouldReturnEmptyToString()
         {
             var testMessage = new TestClientMessage();
 
             Assert.Equal(string.Empty, testMessage.ToString());
+        }
+
+        [Fact]
+        public void TestIRCMessageWithoutImplementingIClientMessage_ShouldReturnBaseToString()
+        {
+            var testMessage = new TestIRCMessage();
+
+            Assert.Equal(nameof(TestIRCMessage), testMessage.ToString());
         }
 
         [Fact]
@@ -308,5 +316,10 @@ namespace NetIRC.Tests
     public class TestClientMessage : IRCMessage, IClientMessage
     {
         IEnumerable<string> IClientMessage.Tokens => Enumerable.Empty<string>();
+    }
+
+    public class TestIRCMessage : IRCMessage
+    {
+        public override string ToString() => nameof(TestIRCMessage);
     }
 }
