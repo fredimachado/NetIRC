@@ -29,11 +29,11 @@ namespace NetIRC.Messages
 
             var lastIndex = tokens.Length - 1;
 
-            var sb = new StringBuilder();
+            var sb = new StringBuilder(32);
 
             for (int i = 0; i < tokens.Length; i++)
             {
-                if (i == lastIndex && tokens[i].Contains(" "))
+                if (i == lastIndex && tokens[i].Contains(' '))
                 {
                     sb.Append(':');
                 }
