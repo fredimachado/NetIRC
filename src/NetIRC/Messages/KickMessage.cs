@@ -5,7 +5,7 @@
         public string KickedBy { get; }
         public string Channel { get; }
         public string Nick { get; }
-        public string Comment { get; set; }
+        public string Comment { get; }
 
         public KickMessage(ParsedIRCMessage parsedMessage)
         {
