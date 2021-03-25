@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace NetIRC
@@ -19,6 +20,11 @@ namespace NetIRC
             Name = name;
             Users = new ObservableCollection<ChannelUser>();
             Messages = new ObservableCollection<ChannelMessage>();
+        }
+
+        internal void AddUser(User user)
+        {
+            AddUser(user, string.Empty);
         }
 
         internal void AddUser(User user, string status)
