@@ -34,13 +34,19 @@ namespace NetIRC
 
         internal void RemoveUser(string nick)
         {
-            var user = Users.FirstOrDefault(u => u.Nick == nick);
-            Users.Remove(user);
+            var user = GetUser(nick);
+            if (user != null)
+            {
+                Users.Remove(user);
+            }
         }
 
         internal void SetTopic(string topic)
         {
             Topic = topic;
         }
+
+        public ChannelUser GetUser(string nick)
+            => Users.FirstOrDefault(u => string.Equals(u.Nick, nick, StringComparison.InvariantCultureIgnoreCase));
     }
 }
