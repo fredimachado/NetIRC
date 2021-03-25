@@ -270,6 +270,14 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void TriggeringOnRegistrationCompletedEventWithNoHandler_ShouldWork()
+        {
+            var raw = ":irc.server.io 001 netIRCTest :Welcome";
+
+            RaiseDataReceived(raw);
+        }
+
+        [Fact]
         public void NickChangesUserNick()
         {
             var oldNick = "WiZ";

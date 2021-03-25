@@ -57,6 +57,14 @@ namespace NetIRC.Tests
             Assert.Equal(target, ircMessage.Parameters[0]);
             Assert.Equal(text, ircMessage.Trailing);
         }
+        [Fact]
+        public void NoTrailingShouldReturnEmpty()
+        {
+            var rawData = "raw";
+            var ircMessage = new ParsedIRCMessage(rawData);
+
+            Assert.Equal(string.Empty, ircMessage.Trailing);
+        }
 
         [Fact]
         public void GoodToStringOverride()
@@ -67,6 +75,15 @@ namespace NetIRC.Tests
             var text = "Are you receiving this message ?";
             var ircMessage = new ParsedIRCMessage($":{prefix} {command} {target} :{text}");
             Assert.Equal($"Prefix: {prefix}, Command: {command}, Params: {{ {target}, {text} }}, Trailing: {text}", ircMessage.ToString());
+        }
+
+        [Fact]
+        public void GoodToStringOverrideWithNoTrailing()
+        {
+            var prefix = "Angel";
+            var command = "TEST";
+            var ircMessage = new ParsedIRCMessage($":{prefix} {command}");
+            Assert.Equal($"Prefix: {prefix}, Command: {command}, Params: , Trailing: ", ircMessage.ToString());
         }
 
         [Fact]
