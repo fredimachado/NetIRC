@@ -63,3 +63,7 @@ PING :irc.rizon.io
 :Fredi_!~qwebirc@47B12FDD.5AD3F968.3DF9FC39.IP MODE #NetIRC +o NetIRCConsoleClient
 :Fredi_!~qwebirc@47B12FDD.5AD3F968.3DF9FC39.IP PART #NetIRC
 :Fredi_!~qwebirc@47B12FDD.5AD3F968.3DF9FC39.IP JOIN :#NetIRC
+:NetIRCConsoleClient!~NetIRCCon@9608347F.1C2BB1D7.A8B3181B.IP JOIN :#netirctest
+:solenoid.rizon.net 353 NetIRCConsoleClient = #netirctest :NetIRCConsoleClient @Fredi_
+:solenoid.rizon.net 366 NetIRCConsoleClient #netirctest :End of /NAMES list.
+:Fredi_!~Fredi_@9608347F.1C2BB1D7.A8B3181B.IP KICK #netirctest NetIRCConsoleClient :yeah

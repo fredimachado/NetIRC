@@ -1,7 +1,6 @@
 ﻿using Moq;
 using NetIRC.Connection;
 using NetIRC.Messages;
-using NetIRC.Messages.Handlers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -22,233 +21,229 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public async Task HandlesPingMessage()
+        public async Task PingMessageHandler_ShouldSendPongMessageToServer()
         {
             var text = "xyz.com";
             var raw = $"PING :{text}";
             var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
 
-            var handler = Assert.IsType<PingHandler>(result);
-            var ircMessage = Assert.IsType<PingMessage>(handler.Message);
-            Assert.Equal(text, ircMessage.Target);
+            mockConnection.Verify(c => c.SendAsync(new PongMessage(text).ToString()), Times.Once);
         }
 
         [Fact]
-        public async Task HandlesPrivMsgMessage()
+        public async Task PrivMsgMessageHandler_ShouldAddQueryMessage()
         {
             var from = "Angel";
             var to = "Wiz";
-            var message = "Hello are you receiving this message ?";
-            var raw = $":{from} PRIVMSG {to} :{message}";
+            var text = "Hello are you receiving this message ?";
+            var raw = $":{from} PRIVMSG {to} :{text}";
             var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+            var user = client.Peers.GetUser(from);
+            var query = client.Queries.GetQuery(user);
 
-            var handler = Assert.IsType<PrivMsgHandler>(result);
-            var ircMessage = Assert.IsType<PrivMsgMessage>(handler.Message);
-            Assert.Equal(from, ircMessage.From);
-            Assert.Equal(from, ircMessage.Prefix.From);
-            Assert.Equal(to, ircMessage.To);
-            Assert.Equal(message, ircMessage.Message);
+            Assert.Empty(query.Messages);
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Single(query.Messages);
+            Assert.Equal(text, query.Messages[0].Text);
+            Assert.Equal(user, query.Messages[0].User);
         }
 
         [Fact]
-        public async Task HandlesPrivMsgMessageWithoutTrailing()
+        public async Task PrivMsgMessageHandler_ShouldAddChannelMessage()
         {
             var from = "Angel";
-            var to = "Wiz";
-            var message = "Hello";
-            var raw = $":{from} PRIVMSG {to} {message}";
+            var channelName = "#channel";
+            var text = "Hello are you receiving this message ?";
+            var raw = $":{from} PRIVMSG {channelName} :{text}";
             var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+            var user = client.Peers.GetUser(from);
+            var channel = client.Channels.GetChannel(channelName);
 
-            var handler = Assert.IsType<PrivMsgHandler>(result);
-            var ircMessage = Assert.IsType<PrivMsgMessage>(handler.Message);
-            Assert.Equal(from, ircMessage.From);
-            Assert.Equal(from, ircMessage.Prefix.From);
-            Assert.Equal(to, ircMessage.To);
-            Assert.Equal(message, ircMessage.Message);
+            Assert.Empty(channel.Messages);
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Single(channel.Messages);
+            Assert.Equal(text, channel.Messages[0].Text);
+            Assert.Equal(user, channel.Messages[0].User);
         }
 
         [Fact]
-        public async Task HandlesRplWelcomeMessage()
+        public async Task RplWelcomeMessageHandler_ShouldCallOnRegistrationCompleted()
         {
-            var text = "Welcome to the Internet Relay Chat Network NetIRC";
-            var raw = $":irc.server.net 001 NetIRC :{text}";
+            var raw = ":irc.server.net 001 NetIRC :Welcome";
             var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+            var called = false;
+            client.RegistrationCompleted += (s, e) => called = true;
 
-            var handler = Assert.IsType<RplWelcomeHandler>(result);
-            var ircMessage = Assert.IsType<RplWelcomeMessage>(handler.Message);
-            Assert.Equal(text, ircMessage.Text);
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.True(called);
         }
 
-        [Fact(Skip = "Implement RplGreetingMessage for 001, 002, 003 and 004 numeric replies")]
-        public async Task HandlesRplYourHostMessage()
+        [Fact]
+        public async Task JoinMessageHandler_ShouldAddUserToChannel()
         {
-            var text = "Your host is irc.server.net, running version plexus-4(hybrid-8.1.20)";
-            var raw = $":irc.server.net 002 NetIRC :{text}";
+            var nick = "Wiz";
+            var channelName = "#channel";
+            var raw = $":{nick} JOIN {channelName}";
             var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+            var channel = client.Channels.GetChannel(channelName);
 
-            var ircMessage = Assert.IsType<RplWelcomeMessage>(result);
-            Assert.Equal(text, ircMessage.Text);
+            Assert.Null(channel.GetUser(nick));
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            var user = channel.GetUser(nick);
+            Assert.NotNull(user);
+            Assert.Equal(nick, user.Nick);
         }
 
-        [Fact(Skip = "Implement RplGreetingMessage for 001, 002, 003 and 004 numeric replies")]
-        public async Task HandlesRplCreatedMessage()
+        [Fact]
+        public async Task PartMessageHandler_ShouldRemoveUserFromChannel()
         {
-            var text = "This server was created Nov 20 2016 at 02:34:01";
-            var raw = $":irc.server.net 003 NetIRC :{text}";
+            var nick = "Wiz";
+            var channelName = "#channel";
+            var raw = $":{nick}!~user@x.y.z PART {channelName}";
             var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+            var user = new User(nick);
+            var channel = client.Channels.GetChannel(channelName);
 
-            var ircMessage = Assert.IsType<RplWelcomeMessage>(result);
-            Assert.Equal(text, ircMessage.Text);
+            channel.AddUser(user);
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Null(channel.GetUser(nick));
         }
 
-        [Fact(Skip = "Implement RplGreetingMessage for 001, 002, 003 and 004 numeric replies")]
-        public async Task HandlesRplMyInfoMessage()
+        [Fact]
+        public async Task RplNamReplyMessageHandler_ShouldAddUserToChannel()
         {
-            var parameters = new[]
+            var channelName = "#NetIRC";
+            var nick = "NetIRCConsoleClient";
+            var raw = $":irc.server.net 353 NetIRCConsoleClient = {channelName} :{nick}";
+            var parsedIRCMessage = new ParsedIRCMessage(raw);
+
+            var channel = client.Channels.GetChannel(channelName);
+
+            Assert.Empty(channel.Users);
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Single(channel.Users);
+            Assert.NotNull(channel.GetUser(nick));
+        }
+
+        [Fact]
+        public async Task RplNamReplyMessageHandlerWithMultiplePeople_ShouldAddUsersToChannel()
+        {
+            var channelName = "#NetIRC";
+            var nicks = new[] { "NetIRCConsoleClient", "Fredi_", "Wiz" };
+            var raw = $":irc.server.net 353 NetIRCConsoleClient = {channelName} :{string.Join(' ', nicks)}";
+            var parsedIRCMessage = new ParsedIRCMessage(raw);
+
+            var channel = client.Channels.GetChannel(channelName);
+
+            Assert.Empty(channel.Users);
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Equal(3, channel.Users.Count);
+            foreach (var nick in nicks)
             {
-                "NetIRC",
-                "irc.server.net",
-                "plexus-4(hybrid-8.1.20)",
-                "CDGNRSUWagilopqrswxyz",
-                "BCIMNORSabcehiklmnopqstvz",
-                "Iabehkloqv"
-            };
-            var raw = $":irc.server.net 004 {string.Join(" ", parameters)}";
-            var parsedIRCMessage = new ParsedIRCMessage(raw);
-
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
-
-            var ircMessage = Assert.IsType<RplWelcomeMessage>(result);
-            //Assert.Equal(parameters[0], ircMessage.Parameters[0]);
-            //Assert.Equal(parameters[1], ircMessage.Parameters[1]);
-            //Assert.Equal(parameters[2], ircMessage.Parameters[2]);
-            //Assert.Equal(parameters[3], ircMessage.Parameters[3]);
-            //Assert.Equal(parameters[4], ircMessage.Parameters[4]);
-            //Assert.Equal(parameters[5], ircMessage.Parameters[5]);
+                Assert.NotNull(channel.GetUser(nick));
+            }
         }
 
         [Fact]
-        public async Task HandlesJoinMessage()
-        {
-            var nick = "Wiz";
-            var channel = "#channel";
-            var raw = $":{nick} JOIN {channel}";
-            var parsedIRCMessage = new ParsedIRCMessage(raw);
-
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
-
-            var handler = Assert.IsType<JoinHandler>(result);
-            var ircMessage = Assert.IsType<JoinMessage>(handler.Message);
-            Assert.Equal(nick, ircMessage.Nick);
-            Assert.Equal(channel, ircMessage.Channel);
-        }
-
-        [Fact]
-        public async Task HandlesPartMessage()
-        {
-            var nick = "Wiz";
-            var channel = "#channel";
-            var raw = $":{nick}!~user@x.y.z PART {channel}";
-            var parsedIRCMessage = new ParsedIRCMessage(raw);
-
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
-
-            var handler = Assert.IsType<PartHandler>(result);
-            var ircMessage = Assert.IsType<PartMessage>(handler.Message);
-            Assert.Equal(nick, ircMessage.Nick);
-            Assert.Equal(channel, ircMessage.Channel);
-        }
-
-        [Fact]
-        public async Task HandlesRplNamReplyMessage()
-        {
-            var channel = "#NetIRC";
-            var raw = $":irc.server.net 353 NetIRCConsoleClient = {channel} :NetIRCConsoleClient";
-            var parsedIRCMessage = new ParsedIRCMessage(raw);
-
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
-
-            var handler = Assert.IsType<RplNamReplyHandler>(result);
-            var ircMessage = Assert.IsType<RplNamReplyMessage>(handler.Message);
-            Assert.Equal(channel, ircMessage.Channel);
-            Assert.Single(ircMessage.Nicks);
-        }
-
-        [Fact]
-        public async Task HandlesRplNamReplyMessageWithMultiplePeople()
-        {
-            var channel = "#NetIRC";
-            var nicks = new[] { "NetIRCConsoleClient", "@Fredi_", "Wiz" };
-            var raw = $":irc.server.net 353 NetIRCConsoleClient = {channel} :{string.Join(' ', nicks)}";
-            var parsedIRCMessage = new ParsedIRCMessage(raw);
-
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
-
-            var handler = Assert.IsType<RplNamReplyHandler>(result);
-            var ircMessage = Assert.IsType<RplNamReplyMessage>(handler.Message);
-            Assert.Equal(channel, ircMessage.Channel);
-            Assert.Equal(3, ircMessage.Nicks.Count);
-            
-        }
-
-        [Fact]
-        public async Task HandlesQuitMessage()
+        public async Task QuitMessageHandler_ShouldRemoveFromChannels()
         {
             var nick = "WiZ";
-            var message = "Out for lunch";
-            var raw = $":{nick}!~host@x.y.z QUIT :{message}";
+            var raw = $":{nick}!~host@x.y.z QUIT :Out for lunch";
             var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+            var user = new User(nick);
+            var channel1 = client.Channels.GetChannel("#channel1");
+            var channel2 = client.Channels.GetChannel("#channel2");
 
-            var handler = Assert.IsType<QuitHandler>(result);
-            var ircMessage = Assert.IsType<QuitMessage>(handler.Message);
-            Assert.Equal(nick, ircMessage.Nick);
-            Assert.Equal(message, ircMessage.Message);
+            channel1.AddUser(user);
+            channel2.AddUser(user);
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Null(channel1.GetUser(nick));
+            Assert.Null(channel2.GetUser(nick));
         }
 
         [Fact]
-        public async Task HandlesNickMessage()
+        public async Task NickMessageHandler_ShouldChangeNick()
         {
             var oldNick = "WiZ";
             var newNick = "Kilroy";
             var raw = $":{oldNick} NICK {newNick}";
             var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+            var user = client.Peers.GetUser(oldNick);
 
-            var handler = Assert.IsType<NickHandler>(result);
-            var ircMessage = Assert.IsType<NickMessage>(handler.Message);
-            Assert.Equal(oldNick, ircMessage.OldNick);
-            Assert.Equal(newNick, ircMessage.NewNick);
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Same(user, client.Peers.GetUser(newNick));
         }
 
         [Fact]
-        public async Task HandlesTopicMessage()
+        public async Task TopicMessageHandler_ShouldSetTopic()
         {
             var channel = "#NetIRC";
             var topic = "NetIRC is nice!";
             var raw = $":irc.server.net TOPIC {channel} :{topic}";
             var parsedIRCMessage = new ParsedIRCMessage(raw);
 
-            var result = await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
 
-            var handler = Assert.IsType<TopicHandler>(result);
-            var ircMessage = Assert.IsType<TopicMessage>(handler.Message);
-            Assert.Equal(channel, ircMessage.Channel);
-            Assert.Equal(topic, ircMessage.Topic);
+            Assert.Equal(topic, client.Channels.GetChannel(channel).Topic);
+        }
+
+        [Fact]
+        public async Task KickMessageHandler_ShouldRemoveFromChannel()
+        {
+            var channelName = "#netirctest";
+            var nick = "NetIRCConsoleClient";
+            var raw = $":Fredi!~Fredi@XYZ.IP KICK {channelName} {nick} :I love you!";
+            var parsedIRCMessage = new ParsedIRCMessage(raw);
+
+            var channel = client.Channels.GetChannel(channelName);
+            channel.AddUser(new User(nick));
+
+            Assert.NotNull(channel.GetUser(nick));
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Null(channel.GetUser(nick));
+        }
+
+        [Fact]
+        public async Task KickMessageHandler_ShouldRemoveUserFromChannel()
+        {
+            var channelName = "#netirctest";
+            var raw = $":Fredi!~Fredi@XYZ.IP KICK {channelName} {client.User.Nick} :Bye";
+            var parsedIRCMessage = new ParsedIRCMessage(raw);
+
+            client.Channels.GetChannel(channelName);
+
+            Assert.Single(client.Channels);
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Empty(client.Channels);
         }
     }
 }
