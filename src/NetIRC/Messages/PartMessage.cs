@@ -4,8 +4,7 @@ namespace NetIRC.Messages
 {
     public class PartMessage : IRCMessage, IServerMessage, IClientMessage
     {
-        private string channels;
-
+        private readonly string channels;
 
         public string Nick { get; }
         public string Channel { get; }
@@ -19,6 +18,11 @@ namespace NetIRC.Messages
         public PartMessage(string channels)
         {
             this.channels = channels;
+        }
+
+        public PartMessage(params string[] channels)
+            : this(string.Join(",", channels))
+        {
         }
 
         public IEnumerable<string> Tokens => new[] { "PART", channels };
