@@ -6,7 +6,7 @@
 
         public PingMessage(ParsedIRCMessage parsedMessage)
         {
-            Target = parsedMessage.Trailing ?? parsedMessage.Parameters[0];
+            Target = parsedMessage.Trailing;
         }
     }
 }
