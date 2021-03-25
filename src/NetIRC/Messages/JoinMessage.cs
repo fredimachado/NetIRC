@@ -5,7 +5,7 @@ namespace NetIRC.Messages
     public class JoinMessage : IRCMessage, IServerMessage, IClientMessage
     {
         private string channels;
-        private string keys;
+        private string keys = string.Empty;
 
 
         public string Nick { get; }
@@ -21,6 +21,17 @@ namespace NetIRC.Messages
         {
             this.channels = channels;
             this.keys = keys;
+        }
+
+        public JoinMessage(params string[] channels)
+        {
+            this.channels = string.Join(",", channels);
+        }
+
+        public JoinMessage(Dictionary<string, string> channelsWithKeys)
+        {
+            channels = string.Join(",", channelsWithKeys.Keys);
+            keys = string.Join(",", channelsWithKeys.Values);
         }
 
         public IEnumerable<string> Tokens => new[] { "JOIN", channels, keys };
