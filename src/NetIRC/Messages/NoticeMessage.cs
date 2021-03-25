@@ -21,6 +21,8 @@ namespace NetIRC.Messages
             Message = text;
         }
 
+        public bool IsChannelMessage => Target[0] == '#';
+
         public IEnumerable<string> Tokens => new[] { "NOTICE", Target, Message };
     }
 }
