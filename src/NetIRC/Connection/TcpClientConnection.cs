@@ -91,32 +91,9 @@ namespace NetIRC.Connection
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
-
-            GC.SuppressFinalize(this);
-        }
-
-        private bool disposed = false;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                streamReader?.Dispose();
-                streamWriter?.Dispose();
-                tcpClient.Dispose();
-            }
-
-            disposed = true;
-        }
-
-        ~TcpClientConnection()
-        {
-            Dispose(false);
+            streamReader?.Dispose();
+            streamWriter?.Dispose();
+            tcpClient.Dispose();
         }
     }
 }
