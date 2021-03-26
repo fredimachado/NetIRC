@@ -208,7 +208,7 @@ namespace NetIRC.Tests
         {
             var testMessage = new TestIRCMessage();
 
-            Assert.Equal(nameof(TestIRCMessage), testMessage.ToString());
+            Assert.Equal(typeof(TestIRCMessage).FullName, testMessage.ToString());
         }
 
         [Fact]
@@ -320,6 +320,5 @@ namespace NetIRC.Tests
 
     public class TestIRCMessage : IRCMessage
     {
-        public override string ToString() => nameof(TestIRCMessage);
     }
 }
