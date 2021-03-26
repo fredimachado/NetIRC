@@ -23,8 +23,10 @@ namespace NetIRC.ConsoleCli
             // User connecting to the IRC server
             var user = new User(nickName, "NetIRC");
 
+            var tcpConnection = new TcpClientConnection("irc.rizon.net", 6667);
+
             // Create IRC client instance, wrapped in a using statement so it gets properly disposed (IDisposable pattern)
-            using (client = new Client(user))
+            using (client = new Client(user, tcpConnection))
             {
                 // Subscribe to IRC client events
                 client.OnRawDataReceived += Client_OnRawDataReceived;
@@ -46,7 +48,7 @@ namespace NetIRC.ConsoleCli
                 //client.RegisterCustomMessageHandler<PrivMsgHandler>();
 
                 // Connect to the server and let the magic happen in the background
-                Task.Run(() => client.ConnectAsync("irc.rizon.net", 6667));
+                Task.Run(() => client.ConnectAsync());
 
                 // Wait for a key press before exiting the console application
                 Console.Read();

@@ -82,7 +82,7 @@ namespace NetIRC.Tests
             var user = new User(nick, realName);
             var client = new Client(user, mockConnection.Object);
 
-            await Task.Run(() => client.ConnectAsync("localhost", 6667));
+            await Task.Run(() => client.ConnectAsync());
 
             mockConnection.Verify(c => c.SendAsync($"NICK {nick}"), Times.Once());
             mockConnection.Verify(c => c.SendAsync($"USER {nick} 0 - :{realName}"), Times.Once());
@@ -97,7 +97,7 @@ namespace NetIRC.Tests
             var user = new User(nick, realName);
             var client = new Client(user, password, mockConnection.Object);
 
-            await Task.Run(() => client.ConnectAsync("localhost", 6667));
+            await Task.Run(() => client.ConnectAsync());
 
             mockConnection.Verify(c => c.SendAsync($"PASS {password}"), Times.Once());
             mockConnection.Verify(c => c.SendAsync($"NICK {nick}"), Times.Once());

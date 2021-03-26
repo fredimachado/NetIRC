@@ -25,18 +25,18 @@ namespace NetIRC
         /// <summary>
         /// An observable collection representing the channels we joined
         /// </summary>
-        public ChannelCollection Channels { get; }
+        public ChannelCollection Channels { get; } = new ChannelCollection();
 
         /// <summary>
         /// An observable collection representing all queries (private chat)
         /// </summary>
-        public QueryCollection Queries { get; }
+        public QueryCollection Queries { get; } = new QueryCollection();
 
         /// <summary>
         /// An observable collection representing all peers (users) the client knows about
         /// It can be channel users, or query users (private chat)
         /// </summary>
-        public UserCollection Peers { get; }
+        public UserCollection Peers { get; } = new UserCollection();
 
         /// <summary>
         /// Indicates that we received raw data from the server and gives you access to the data
@@ -60,23 +60,6 @@ namespace NetIRC
         }
 
         /// <summary>
-        /// Initializes a new instance of the IRC client with a User and a default IConnection implementation (TcpClientConnection)
-        /// </summary>
-        /// <param name="user">User who wishes to connect to the server</param>
-        public Client(User user)
-            : this(user, new TcpClientConnection())
-        {}
-
-        /// <summary>
-        /// Initializes a new instance of the IRC client with a User, password and a default IConnection implementation (TcpClientConnection)
-        /// </summary>
-        /// <param name="user">User who wishes to connect to the server</param>
-        /// <param name="password">Password to use when connecting to the server</param>
-        public Client(User user, string password)
-            : this(user, password, new TcpClientConnection())
-        { }
-
-        /// <summary>
         /// Initializes a new instance of the IRC client with a User and an IConnection implementation
         /// </summary>
         /// <param name="user">User who wishes to connect to the server</param>
@@ -84,15 +67,11 @@ namespace NetIRC
         public Client(User user, IConnection connection)
         {
             User = user;
-
             this.connection = connection;
-            this.connection.DataReceived += Connection_DataReceived;
-
-            Channels = new ChannelCollection();
-            Queries = new QueryCollection();
-            Peers = new UserCollection();
-
+            
             messageHandlerContainer = new MessageHandlerContainer(this);
+
+            this.connection.DataReceived += Connection_DataReceived;
         }
 
         /// <summary>
@@ -132,9 +111,9 @@ namespace NetIRC
         /// <param name="host">IRC server address</param>
         /// <param name="port">Port number</param>
         /// <returns>The task object representing the asynchronous operation</returns>
-        public async Task ConnectAsync(string host, int port = 6667)
+        public async Task ConnectAsync()
         {
-            await connection.ConnectAsync(host, port)
+            await connection.ConnectAsync()
                 .ConfigureAwait(false);
 
             if (!string.IsNullOrWhiteSpace(password))

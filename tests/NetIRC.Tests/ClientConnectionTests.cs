@@ -1,4 +1,5 @@
-﻿using NetIRC.Extensions;
+﻿using NetIRC.Connection;
+using NetIRC.Extensions;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -23,9 +24,9 @@ namespace NetIRC.Tests
             var tcpListener = new TcpListener(IPAddress.Loopback, port);
             tcpListener.Start();
 
-            using var client = new Client(FakeUser);
+            using var client = new Client(FakeUser, new TcpClientConnection("localhost", port));
 
-            client.ConnectAsync("localhost", port)
+            client.ConnectAsync()
                 .SafeFireAndForget(continueOnCapturedContext: false);
 
             using var server = await tcpListener.AcceptTcpClientAsync();
@@ -47,9 +48,9 @@ namespace NetIRC.Tests
             var tcpListener = new TcpListener(IPAddress.Loopback, port);
             tcpListener.Start();
 
-            using var client = new Client(FakeUser, password);
+            using var client = new Client(FakeUser, password, new TcpClientConnection("localhost", port));
 
-            client.ConnectAsync("localhost", port)
+            client.ConnectAsync()
                 .SafeFireAndForget(continueOnCapturedContext: false);
 
             using var server = await tcpListener.AcceptTcpClientAsync();

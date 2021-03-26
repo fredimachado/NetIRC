@@ -8,7 +8,7 @@ namespace NetIRC.Connection
     /// </summary>
     public interface IConnection : IDisposable
     {
-        Task ConnectAsync(string address, int port);
+        Task ConnectAsync();
         Task SendAsync(string data);
 
         event EventHandler<DataReceivedEventArgs> DataReceived;
