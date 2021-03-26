@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NetIRC.Connection;
 using NetIRC.Messages;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -245,5 +246,31 @@ namespace NetIRC.Tests
 
             Assert.Empty(client.Channels);
         }
+
+        [Fact]
+        public void ShouldNotBeAbleToRegisterInvalidCustomHandler()
+        {
+            var ex = Assert.Throws<InvalidOperationException>(() => messageHandlerRegistrar.RegisterCustomMessageHandler(typeof(MessageHandlerTests)));
+            Assert.Equal($"{typeof(MessageHandlerTests).Name} must implement IMessageHandler<TServerMessage>.", ex.Message);
+        }
+
+        [Fact]
+        public void ShouldNotBeAbleToRegisterCustomHandlerWithInvalidMessageType()
+        {
+            var ex = Assert.Throws<InvalidOperationException>(() => messageHandlerRegistrar.RegisterCustomMessageHandler(typeof(MyInvalidCustomHandler)));
+            Assert.Equal($"{typeof(MyInvalidMessage).Name} must have a constructor with exactly one parameter of type {nameof(ParsedIRCMessage)}.", ex.Message);
+        }
+    }
+
+    public class MyInvalidCustomHandler : CustomMessageHandler<MyInvalidMessage>
+    {
+        public override Task HandleAsync(MyInvalidMessage serverMessage, Client client)
+        {
+            return Task.CompletedTask;
+        }
+    }
+
+    public class MyInvalidMessage : IRCMessage, IServerMessage
+    {
     }
 }

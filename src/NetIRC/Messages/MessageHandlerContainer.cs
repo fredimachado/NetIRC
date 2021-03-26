@@ -35,21 +35,38 @@ namespace NetIRC.Messages
             {
                 throw new InvalidOperationException($"{type.Name} must implement IMessageHandler<TServerMessage>.");
             }
-
-            var messageType = type.GetInterfaces()
-                .First() // Gets IMessageHandler<TServerMessage>
-                .GetGenericArguments()
-                .First(); // Gets TServerMessage
+            Type messageType = GetMessageType(type);
 
             if (!IsMessageConstructorValid(messageType))
             {
-                throw new ArgumentException($"{type.Name} must have a constructor with exactly one parameter of type {nameof(ParsedIRCMessage)}.", nameof(type));
+                throw new InvalidOperationException($"{messageType.Name} must have a constructor with exactly one parameter of type {nameof(ParsedIRCMessage)}.");
             }
 
             var handler = new MessageHandler(type, messageType);
             var command = GetCommand(handler);
 
             customMessageHandlers.Add(command, handler);
+        }
+
+        public void RegisterCustomMessageHandlers(Assembly assembly)
+        {
+            var customHandlers = assembly
+                .GetExportedTypes()
+                .Where(t => IsCustomMessageHandler(t) && IsMessageConstructorValid(GetMessageType(t)));
+
+            foreach (var handler in customHandlers)
+            {
+                RegisterCustomMessageHandler(handler);
+            }
+        }
+
+        private static Type GetMessageType(Type type)
+        {
+            var messageType = type.GetInterfaces()
+                .First() // Gets IMessageHandler<TServerMessage>
+                .GetGenericArguments()
+                .First(); // Gets TServerMessage
+            return messageType;
         }
 
         private bool IsMessageConstructorValid(Type messageType)
@@ -59,18 +76,6 @@ namespace NetIRC.Messages
                     binder: null,
                     types: new[] { typeof(ParsedIRCMessage) },
                     modifiers: null) != null;
-        }
-
-        public void RegisterCustomMessageHandlers(Assembly assembly)
-        {
-            var customHandlers = assembly
-                .GetExportedTypes()
-                .Where(t => IsCustomMessageHandler(t));
-
-            foreach (var handler in customHandlers)
-            {
-                RegisterCustomMessageHandler(handler);
-            }
         }
 
         private void RegisterDefaultMessageHandlers(Assembly assembly)
