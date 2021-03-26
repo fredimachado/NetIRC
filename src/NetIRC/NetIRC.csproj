@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Simple open-source Portable IRC Client Library written in C# targeting .NETStandard 1.3</Description>
+    <Description>Simple open-source Portable IRC Client Library written in C# targeting .NETStandard 2.0 and .NET Framework 4.6.1</Description>
     <Copyright>Copyright Fredi Machado</Copyright>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <Authors>Fredi Machado</Authors>
