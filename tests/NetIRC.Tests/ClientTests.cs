@@ -45,7 +45,7 @@ namespace NetIRC.Tests
             var raw = "PING xyz.com";
             var rawReceived = string.Empty;
 
-            client.OnRawDataReceived += (c, d) => rawReceived = d;
+            client.RawDataReceived += (c, d) => rawReceived = d;
 
             RaiseDataReceived(raw);
 
@@ -57,7 +57,7 @@ namespace NetIRC.Tests
         {
             var triggered = false;
 
-            client.OnRawDataReceived += (c, d) => { triggered = true; };
+            client.RawDataReceived += (c, d) => { triggered = true; };
 
             RaiseDataReceived("\r\n");
 
@@ -111,7 +111,7 @@ namespace NetIRC.Tests
             var raw = ":irc.rizon.io 439 * :Please wait while we process your connection.";
             ParsedIRCMessage ircMessage = null;
 
-            client.OnIRCMessageParsed += (c, m) => ircMessage = m;
+            client.IRCMessageParsed += (c, m) => ircMessage = m;
 
             RaiseDataReceived(raw);
 

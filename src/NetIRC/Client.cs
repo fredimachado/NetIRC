@@ -42,13 +42,13 @@ namespace NetIRC
         /// <summary>
         /// Indicates that we received raw data from the server and gives you access to the data
         /// </summary>
-        public event IRCRawDataHandler OnRawDataReceived;
+        public event IRCRawDataHandler RawDataReceived;
 
         /// <summary>
         /// Indicates that we have parsed the message and gives you a strong typed representation of it
         /// You get the prefix, command, parameters and some other goodies
         /// </summary>
-        public event ParsedIRCMessageHandler OnIRCMessageParsed;
+        public event ParsedIRCMessageHandler IRCMessageParsed;
 
         /// <summary>
         /// Indicates that we are properly registered on the server
@@ -107,11 +107,11 @@ namespace NetIRC
 
             var rawData = e.Data;
 
-            OnRawDataReceived?.Invoke(this, e.Data);
+            RawDataReceived?.Invoke(this, e.Data);
 
             var parsedIRCMessage = new ParsedIRCMessage(rawData);
 
-            OnIRCMessageParsed?.Invoke(this, parsedIRCMessage);
+            IRCMessageParsed?.Invoke(this, parsedIRCMessage);
 
             await messageHandlerContainer.HandleAsync(parsedIRCMessage)
                 .ConfigureAwait(false);

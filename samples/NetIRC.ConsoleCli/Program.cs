@@ -29,8 +29,8 @@ namespace NetIRC.ConsoleCli
             using (client = new Client(user, tcpConnection))
             {
                 // Subscribe to IRC client events
-                client.OnRawDataReceived += Client_OnRawDataReceived;
-                client.OnIRCMessageParsed += Client_OnIRCMessageParsed;
+                client.RawDataReceived += Client_RawDataReceived;
+                client.IRCMessageParsed += Client_IRCMessageParsed;
                 client.RegistrationCompleted += EventHub_RegistrationCompleted;
 
                 // Queries is an ObservableCollection, so we can subscribe to the CollectionChanged event
@@ -56,7 +56,7 @@ namespace NetIRC.ConsoleCli
         }
 
         // This event handler will be called everytime a raw message is received from the server (interesting to inspect the IRC protocol)
-        private static void Client_OnRawDataReceived(Client client, string rawData)
+        private static void Client_RawDataReceived(Client client, string rawData)
         {
             if (verbose)
             {
@@ -67,7 +67,7 @@ namespace NetIRC.ConsoleCli
         }
 
         // This event handler will be called after the IRC client has parsed a raw message (nicer to work with when compared to the raw message string)
-        private static async void Client_OnIRCMessageParsed(Client client, ParsedIRCMessage ircMessage)
+        private static async void Client_IRCMessageParsed(Client client, ParsedIRCMessage ircMessage)
         {
             // When receiving a topic message
             // NOTE: Just an example, because having a custom message handler deriving from CustomMessageHandler<TopicMessage> would be better
