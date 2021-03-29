@@ -1,5 +1,6 @@
 ﻿using NetIRC.Messages;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NetIRC.Ctcp
@@ -57,7 +58,10 @@ namespace NetIRC.Ctcp
 
         private static Task VersionReply(Client client, string target)
         {
-            return client.SendAsync(new CtcpReplyMessage(target, $"{VERSION} NetIRC v{typeof(Client).Assembly.GetName().Version} - Open source IRC Client Library (https://github.com/fredimachado/NetIRC)"));
+            var version = typeof(Client).Assembly
+                .GetCustomAttribute<AssemblyFileVersionAttribute>()
+                .Version;
+            return client.SendAsync(new CtcpReplyMessage(target, $"{VERSION} NetIRC v{version} - Simple cross-platform IRC Client Library (https://github.com/fredimachado/NetIRC)"));
         }
     }
 }
