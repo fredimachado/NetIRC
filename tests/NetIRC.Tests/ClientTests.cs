@@ -1,5 +1,6 @@
 ﻿using Moq;
 using NetIRC.Connection;
+using NetIRC.Ctcp;
 using NetIRC.Messages;
 using System;
 using System.Linq;
@@ -178,6 +179,29 @@ namespace NetIRC.Tests
             Assert.Equal(channelName, messages[0].Channel.Name);
             Assert.Equal(message, messages[0].Text);
             Assert.Equal(DateTime.Now, messages[0].Date, TimeSpan.FromSeconds(1));
+        }
+
+        [Fact]
+        public void TriggersCtcpReceivedReceived()
+        {
+            var from = "Angel";
+            var to = "WiZ";
+            var ctcpCommand = "ACTION";
+            var ctcpMessage = "likes NetIRC";
+            var message = $"{CtcpCommands.CtcpDelimiter}{ctcpCommand} {ctcpMessage}{CtcpCommands.CtcpDelimiter}";
+            var raw = $":{from} PRIVMSG {to} :{message}";
+            CtcpEventArgs ctcpEventArgs = null;
+
+            client.CtcpReceived += (c, e) => ctcpEventArgs = e;
+
+            RaiseDataReceived(raw);
+
+            Assert.Equal(from, ctcpEventArgs.From);
+            Assert.Equal(from, ctcpEventArgs.Prefix.From);
+            Assert.Equal(to, ctcpEventArgs.To);
+            Assert.Equal(message, ctcpEventArgs.Message);
+            Assert.Equal(ctcpCommand, ctcpEventArgs.CtcpCommand);
+            Assert.Equal(ctcpMessage, ctcpEventArgs.CtcpMessage);
         }
 
         [Fact]

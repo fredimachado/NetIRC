@@ -1,4 +1,5 @@
 ﻿using NetIRC.Connection;
+using NetIRC.Ctcp;
 using NetIRC.Messages;
 using System;
 using System.Reflection;
@@ -57,6 +58,17 @@ namespace NetIRC
         internal void OnRegistrationCompleted()
         {
             RegistrationCompleted?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Indicates that we received a CTCP message (Client-To-Client-Protocol)
+        /// </summary>
+        public event CtcpHandler CtcpReceived;
+        internal void OnCtcpReceived(CtcpEventArgs ctcp)
+        {
+            CtcpReceived?.Invoke(this, ctcp);
+
+            CtcpCommands.HandleCtcp(this, ctcp);
         }
 
         /// <summary>

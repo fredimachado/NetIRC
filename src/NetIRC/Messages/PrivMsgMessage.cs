@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NetIRC.Ctcp;
+using System.Collections.Generic;
 
 namespace NetIRC.Messages
 {
@@ -15,6 +16,9 @@ namespace NetIRC.Messages
             Prefix = parsedMessage.Prefix;
             To = parsedMessage.Parameters[0];
             Message = parsedMessage.Trailing;
+
+            IsChannelMessage = To[0] == '#';
+            IsCtcp = Message.Contains(CtcpCommands.CtcpDelimiter);
         }
 
         public PrivMsgMessage(string target, string text)
@@ -23,7 +27,9 @@ namespace NetIRC.Messages
             Message = text;
         }
 
-        public bool IsChannelMessage => To[0] == '#';
+        public bool IsChannelMessage { get; }
+
+        public bool IsCtcp { get; }
 
         public IEnumerable<string> Tokens => new[] { "PRIVMSG", To, Message };
     }

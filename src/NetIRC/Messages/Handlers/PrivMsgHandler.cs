@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using NetIRC.Ctcp;
+using System.Threading.Tasks;
 
 namespace NetIRC.Messages.Handlers
 {
@@ -6,6 +7,12 @@ namespace NetIRC.Messages.Handlers
     {
         public override Task HandleAsync(PrivMsgMessage serverMessage, Client client)
         {
+            if (serverMessage.IsCtcp)
+            {
+                client.OnCtcpReceived(new CtcpEventArgs(serverMessage));
+                return Task.CompletedTask;
+            }
+
             var user = client.Peers.GetUser(serverMessage.From);
 
             if (serverMessage.IsChannelMessage)
