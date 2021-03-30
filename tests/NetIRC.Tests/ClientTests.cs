@@ -158,7 +158,7 @@ namespace NetIRC.Tests
             Assert.Single(messages);
             Assert.Equal(user, messages[0].User);
             Assert.Equal(message, messages[0].Text);
-            Assert.Equal(DateTime.Now, messages[0].Date, TimeSpan.FromSeconds(1));
+            Assert.Equal(DateTime.Now, messages[0].Timestamp, TimeSpan.FromSeconds(1));
         }
 
         [Fact]
@@ -178,7 +178,7 @@ namespace NetIRC.Tests
             Assert.Equal(user, messages[0].User);
             Assert.Equal(channelName, messages[0].Channel.Name);
             Assert.Equal(message, messages[0].Text);
-            Assert.Equal(DateTime.Now, messages[0].Date, TimeSpan.FromSeconds(1));
+            Assert.Equal(DateTime.Now, messages[0].Timestamp, TimeSpan.FromSeconds(1));
         }
 
         [Fact]

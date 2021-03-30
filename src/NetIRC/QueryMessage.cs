@@ -9,13 +9,13 @@ namespace NetIRC
     {
         public User User { get; }
         public string Text { get; }
-        public DateTime Date { get; }
+        public DateTime Timestamp { get; }
 
         public QueryMessage(User user, string text)
         {
             User = user;
             Text = text;
-            Date = DateTime.Now;
+            Timestamp = DateTime.Now;
         }
     }
 }

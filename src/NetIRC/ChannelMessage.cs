@@ -10,14 +10,14 @@ namespace NetIRC
         public User User { get; }
         public Channel Channel { get; }
         public string Text { get; }
-        public DateTime Date { get; }
+        public DateTime Timestamp { get; }
 
         public ChannelMessage(User user, Channel channel, string text)
         {
             User = user;
             Channel = channel;
             Text = text;
-            Date = DateTime.Now;
+            Timestamp = DateTime.Now;
         }
     }
 }
