@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NetIRC.Connection;
 using NetIRC.Ctcp;
+using System;
 using Xunit;
 
 namespace NetIRC.Tests
@@ -26,26 +27,26 @@ namespace NetIRC.Tests
         [InlineData("266", "Current global users: 11618 Max: 12530")]
         public void TestCommonNumericReplies(string command, string message)
         {
-            var received = string.Empty;
+            ServerMessage serverMessage = null;
 
-            client.ServerMessages.CollectionChanged += (s, e) => received = (e.NewItems[0] as ServerMessage).Text;
+            client.ServerMessages.CollectionChanged += (s, e) => serverMessage = e.NewItems[0] as ServerMessage;
 
             RaiseDataReceived($":irc.netirc.net {command} NetIRC :{message}");
 
-            Assert.Equal(message, received);
+            Assert.Equal(message, serverMessage.Text);
         }
 
         [Fact]
         public void TestMyInfoReply()
         {
             var message = "irc.netirc.net ircserver(1.0.0) abcdefGHIJKL mnopqRSTUVXYZ abcDEF";
-            var received = string.Empty;
+            ServerMessage serverMessage = null;
 
-            client.ServerMessages.CollectionChanged += (s, e) => received = (e.NewItems[0] as ServerMessage).Text;
+            client.ServerMessages.CollectionChanged += (s, e) => serverMessage = e.NewItems[0] as ServerMessage;
 
             RaiseDataReceived($":irc.netirc.net 004 NetIRC {message}");
 
-            Assert.Equal(message, received);
+            Assert.Equal(message, serverMessage.Text);
         }
 
         [Fact]
@@ -53,13 +54,13 @@ namespace NetIRC.Tests
         {
             var support = "CALLERID CASEMAPPING=rfc1459 DEAF=D KICKLEN=180 MODES=4 PREFIX=(qaohv)~&@%+ STATUSMSG=~&@%+ EXCEPTS=e INVEX=I NICKLEN=30";
             var message = "are supported by this server";
-            var received = string.Empty;
+            ServerMessage serverMessage = null;
 
-            client.ServerMessages.CollectionChanged += (s, e) => received = (e.NewItems[0] as ServerMessage).Text;
+            client.ServerMessages.CollectionChanged += (s, e) => serverMessage = e.NewItems[0] as ServerMessage;
 
             RaiseDataReceived($":irc.netirc.net 005 NetIRC {support} :{message}");
 
-            Assert.Equal($"{support} {message}", received);
+            Assert.Equal($"{support} {message}", serverMessage.Text);
         }
 
         [Theory]
@@ -68,13 +69,25 @@ namespace NetIRC.Tests
         [InlineData("254", 999, "channels formed")]
         public void TestLUserReplies(string command, int count, string message)
         {
-            var received = string.Empty;
+            ServerMessage serverMessage = null;
 
-            client.ServerMessages.CollectionChanged += (s, e) => received = (e.NewItems[0] as ServerMessage).Text;
+            client.ServerMessages.CollectionChanged += (s, e) => serverMessage = e.NewItems[0] as ServerMessage;
 
             RaiseDataReceived($":irc.netirc.net {command} NetIRC {count} :{message}");
 
-            Assert.Equal($"{count} {message}", received);
+            Assert.Equal($"{count} {message}", serverMessage.Text);
+        }
+
+        [Fact]
+        public void TestServerMessageTimestamp()
+        {
+            ServerMessage serverMessage = null;
+
+            client.ServerMessages.CollectionChanged += (s, e) => serverMessage = e.NewItems[0] as ServerMessage;
+
+            RaiseDataReceived($":irc.netirc.net 001 NetIRC :Welcome");
+
+            Assert.Equal(DateTime.Now, serverMessage.Timestamp, TimeSpan.FromSeconds(1));
         }
 
         private void RaiseDataReceived(string raw)
