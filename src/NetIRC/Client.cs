@@ -2,6 +2,7 @@
 using NetIRC.Ctcp;
 using NetIRC.Messages;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -22,6 +23,11 @@ namespace NetIRC
         /// Represents the user used to connect to the server
         /// </summary>
         public User User { get; }
+
+        /// <summary>
+        /// An observable collection representing server messages
+        /// </summary>
+        public ServerMessageCollection ServerMessages { get; } = new ServerMessageCollection();
 
         /// <summary>
         /// An observable collection representing the channels we joined
@@ -111,6 +117,8 @@ namespace NetIRC
 
             var parsedIRCMessage = new ParsedIRCMessage(rawData);
 
+            await HandleServerMessages(parsedIRCMessage);
+
             IRCMessageParsed?.Invoke(this, parsedIRCMessage);
 
             await messageHandlerContainer.HandleAsync(parsedIRCMessage)
@@ -184,6 +192,43 @@ namespace NetIRC
         public void RegisterCustomMessageHandlers(Assembly assembly)
         {
             messageHandlerContainer.RegisterCustomMessageHandlers(assembly);
+        }
+
+        private Task HandleServerMessages(ParsedIRCMessage parsedIRCMessage)
+        {
+            if (parsedIRCMessage.IsNumeric)
+            {
+                return HandleNumericReply(parsedIRCMessage);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task HandleNumericReply(ParsedIRCMessage parsedIRCMessage)
+        {
+            string text = string.Empty;
+            switch (parsedIRCMessage.NumericReply)
+            {
+                case IRCNumericReply.RPL_MYINFO:
+                case IRCNumericReply.RPL_ISUPPORT:
+                    text = string.Join(" ", parsedIRCMessage.Parameters.Skip(1));
+                    break;
+                case IRCNumericReply.RPL_LUSEROP:
+                case IRCNumericReply.RPL_LUSERUNKNOWN:
+                case IRCNumericReply.RPL_LUSERCHANNELS:
+                    text = $"{parsedIRCMessage.Parameters[1]} {parsedIRCMessage.Trailing}";
+                    break;
+                default:
+                    text = parsedIRCMessage.Trailing;
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(text))
+            {
+                ServerMessages.Add(new ServerMessage(text));
+            }
+
+            return Task.CompletedTask;
         }
     }
 }
