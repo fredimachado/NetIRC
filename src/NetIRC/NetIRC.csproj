@@ -34,7 +34,7 @@
 
   <Target Name="PrepareReleaseNotes" BeforeTargets="GenerateNuspec">
     <PropertyGroup>
-      <PackageDescription>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../RELEASE-NOTES"))</PackageDescription>
+      <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../RELEASE-NOTES"))</PackageReleaseNotes>
     </PropertyGroup>
   </Target>
 
