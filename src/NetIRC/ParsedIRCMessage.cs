@@ -104,7 +104,7 @@ namespace NetIRC
             var indexOfTrailingStart = rawData.IndexOf(TrailingPrefix);
             if (indexOfTrailingStart > -1)
             {
-                trailing = rawData.Slice(indexOfTrailingStart + 2).ToString();
+                trailing = rawData.Slice(indexOfTrailingStart + 2).Trim().ToString();
                 rawData = rawData.Slice(0, indexOfTrailingStart);
             }
 

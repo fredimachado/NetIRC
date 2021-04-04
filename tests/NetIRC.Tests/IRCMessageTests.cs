@@ -321,6 +321,17 @@ namespace NetIRC.Tests
 
             Assert.Equal($"PASS {password}", passMessage.ToString());
         }
+
+        [Fact]
+        public void ParserShouldTrimTrailing()
+        {
+            var raw = ":irc.netirc.net 353 netIRCTest = #NetIRC :netIRCTest @Fredi ";
+            var parsedIRCMessage = new ParsedIRCMessage(raw);
+
+            var rplNamReplyMessage = new RplNamReplyMessage(parsedIRCMessage);
+
+            Assert.Equal(2, rplNamReplyMessage.Nicks.Count);
+        }
     }
 
     public class TestClientMessage : IRCMessage, IClientMessage
