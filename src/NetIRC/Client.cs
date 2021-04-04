@@ -22,7 +22,7 @@ namespace NetIRC
         /// <summary>
         /// Enables a custom dispatcher to be used if necessary. For example, WPF Dispatcher, to make sure collections are manipulated in the UI thread
         /// </summary>
-        internal static Action<Action> DispatcherInvoker = a => a.Invoke();
+        internal static Action<Action> DispatcherInvoker;
 
         /// <summary>
         /// Represents the user used to connect to the server
@@ -91,6 +91,8 @@ namespace NetIRC
         {
             User = user;
             this.connection = connection;
+
+            DispatcherInvoker = a => a.Invoke();
 
             messageHandlerContainer = new MessageHandlerContainer(this);
 
