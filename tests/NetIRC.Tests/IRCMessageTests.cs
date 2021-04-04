@@ -77,6 +77,16 @@ namespace NetIRC.Tests
         }
 
         [Fact]
+        public void TestPrivMsgMessageWithNoSpacesAndStartingWithColon()
+        {
+            var target = "WiZ";
+            var message = ":)";
+            var privMsgMessage = new PrivMsgMessage(target, message);
+
+            Assert.Equal($"PRIVMSG {target} :{message}", privMsgMessage.ToString());
+        }
+
+        [Fact]
         public void TestPrivMsgMessageTokens()
         {
             var target = "WiZ";

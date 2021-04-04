@@ -24,7 +24,7 @@ namespace NetIRC.Messages
         public PrivMsgMessage(string target, string text)
         {
             To = target;
-            Message = text;
+            Message = !text.Contains(" ") ? $":{text}" : text;
         }
 
         public bool IsChannelMessage { get; }
