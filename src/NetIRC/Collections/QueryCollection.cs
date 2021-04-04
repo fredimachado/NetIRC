@@ -15,7 +15,7 @@ namespace NetIRC
             if (query is null)
             {
                 query = new Query(user);
-                Add(query);
+                Client.DispatcherInvoker.Invoke(() => Add(query));
             }
 
             return query;

@@ -15,7 +15,7 @@ namespace NetIRC
             if (channel is null)
             {
                 channel = new Channel(name);
-                Add(channel);
+                Client.DispatcherInvoker.Invoke(() => Add(channel));
             }
 
             return channel;

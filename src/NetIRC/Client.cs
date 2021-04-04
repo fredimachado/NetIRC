@@ -20,6 +20,11 @@ namespace NetIRC
         private readonly MessageHandlerContainer messageHandlerContainer;
 
         /// <summary>
+        /// Enables a custom dispatcher to be used if necessary. For example, WPF Dispatcher, to make sure collections are manipulated in the UI thread
+        /// </summary>
+        internal static Action<Action> DispatcherInvoker = a => a.Invoke();
+
+        /// <summary>
         /// Represents the user used to connect to the server
         /// </summary>
         public User User { get; }
@@ -86,7 +91,7 @@ namespace NetIRC
         {
             User = user;
             this.connection = connection;
-            
+
             messageHandlerContainer = new MessageHandlerContainer(this);
 
             this.connection.DataReceived += Connection_DataReceived;
@@ -194,6 +199,18 @@ namespace NetIRC
             messageHandlerContainer.RegisterCustomMessageHandlers(assembly);
         }
 
+        /// <summary>
+        /// Sets the internal dispatcher invoker so collections get manipulated in a specific thread
+        /// For WPF you can pass Application.Dispatcher.Invoke
+        /// </summary>
+        /// <param name="dispatcherInvoke"></param>
+        public void SetDispatcherInvoker(Action<Action> dispatcherInvoke)
+        {
+            _ = dispatcherInvoke ?? throw new ArgumentNullException(nameof(dispatcherInvoke));
+
+            DispatcherInvoker = dispatcherInvoke;
+        }
+
         private Task HandleServerMessages(ParsedIRCMessage parsedIRCMessage)
         {
             if (parsedIRCMessage.IsNumeric)
@@ -225,7 +242,7 @@ namespace NetIRC
 
             if (!string.IsNullOrEmpty(text))
             {
-                ServerMessages.Add(new ServerMessage(text));
+                DispatcherInvoker.Invoke(() => ServerMessages.Add(new ServerMessage(text)));
             }
 
             return Task.CompletedTask;

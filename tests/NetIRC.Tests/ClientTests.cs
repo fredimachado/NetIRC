@@ -367,6 +367,21 @@ namespace NetIRC.Tests
             Assert.True(EndOfMotdHandler.Called);
         }
 
+        [Theory]
+        [InlineData(":Wiz JOIN #channel")]
+        [InlineData(":Wiz PART #channel")]
+        [InlineData(":from PRIVMSG to :message")]
+        public void TestDispatcherInvoker(string raw)
+        {
+            var called = false;
+
+            client.SetDispatcherInvoker(a => called = true);
+
+            RaiseDataReceived(raw);
+
+            Assert.True(called);
+        }
+
         private void RaiseDataReceived(string raw)
         {
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));

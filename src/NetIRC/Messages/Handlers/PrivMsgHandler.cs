@@ -19,13 +19,13 @@ namespace NetIRC.Messages.Handlers
             {
                 var channel = client.Channels.GetChannel(serverMessage.To);
                 var message = new ChannelMessage(user, channel, serverMessage.Message);
-                channel.Messages.Add(message);
+                Client.DispatcherInvoker.Invoke(() => channel.Messages.Add(message));
             }
             else
             {
                 var query = client.Queries.GetQuery(user);
                 var message = new QueryMessage(user, serverMessage.Message);
-                query.Messages.Add(message);
+                Client.DispatcherInvoker.Invoke(() => query.Messages.Add(message));
             }
 
             return Task.CompletedTask;

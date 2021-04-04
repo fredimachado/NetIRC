@@ -29,7 +29,7 @@ namespace NetIRC
 
         internal void AddUser(User user, string status)
         {
-            Users.Add(new ChannelUser(user, status));
+            Client.DispatcherInvoker.Invoke(() => Users.Add(new ChannelUser(user, status)));
         }
 
         internal void RemoveUser(string nick)
@@ -37,7 +37,7 @@ namespace NetIRC
             var user = GetUser(nick);
             if (user != null)
             {
-                Users.Remove(user);
+                Client.DispatcherInvoker.Invoke(() => Users.Remove(user));
             }
         }
 

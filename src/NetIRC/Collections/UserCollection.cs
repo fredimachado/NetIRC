@@ -16,7 +16,7 @@ namespace NetIRC
             if (user is null)
             {
                 user = new User(nick);
-                Add(user);
+                Client.DispatcherInvoker.Invoke(() => Add(user));
             }
 
             return user;
