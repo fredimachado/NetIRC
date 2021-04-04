@@ -41,5 +41,21 @@ namespace NetIRC.Tests
             Assert.Equal("NiK", channelUsers[11].ToString());
             Assert.Equal("Zeus", channelUsers[12].ToString());
         }
+
+        [Fact]
+        public void TestChannelUserComparer()
+        {
+            var u1 = new ChannelUser(new User("Fredi")) as object;
+            var u2 = new ChannelUser(new User("kikuch")) as object;
+
+            var comparer = new ChannelUserComparer();
+
+            Assert.Equal(-1, comparer.Compare(u1, u2));
+            Assert.Equal(1, comparer.Compare(u2, u1));
+            Assert.Equal(0, comparer.Compare(u1, u1));
+
+            Assert.Equal(0, comparer.Compare(u1, new object()));
+            Assert.Equal(0, comparer.Compare(new object(), u2));
+        }
     }
 }
