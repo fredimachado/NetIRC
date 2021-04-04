@@ -22,6 +22,11 @@ Check `samples\NetIRC.ConsoleCli` project. It's a simple and heavily commented I
 
 Documentation will be created soon.
 
+## Clients built with NetIRC
+- [NetIRC.Desktop](https://github.com/fredimachado/NetIRC.Desktop) (Simple WPF Desktop IRC Client)
+
+Fell free to create a pull request to add more.
+
 ### Pre-release
 You can download [pre-release packages in MyGet](https://www.myget.org/feed/netirc/package/nuget/NetIRC).
 
