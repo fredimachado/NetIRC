@@ -15,6 +15,8 @@ namespace NetIRC
         public ObservableCollection<ChannelUser> Users { get; }
         public ObservableCollection<ChannelMessage> Messages { get; }
 
+        internal static char[] UserStatuses = new[] { '~', '&', '@', '%', '+' };
+
         public Channel(string name)
         {
             Name = name;

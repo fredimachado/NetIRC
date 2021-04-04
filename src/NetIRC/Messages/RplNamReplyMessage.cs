@@ -9,8 +9,6 @@ namespace NetIRC.Messages
         public string Channel { get; }
         public Dictionary<string, string> Nicks { get; }
 
-        private static char[] userStatuses = new[] { '@', '+' };
-
         public RplNamReplyMessage(ParsedIRCMessage parsedMessage)
         {
             Nicks = new Dictionary<string, string>();
@@ -20,7 +18,7 @@ namespace NetIRC.Messages
 
             foreach (var nick in nicks)
             {
-                if (!string.IsNullOrWhiteSpace(nick) && userStatuses.Contains(nick[0]))
+                if (!string.IsNullOrWhiteSpace(nick) && NetIRC.Channel.UserStatuses.Contains(nick[0]))
                 {
                     Nicks.Add(nick.Substring(1), nick.Substring(0, 1));
                 }

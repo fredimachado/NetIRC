@@ -235,6 +235,9 @@ namespace NetIRC
                 case IRCNumericReply.RPL_LUSERCHANNELS:
                     text = $"{parsedIRCMessage.Parameters[1]} {parsedIRCMessage.Trailing}";
                     break;
+                case IRCNumericReply.RPL_NAMREPLY:
+                case IRCNumericReply.RPL_ENDOFNAMES:
+                    return Task.CompletedTask;
                 default:
                     text = parsedIRCMessage.Trailing;
                     break;

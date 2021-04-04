@@ -212,7 +212,7 @@ namespace NetIRC.Tests
             var raw = $":{nick}!~user@x.y.z PART {channel}";
 
             var ircChannel = client.Channels.GetChannel(channel);
-            ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
+            ircChannel.Users.Add(new ChannelUser(new User(nick)));
 
             RaiseDataReceived(raw);
 
@@ -257,8 +257,8 @@ namespace NetIRC.Tests
             var channel = "#NetIRC";
 
             var ircChannel = client.Channels.GetChannel(channel);
-            ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
-            ircChannel.Users.Add(new ChannelUser(new User(nick2), string.Empty));
+            ircChannel.Users.Add(new ChannelUser(new User(nick)));
+            ircChannel.Users.Add(new ChannelUser(new User(nick2)));
 
             RaiseDataReceived($":{nick} PART {channel}");
 
@@ -273,7 +273,7 @@ namespace NetIRC.Tests
             var raw = $":{nick}!~host@x.y.z QUIT :Out for lunch";
 
             var ircChannel = client.Channels.GetChannel("#channel");
-            ircChannel.Users.Add(new ChannelUser(new User(nick), string.Empty));
+            ircChannel.Users.Add(new ChannelUser(new User(nick)));
 
             RaiseDataReceived(raw);
 

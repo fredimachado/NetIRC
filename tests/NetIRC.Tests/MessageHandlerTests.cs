@@ -2,6 +2,7 @@
 using NetIRC.Connection;
 using NetIRC.Messages;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -158,10 +159,32 @@ namespace NetIRC.Tests
 
             await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
 
-            Assert.Equal(3, channel.Users.Count);
+            Assert.Equal(nicks.Length, channel.Users.Count);
             foreach (var nick in nicks)
             {
                 Assert.NotNull(channel.GetUser(nick));
+            }
+        }
+
+        [Fact]
+        public async Task RplNamReplyMessageHandlerWithMultiplePeopleAndStatuses_ShouldAddUsersToChannel()
+        {
+            var channelName = "#NetIRC";
+            var nicks = new[] { "Fredi", "kikuch", "@Pe`tal", "chain", "%ChanStat", "&[420]", "NiK", "&JPGum", "@Andy" };
+            var raw = $":irc.server.net 353 Fredi * {channelName} :{string.Join(' ', nicks)}";
+            var parsedIRCMessage = new ParsedIRCMessage(raw);
+
+            var channel = client.Channels.GetChannel(channelName);
+
+            Assert.Empty(channel.Users);
+
+            await messageHandlerRegistrar.HandleAsync(parsedIRCMessage);
+
+            Assert.Equal(nicks.Length, channel.Users.Count);
+            foreach (var nick in nicks)
+            {
+                var user = Channel.UserStatuses.Contains(nick[0]) ? nick[1..] : nick;
+                Assert.NotNull(channel.GetUser(user));
             }
         }
 
