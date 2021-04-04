@@ -382,6 +382,12 @@ namespace NetIRC.Tests
             Assert.True(called);
         }
 
+        [Fact]
+        public void TestDispatcherShouldNotBeNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => client.SetDispatcherInvoker(null));
+        }
+
         private void RaiseDataReceived(string raw)
         {
             mockConnection.Raise(c => c.DataReceived += null, client, new DataReceivedEventArgs(raw));
