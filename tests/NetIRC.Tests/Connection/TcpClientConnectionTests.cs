@@ -4,19 +4,23 @@ using Xunit;
 using System.IO;
 using System.Threading;
 using System;
+using System.Net.Sockets;
+using System.Net;
 
 namespace NetIRC.Tests.Connection
 {
-    public class TcpClientConnectionTests : IClassFixture<ConnectionFixture>
+    public class TcpClientConnectionTests
     {
         private const string HOST = "127.0.0.1";
-        private const int PORT = 6669;
 
-        private readonly ConnectionFixture connectionFixture;
+        private readonly TcpListener tcpListener;
+        private readonly int port;
 
-        public TcpClientConnectionTests(ConnectionFixture connectionFixture)
+        public TcpClientConnectionTests()
         {
-            this.connectionFixture = connectionFixture;
+            port = new Random().Next(5000, 15000);
+            tcpListener = new TcpListener(IPAddress.Loopback, port);
+            tcpListener.Start();
         }
 
         [Theory]
@@ -41,13 +45,13 @@ namespace NetIRC.Tests.Connection
         {
             var pause = new ManualResetEvent(false);
 
-            using (var tcpClient = new TcpClientConnection(HOST, PORT))
+            using (var tcpClient = new TcpClientConnection(HOST, port))
             {
                 tcpClient.Connected += (s, e) => pause.Set();
 
                 await tcpClient.ConnectAsync();
 
-                await connectionFixture.TcpListener.AcceptTcpClientAsync();
+                await tcpListener.AcceptTcpClientAsync();
             }
 
             Assert.True(pause.WaitOne(500));
@@ -60,7 +64,7 @@ namespace NetIRC.Tests.Connection
             var data = "test";
             var dataReceived = string.Empty;
 
-            using (var tcpClient = new TcpClientConnection(HOST, PORT))
+            using (var tcpClient = new TcpClientConnection(HOST, port))
             {
                 tcpClient.DataReceived += (s, e) =>
                 {
@@ -69,7 +73,7 @@ namespace NetIRC.Tests.Connection
                 };
                 await tcpClient.ConnectAsync();
 
-                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                using (var server = await tcpListener.AcceptTcpClientAsync())
                 {
                     using (var stream = new StreamWriter(server.GetStream()))
                     {
@@ -90,14 +94,14 @@ namespace NetIRC.Tests.Connection
         {
             var pause = new ManualResetEvent(false);
 
-            using (var tcpClient = new TcpClientConnection(HOST, PORT))
+            using (var tcpClient = new TcpClientConnection(HOST, port))
             {
                 tcpClient.Disconnected += (s, e) => pause.Set();
-                tcpClient.DataReceived += (s, e) => throw new System.Exception(); ;
+                tcpClient.DataReceived += (s, e) => throw new Exception();
 
                 await tcpClient.ConnectAsync();
 
-                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                using (var server = await tcpListener.AcceptTcpClientAsync())
                 {
                     using (var stream = new StreamWriter(server.GetStream()))
                     {
@@ -114,11 +118,11 @@ namespace NetIRC.Tests.Connection
         [Fact]
         public async Task WhenReceivingDataWithNoDataReceivedHandler_ItShouldBeOK()
         {
-            using (var tcpClient = new TcpClientConnection(HOST, PORT))
+            using (var tcpClient = new TcpClientConnection(HOST, port))
             {
                 await tcpClient.ConnectAsync();
 
-                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                using (var server = await tcpListener.AcceptTcpClientAsync())
                 {
                     using (var stream = new StreamWriter(server.GetStream()))
                     {
@@ -135,11 +139,11 @@ namespace NetIRC.Tests.Connection
             var data = "test";
             var dataReceived = string.Empty;
 
-            using (var tcpClient = new TcpClientConnection(HOST, PORT))
+            using (var tcpClient = new TcpClientConnection(HOST, port))
             {
                 await tcpClient.ConnectAsync();
 
-                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                using (var server = await tcpListener.AcceptTcpClientAsync())
                 {
                     using (var stream = new StreamReader(server.GetStream()))
                     {
@@ -158,11 +162,11 @@ namespace NetIRC.Tests.Connection
             var data = "test";
             var dataReceived = string.Empty;
 
-            using (var tcpClient = new TcpClientConnection(HOST, PORT))
+            using (var tcpClient = new TcpClientConnection(HOST, port))
             {
                 await tcpClient.ConnectAsync();
 
-                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                using (var server = await tcpListener.AcceptTcpClientAsync())
                 {
                     using (var stream = new StreamReader(server.GetStream()))
                     {
@@ -182,7 +186,7 @@ namespace NetIRC.Tests.Connection
             var pauseDisconnected = new ManualResetEvent(false);
             var pauseDataReceived = new ManualResetEvent(false);
 
-            using (var tcpClient = new TcpClientConnection(HOST, PORT))
+            using (var tcpClient = new TcpClientConnection(HOST, port))
             {
                 tcpClient.Connected += (s, e) => pauseConnected.Set();
                 tcpClient.Disconnected += (s, e) => pauseDisconnected.Set();
@@ -190,7 +194,7 @@ namespace NetIRC.Tests.Connection
 
                 await tcpClient.ConnectAsync();
 
-                using (var server = await connectionFixture.TcpListener.AcceptTcpClientAsync())
+                using (var server = await tcpListener.AcceptTcpClientAsync())
                 {
                     // Wait for the client to be connected if necessary
                     Assert.True(pauseConnected.WaitOne(500));
