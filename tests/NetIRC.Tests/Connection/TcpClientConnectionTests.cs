@@ -212,5 +212,41 @@ namespace NetIRC.Tests.Connection
 
             Assert.True(pauseDisconnected.WaitOne(500));
         }
+
+        [Fact]
+        public async Task WhenServerDisconnects_ShouldBeAbleToReconnect()
+        {
+            var pauseConnected = new ManualResetEvent(false);
+            var pauseDisconnected = new ManualResetEvent(false);
+            var pauseDataReceived = new ManualResetEvent(false);
+
+            using (var tcpClient = new TcpClientConnection(HOST, port))
+            {
+                tcpClient.Connected += (s, e) => pauseConnected.Set();
+                tcpClient.Disconnected += (s, e) => pauseDisconnected.Set();
+                tcpClient.DataReceived += (s, e) => pauseDataReceived.Set();
+
+                await tcpClient.ConnectAsync();
+
+                using (var server = await tcpListener.AcceptTcpClientAsync())
+                {
+                    // Wait for the client to be connected if necessary
+                    Assert.True(pauseConnected.WaitOne(500));
+
+                    using (var stream = new StreamWriter(server.GetStream()))
+                    {
+                        await stream.WriteLineAsync("test");
+                        await stream.FlushAsync();
+
+                        // Wait for the client to receive the data if necessary
+                        Assert.True(pauseDataReceived.WaitOne(500));
+                    }
+                }
+
+                Assert.True(pauseDisconnected.WaitOne(1000));
+
+                await tcpClient.ConnectAsync();
+            }
+        }
     }
 }
