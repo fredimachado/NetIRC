@@ -11,7 +11,7 @@ namespace NetIRC.Connection
     /// </summary>
     public class TcpClientConnection : IConnection
     {
-        private readonly TcpClient tcpClient = new TcpClient();
+        private TcpClient tcpClient;
 
         private StreamReader streamReader;
         private StreamWriter streamWriter;
@@ -61,6 +61,9 @@ namespace NetIRC.Connection
         /// <returns>The task object representing the asynchronous operation</returns>
         public async Task ConnectAsync()
         {
+            tcpClient?.Close();
+            tcpClient = new TcpClient();
+
             await tcpClient.ConnectAsync(host, port)
                 .ConfigureAwait(false);
 
