@@ -43,7 +43,7 @@ namespace NetIRC.Ctcp
 
         private static Task ClientInfoReply(Client client, string target)
         {
-            return client.SendAsync(new CtcpReplyMessage(target, ($"{CLIENTINFO} {ACTION} {CLIENTINFO} {PING} {TIME} {VERSION}")));
+            return client.SendAsync(new CtcpReplyMessage(target, $"{CLIENTINFO} {ACTION} {CLIENTINFO} {PING} {TIME} {VERSION}"));
         }
 
         private static Task PingReply(Client client, string target, string message)
