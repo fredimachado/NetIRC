@@ -59,7 +59,7 @@ namespace NetIRC.Tests
 
             client.RawDataReceived += (c, d) => { triggered = true; };
 
-            RaiseDataReceived("\r\n");
+            RaiseDataReceived(Constants.CrLf);
 
             Assert.False(triggered);
         }

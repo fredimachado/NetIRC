@@ -19,8 +19,6 @@ namespace NetIRC.Connection
         public event EventHandler Connected;
         public event EventHandler Disconnected;
 
-        private static string crlf = "\r\n";
-
         private readonly string address;
 
         public WebSocketClientConnection(string address)
@@ -64,9 +62,9 @@ namespace NetIRC.Connection
 
         public async Task SendAsync(string data)
         {
-            if (!data.EndsWith(crlf))
+            if (!data.EndsWith(Constants.CrLf))
             {
-                data += crlf;
+                data += Constants.CrLf;
             }
 
             var dataToSend = new ArraySegment<byte>(Encoding.ASCII.GetBytes(data));

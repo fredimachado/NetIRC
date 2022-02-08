@@ -170,7 +170,7 @@ namespace NetIRC.Tests.Connection
                 {
                     using (var stream = new StreamReader(server.GetStream()))
                     {
-                        await tcpClient.SendAsync($"{data}\r\n");
+                        await tcpClient.SendAsync($"{data}{Constants.CrLf}");
                         dataReceived = await stream.ReadLineAsync();
                     }
                 }

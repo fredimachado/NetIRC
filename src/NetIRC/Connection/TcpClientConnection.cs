@@ -31,8 +31,6 @@ namespace NetIRC.Connection
         /// </summary>
         public event EventHandler Disconnected;
 
-        private static string crlf = "\r\n";
-
         private readonly string host;
         private readonly int port;
 
@@ -97,9 +95,9 @@ namespace NetIRC.Connection
         /// <returns>The task object representing the asynchronous operation</returns>
         public async Task SendAsync(string data)
         {
-            if (!data.EndsWith(crlf))
+            if (!data.EndsWith(Constants.CrLf))
             {
-                data += crlf;
+                data += Constants.CrLf;
             }
 
             await streamWriter.WriteAsync(data)
