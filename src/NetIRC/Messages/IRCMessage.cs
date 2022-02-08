@@ -13,13 +13,37 @@ namespace NetIRC.Messages
 
         public override string ToString()
         {
-            var clientMessage = this as IClientMessage;
-
-            if (clientMessage is null)
+            switch (this)
             {
-                return base.ToString();
+                case ISplitClientMessage clientMessage:
+                    return BuildClientMessage(clientMessage);
+                case IClientMessage clientMessage:
+                    return BuildClientMessage(clientMessage);
+            }
+            return base.ToString();
+        }
+
+        private string BuildClientMessage(ISplitClientMessage clientMessage)
+        {
+            var sb = new StringBuilder(1024);
+
+            foreach (var tokens in clientMessage.LineSplitTokens)
+            {
+                if (tokens.Length == 0)
+                {
+                    continue;
+                }
+
+                AppendTokens(sb, tokens);
+
+                sb.Append(Constants.CrLf);
             }
 
+            return sb.ToString().Trim();
+        }
+
+        private string BuildClientMessage(IClientMessage clientMessage)
+        {
             var tokens = clientMessage.Tokens.ToArray();
 
             if (tokens.Length == 0)
@@ -27,9 +51,16 @@ namespace NetIRC.Messages
                 return string.Empty;
             }
 
-            var lastIndex = tokens.Length - 1;
+            var sb = new StringBuilder(256);
 
-            var sb = new StringBuilder(32);
+            AppendTokens(sb, tokens);
+
+            return sb.ToString().Trim();
+        }
+
+        private static void AppendTokens(StringBuilder sb, string[] tokens)
+        {
+            var lastIndex = tokens.Length - 1;
 
             for (int i = 0; i < tokens.Length; i++)
             {
@@ -45,8 +76,6 @@ namespace NetIRC.Messages
                     sb.Append(' ');
                 }
             }
-
-            return sb.ToString().Trim();
         }
     }
 }
