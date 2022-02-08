@@ -8,7 +8,7 @@ namespace NetIRC.Tests
 {
     public class ServerMessageTests
     {
-        private static User FakeUser = new User("test", "test");
+        private static readonly User FakeUser = new User("test", "test");
         private readonly Mock<IConnection> mockConnection;
         private readonly Client client;
 

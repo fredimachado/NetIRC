@@ -73,17 +73,14 @@ namespace NetIRC.Tests.Connection
                 };
                 await tcpClient.ConnectAsync();
 
-                using (var server = await tcpListener.AcceptTcpClientAsync())
-                {
-                    using (var stream = new StreamWriter(server.GetStream()))
-                    {
-                        await stream.WriteLineAsync(data);
-                        await stream.FlushAsync();
+                using var server = await tcpListener.AcceptTcpClientAsync();
+                using var stream = new StreamWriter(server.GetStream());
+                
+                await stream.WriteLineAsync(data);
+                await stream.FlushAsync();
 
-                        // Wait for the client to receive the data if necessary
-                        Assert.True(pause.WaitOne(500));
-                    }
-                }
+                // Wait for the client to receive the data if necessary
+                Assert.True(pause.WaitOne(500));
             }
 
             Assert.Equal(data, dataReceived);
@@ -94,43 +91,35 @@ namespace NetIRC.Tests.Connection
         {
             var pause = new ManualResetEvent(false);
 
-            using (var tcpClient = new TcpClientConnection(HOST, port))
-            {
-                tcpClient.Disconnected += (s, e) => pause.Set();
-                tcpClient.DataReceived += (s, e) => throw new Exception();
+            using var tcpClient = new TcpClientConnection(HOST, port);
+            
+            tcpClient.Disconnected += (s, e) => pause.Set();
+            tcpClient.DataReceived += (s, e) => throw new Exception();
 
-                await tcpClient.ConnectAsync();
+            await tcpClient.ConnectAsync();
 
-                using (var server = await tcpListener.AcceptTcpClientAsync())
-                {
-                    using (var stream = new StreamWriter(server.GetStream()))
-                    {
-                        await stream.WriteLineAsync("test");
-                        await stream.FlushAsync();
+            using var server = await tcpListener.AcceptTcpClientAsync();
+            using var stream = new StreamWriter(server.GetStream());
+            
+            await stream.WriteLineAsync("test");
+            await stream.FlushAsync();
 
-                        // Wait for the client to receive the data if necessary
-                        Assert.True(pause.WaitOne(500));
-                    }
-                }
-            }
+            // Wait for the client to receive the data if necessary
+            Assert.True(pause.WaitOne(500));
         }
 
         [Fact]
         public async Task WhenReceivingDataWithNoDataReceivedHandler_ItShouldBeOK()
         {
-            using (var tcpClient = new TcpClientConnection(HOST, port))
-            {
-                await tcpClient.ConnectAsync();
+            using var tcpClient = new TcpClientConnection(HOST, port);
+            
+            await tcpClient.ConnectAsync();
 
-                using (var server = await tcpListener.AcceptTcpClientAsync())
-                {
-                    using (var stream = new StreamWriter(server.GetStream()))
-                    {
-                        await stream.WriteLineAsync("test");
-                        await stream.FlushAsync();
-                    }
-                }
-            }
+            using var server = await tcpListener.AcceptTcpClientAsync();
+            using var stream = new StreamWriter(server.GetStream());
+            
+            await stream.WriteLineAsync("test");
+            await stream.FlushAsync();
         }
 
         [Fact]
@@ -143,14 +132,11 @@ namespace NetIRC.Tests.Connection
             {
                 await tcpClient.ConnectAsync();
 
-                using (var server = await tcpListener.AcceptTcpClientAsync())
-                {
-                    using (var stream = new StreamReader(server.GetStream()))
-                    {
-                        await tcpClient.SendAsync(data);
-                        dataReceived = await stream.ReadLineAsync();
-                    }
-                }
+                using var server = await tcpListener.AcceptTcpClientAsync();
+                using var stream = new StreamReader(server.GetStream());
+                
+                await tcpClient.SendAsync(data);
+                dataReceived = await stream.ReadLineAsync();
             }
 
             Assert.Equal(data, dataReceived);
@@ -166,14 +152,11 @@ namespace NetIRC.Tests.Connection
             {
                 await tcpClient.ConnectAsync();
 
-                using (var server = await tcpListener.AcceptTcpClientAsync())
-                {
-                    using (var stream = new StreamReader(server.GetStream()))
-                    {
-                        await tcpClient.SendAsync($"{data}{Constants.CrLf}");
-                        dataReceived = await stream.ReadLineAsync();
-                    }
-                }
+                using var server = await tcpListener.AcceptTcpClientAsync();
+                using var stream = new StreamReader(server.GetStream());
+                
+                await tcpClient.SendAsync($"{data}{Constants.CrLf}");
+                dataReceived = await stream.ReadLineAsync();
             }
 
             Assert.Equal(data, dataReceived);
@@ -194,20 +177,18 @@ namespace NetIRC.Tests.Connection
 
                 await tcpClient.ConnectAsync();
 
-                using (var server = await tcpListener.AcceptTcpClientAsync())
-                {
-                    // Wait for the client to be connected if necessary
-                    Assert.True(pauseConnected.WaitOne(500));
+                using var server = await tcpListener.AcceptTcpClientAsync();
+                
+                // Wait for the client to be connected if necessary
+                Assert.True(pauseConnected.WaitOne(500));
 
-                    using (var stream = new StreamWriter(server.GetStream()))
-                    {
-                        await stream.WriteLineAsync("test");
-                        await stream.FlushAsync();
+                using var stream = new StreamWriter(server.GetStream());
+                
+                await stream.WriteLineAsync("test");
+                await stream.FlushAsync();
 
-                        // Wait for the client to receive the data if necessary
-                        Assert.True(pauseDataReceived.WaitOne(500));
-                    }
-                }
+                // Wait for the client to receive the data if necessary
+                Assert.True(pauseDataReceived.WaitOne(500));
             }
 
             Assert.True(pauseDisconnected.WaitOne(500));
@@ -220,33 +201,31 @@ namespace NetIRC.Tests.Connection
             var pauseDisconnected = new ManualResetEvent(false);
             var pauseDataReceived = new ManualResetEvent(false);
 
-            using (var tcpClient = new TcpClientConnection(HOST, port))
+            using var tcpClient = new TcpClientConnection(HOST, port);
+            
+            tcpClient.Connected += (s, e) => pauseConnected.Set();
+            tcpClient.Disconnected += (s, e) => pauseDisconnected.Set();
+            tcpClient.DataReceived += (s, e) => pauseDataReceived.Set();
+
+            await tcpClient.ConnectAsync();
+
+            using (var server = await tcpListener.AcceptTcpClientAsync())
             {
-                tcpClient.Connected += (s, e) => pauseConnected.Set();
-                tcpClient.Disconnected += (s, e) => pauseDisconnected.Set();
-                tcpClient.DataReceived += (s, e) => pauseDataReceived.Set();
+                // Wait for the client to be connected if necessary
+                Assert.True(pauseConnected.WaitOne(500));
 
-                await tcpClient.ConnectAsync();
+                using var stream = new StreamWriter(server.GetStream());
+                
+                await stream.WriteLineAsync("test");
+                await stream.FlushAsync();
 
-                using (var server = await tcpListener.AcceptTcpClientAsync())
-                {
-                    // Wait for the client to be connected if necessary
-                    Assert.True(pauseConnected.WaitOne(500));
-
-                    using (var stream = new StreamWriter(server.GetStream()))
-                    {
-                        await stream.WriteLineAsync("test");
-                        await stream.FlushAsync();
-
-                        // Wait for the client to receive the data if necessary
-                        Assert.True(pauseDataReceived.WaitOne(500));
-                    }
-                }
-
-                Assert.True(pauseDisconnected.WaitOne(1000));
-
-                await tcpClient.ConnectAsync();
+                // Wait for the client to receive the data if necessary
+                Assert.True(pauseDataReceived.WaitOne(500));
             }
+
+            Assert.True(pauseDisconnected.WaitOne(1000));
+
+            await tcpClient.ConnectAsync();
         }
     }
 }

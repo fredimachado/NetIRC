@@ -12,7 +12,7 @@ namespace NetIRC.Tests
 {
     public class ClientConnectionTests
     {
-        private static User FakeUser = new User("test", "test");
+        private static readonly User FakeUser = new User("test", "test");
 
         [Fact]
         public async Task WhenConnecting_ClientShouldSendRegistrationMessages()

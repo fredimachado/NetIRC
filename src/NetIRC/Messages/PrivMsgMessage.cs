@@ -40,33 +40,25 @@ namespace NetIRC.Messages
 
         private IEnumerable<string[]> BuildTokens()
         {
-            if (Message.Length <= MaxMessageLength)
+            using var reader = new StringReader(Message);
+            string line;
+            while ((line = reader.ReadLine()) != null)
             {
-                yield return GetTokens(Message);
-                yield break;
-            }
-
-            using (var reader = new StringReader(Message))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                if (string.IsNullOrWhiteSpace(line))
                 {
-                    if (string.IsNullOrWhiteSpace(line))
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    if (line.Length <= MaxMessageLength)
+                if (line.Length <= MaxMessageLength)
+                {
+                    yield return GetTokens(line);
+                }
+                else
+                {
+                    for (int i = 0; i < line.Length; i += MaxMessageLength)
                     {
-                        yield return GetTokens(line);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < line.Length; i += MaxMessageLength)
-                        {
-                            var message = line.Substring(i, Math.Min(MaxMessageLength, line.Length - i));
-                            yield return GetTokens(message);
-                        }
+                        var message = line.Substring(i, Math.Min(MaxMessageLength, line.Length - i));
+                        yield return GetTokens(message);
                     }
                 }
             }

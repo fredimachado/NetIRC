@@ -7,6 +7,7 @@
     <MinVerDefaultPreReleasePhase>preview</MinVerDefaultPreReleasePhase>
     <Authors>Fredi Machado</Authors>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
     <AssemblyName>NetIRC</AssemblyName>
     <PackageId>NetIRC</PackageId>
     <PackageTags>irc</PackageTags>

@@ -53,7 +53,7 @@ namespace NetIRC.Ctcp
 
         private static Task TimeReply(Client client, string target)
         {
-            return client.SendAsync(new CtcpReplyMessage(target, $"{TIME} {DateTime.Now.ToString("F")}"));
+            return client.SendAsync(new CtcpReplyMessage(target, $"{TIME} {DateTime.Now:F}"));
         }
 
         private static Task VersionReply(Client client, string target)

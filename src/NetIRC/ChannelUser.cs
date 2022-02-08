@@ -55,7 +55,7 @@ namespace NetIRC
 
         public int Compare(object x, object y)
         {
-            if (!(x is ChannelUser u1) || !(y is ChannelUser u2))
+            if (x is not ChannelUser u1 || y is not ChannelUser u2)
                 return 0;
 
             return Compare(u1, u2);

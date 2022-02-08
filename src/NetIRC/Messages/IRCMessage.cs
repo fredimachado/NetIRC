@@ -13,14 +13,12 @@ namespace NetIRC.Messages
 
         public override string ToString()
         {
-            switch (this)
+            return this switch
             {
-                case ISplitClientMessage clientMessage:
-                    return BuildClientMessage(clientMessage);
-                case IClientMessage clientMessage:
-                    return BuildClientMessage(clientMessage);
-            }
-            return base.ToString();
+                ISplitClientMessage clientMessage => BuildClientMessage(clientMessage),
+                IClientMessage clientMessage => BuildClientMessage(clientMessage),
+                _ => base.ToString(),
+            };
         }
 
         private string BuildClientMessage(ISplitClientMessage clientMessage)

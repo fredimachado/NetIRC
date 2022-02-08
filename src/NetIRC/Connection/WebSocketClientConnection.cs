@@ -13,7 +13,7 @@ namespace NetIRC.Connection
     {
         private readonly ClientWebSocket clientWebSocket = new ClientWebSocket();
 
-        private CancellationTokenSource disposalTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource disposalTokenSource = new CancellationTokenSource();
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
         public event EventHandler Connected;

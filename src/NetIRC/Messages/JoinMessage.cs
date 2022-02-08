@@ -4,9 +4,8 @@ namespace NetIRC.Messages
 {
     public class JoinMessage : IRCMessage, IServerMessage, IClientMessage
     {
-        private string channels;
-        private string keys = string.Empty;
-
+        private readonly string channels;
+        private readonly string keys = string.Empty;
 
         public string Nick { get; }
         public string Channel { get; }
