@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace NetIRC
@@ -10,12 +11,13 @@ namespace NetIRC
     {
         public User(string nick)
         {
+            if (string.IsNullOrWhiteSpace(nick)) throw new ArgumentException("Nick should not be empty.", nameof(nick));
+
             Nick = nick;
         }
 
-        public User(string nick, string realName)
+        public User(string nick, string realName) : this(nick)
         {
-            Nick = nick;
             RealName = realName;
         }
 
