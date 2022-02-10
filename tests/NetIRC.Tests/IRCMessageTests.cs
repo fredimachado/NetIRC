@@ -77,44 +77,6 @@ namespace NetIRC.Tests
         }
 
         [Fact]
-        public void TestPrivMsgMessageWithNoSpacesAndStartingWithColon()
-        {
-            var target = "WiZ";
-            var message = ":)";
-            var privMsgMessage = new PrivMsgMessage(target, message);
-
-            Assert.Equal($"PRIVMSG {target} :{message}", privMsgMessage.ToString());
-        }
-
-        [Fact]
-        public void TestPrivMsgMessageTokens()
-        {
-            var target = "WiZ";
-            var message = "Are you receiving this message ?";
-            var privMsgMessage = new PrivMsgMessage(target, message);
-
-            Assert.Equal($"PRIVMSG {target} :{message}", privMsgMessage.ToString());
-        }
-
-        [Fact]
-        public void TestMultiLinePrivMsgMessageTokens()
-        {
-            var target = "WiZ";
-            var message = "Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? Are you receiving this message ? testtest Are you receiving this message ?Are you receiving this message ?Are you receiving this message ?Are you receiving this message ?";
-            var privMsgMessage = new PrivMsgMessage(target, message);
-
-            var lines = privMsgMessage.ToString().Split(Constants.CrLf);
-
-            Assert.Equal(2, lines.Length);
-
-            Assert.StartsWith($"PRIVMSG {target} :Are", lines[0]);
-            Assert.EndsWith("test", lines[0]);
-
-            Assert.StartsWith($"PRIVMSG {target} :test", lines[1]);
-            Assert.EndsWith("?", lines[1]);
-        }
-
-        [Fact]
         public void TestNoticeMessageTokens()
         {
             var target = "WiZ";

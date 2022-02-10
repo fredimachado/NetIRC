@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace NetIRC.Messages
 {
     public class PrivMsgMessage : IRCMessage, IServerMessage, IClientMessage, ISplitClientMessage
     {
-        private const int MaxMessageLength = 400;
+        public const int MaxMessageByteSize = 400;
 
         public string From { get; }
         public IRCPrefix Prefix { get; }
@@ -36,9 +37,9 @@ namespace NetIRC.Messages
 
         public IEnumerable<string> Tokens => Enumerable.Empty<string>();
 
-        public IEnumerable<string[]> LineSplitTokens => BuildTokens();
+        public IEnumerable<string[]> LineSplitTokens => BuildTokensFromMessageChunks();
 
-        private IEnumerable<string[]> BuildTokens()
+        private IEnumerable<string[]> BuildTokensFromMessageChunks()
         {
             using var reader = new StringReader(Message);
             string line;
@@ -49,16 +50,53 @@ namespace NetIRC.Messages
                     continue;
                 }
 
-                if (line.Length <= MaxMessageLength)
+                var utf8Text = Encoding.UTF8.GetBytes(Message);
+
+                var index = 0;
+                var size = 0;
+                var chunkStart = 0;
+                while (index < utf8Text.Length)
                 {
-                    yield return GetTokens(line);
-                }
-                else
-                {
-                    for (int i = 0; i < line.Length; i += MaxMessageLength)
+                    if (size >= MaxMessageByteSize)
                     {
-                        var message = line.Substring(i, Math.Min(MaxMessageLength, line.Length - i));
-                        yield return GetTokens(message);
+                        var messageChunk = Encoding.UTF8.GetString(utf8Text.Skip(chunkStart).Take(size).ToArray());
+                        yield return GetTokens(messageChunk);
+
+                        // prepare for next chunk
+                        chunkStart = index;
+                        size = 0;
+                    }
+
+                    // 2-byte sequence, skip 1 character
+                    if ((utf8Text[index] & 0xE0) == 0xC0)
+                    {
+                        index++;
+                        size++;
+                    }
+
+                    // 3-byte sequence, skip 2 characters
+                    if ((utf8Text[index] & 0xF0) == 0xE0)
+                    {
+                        index += 2;
+                        size += 2;
+                    }
+
+                    // 4-byte sequence, skip 3 characters
+                    if ((utf8Text[index] & 0xF8) == 0xF0)
+                    {
+                        index += 3;
+                        size += 3;
+                    }
+
+                    // always skip at least 1 character and add 1 to size
+                    index++;
+                    size++;
+
+                    // last chunk
+                    if (index == utf8Text.Length)
+                    {
+                        var messageChunk = Encoding.UTF8.GetString(utf8Text.Skip(chunkStart).ToArray());
+                        yield return GetTokens(messageChunk);
                     }
                 }
             }
