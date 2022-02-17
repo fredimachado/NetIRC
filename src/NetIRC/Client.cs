@@ -1,4 +1,5 @@
-﻿using NetIRC.Connection;
+﻿using NetIRC.Builder;
+using NetIRC.Connection;
 using NetIRC.Ctcp;
 using NetIRC.Messages;
 using System;
@@ -81,6 +82,13 @@ namespace NetIRC
 
             CtcpCommands.HandleCtcp(this, ctcp);
         }
+
+        /// <summary>
+        /// Initializes a new instance of the ClientBuilder
+        /// </summary>
+        /// <returns>The ClientBuilder</returns>
+        public static ClientBuilder CreateBuilder()
+            => new ClientBuilder();
 
         /// <summary>
         /// Initializes a new instance of the IRC client with a User and an IConnection implementation
