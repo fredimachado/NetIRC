@@ -67,30 +67,10 @@ namespace NetIRC.Messages
                         size = 0;
                     }
 
-                    // 2-byte sequence, skip 1 character
-                    if ((utf8Text[index] & 0xE0) == 0xC0)
-                    {
-                        index++;
-                        size++;
-                    }
-
-                    // 3-byte sequence, skip 2 characters
-                    if ((utf8Text[index] & 0xF0) == 0xE0)
-                    {
-                        index += 2;
-                        size += 2;
-                    }
-
-                    // 4-byte sequence, skip 3 characters
-                    if ((utf8Text[index] & 0xF8) == 0xF0)
-                    {
-                        index += 3;
-                        size += 3;
-                    }
-
-                    // always skip at least 1 character and add 1 to size
-                    index++;
-                    size++;
+                    // skip bytes that form a utf-8 character
+                    int length = GetUtf8CharLength(utf8Text[index]);
+                    index += length;
+                    size += length;
 
                     // last chunk
                     if (index == utf8Text.Length)
@@ -99,6 +79,16 @@ namespace NetIRC.Messages
                         yield return GetTokens(messageChunk);
                     }
                 }
+            }
+
+            int GetUtf8CharLength(byte b)
+            {
+                if (b < 0x80) return 1;
+                else if ((b & 0xE0) == 0xC0) return 2;
+                else if ((b & 0xF0) == 0xE0) return 3;
+                else if ((b & 0xF8) == 0xF0) return 4;
+                else if ((b & 0xfc) == 0xf8) return 5;
+                else return 6;
             }
         }
 
