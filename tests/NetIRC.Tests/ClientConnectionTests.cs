@@ -12,19 +12,24 @@ namespace NetIRC.Tests
 {
     public class ClientConnectionTests
     {
-        private static readonly User FakeUser = new User("test", "test");
+        private const string Nick = "JohnD";
+        private const string RealName = "John Doe";
 
         [Fact]
         public async Task WhenConnecting_ClientShouldSendRegistrationMessages()
         {
             var port = 6669;
-            var nickMessage = $"NICK {FakeUser.Nick}";
-            var userMessage = $"USER {FakeUser.Nick} 0 - {FakeUser.RealName}";
+            var nickMessage = $"NICK {Nick}";
+            var userMessage = $"USER {Nick} 0 - :{RealName}";
 
             var tcpListener = new TcpListener(IPAddress.Loopback, port);
             tcpListener.Start();
 
-            using var client = new Client(FakeUser, new TcpClientConnection("localhost", port));
+            var builder = Client.CreateBuilder()
+                .WithNick(Nick, RealName)
+                .WithServer("localhost", port);
+
+            using var client = builder.Build();
 
             client.ConnectAsync()
                 .SafeFireAndForget(continueOnCapturedContext: false);
@@ -48,7 +53,11 @@ namespace NetIRC.Tests
             var tcpListener = new TcpListener(IPAddress.Loopback, port);
             tcpListener.Start();
 
-            using var client = new Client(FakeUser, password, new TcpClientConnection("localhost", port));
+            var builder = Client.CreateBuilder()
+                .WithNick(Nick, RealName)
+                .WithServer("localhost", port, password);
+
+            using var client = builder.Build();
 
             client.ConnectAsync()
                 .SafeFireAndForget(continueOnCapturedContext: false);
