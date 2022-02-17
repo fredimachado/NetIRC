@@ -15,6 +15,7 @@ namespace NetIRC.Connection
 
         private StreamReader streamReader;
         private StreamWriter streamWriter;
+        private bool disposed;
 
         /// <summary>
         /// Indicates that data has been received through the connection
@@ -59,7 +60,7 @@ namespace NetIRC.Connection
         /// <returns>The task object representing the asynchronous operation</returns>
         public async Task ConnectAsync()
         {
-            tcpClient?.Close();
+            tcpClient?.Dispose();
             tcpClient = new TcpClient();
 
             await tcpClient.ConnectAsync(host, port)
@@ -111,9 +112,27 @@ namespace NetIRC.Connection
         /// </summary>
         public void Dispose()
         {
-            streamReader?.Dispose();
-            streamWriter?.Dispose();
-            tcpClient.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                streamReader?.Dispose();
+                streamWriter?.Dispose();
+                tcpClient.Dispose();
+            }
+
+            disposed = true;
+        }
+
+        ~TcpClientConnection() => Dispose(false);
     }
 }
