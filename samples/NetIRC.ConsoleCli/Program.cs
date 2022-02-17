@@ -1,12 +1,13 @@
-﻿using NetIRC.Connection;
-using NetIRC.Messages;
+﻿using NetIRC.Messages;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetIRC.ConsoleCli
 {
     public class Program
     {
+        public const string Server = "irc.rizon.net";
         public const string MyCommander = "Fredi_"; // Who can control me
         public const string CommandPrefix = "EXECUTE ";
 
@@ -16,43 +17,52 @@ namespace NetIRC.ConsoleCli
         // Set this to true if you want all raw messages received from the server to be written to the console
         private const bool verbose = false;
 
-        private static Client client;
-
-        static void Main(string[] args)
+        static async Task Main()
         {
-            // User connecting to the IRC server
-            var user = new User(nickName, "NetIRC");
-
-            var tcpConnection = new TcpClientConnection("irc.rizon.net", 6667);
-
-            // Create IRC client instance, wrapped in a using statement so it gets properly disposed (IDisposable pattern)
-            using (client = new Client(user, tcpConnection))
+            var cancelKeyPress = new TaskCompletionSource<object>();
+            Console.CancelKeyPress += (s, e) =>
             {
-                // Subscribe to IRC client events
-                client.RawDataReceived += Client_RawDataReceived;
-                client.IRCMessageParsed += Client_IRCMessageParsed;
-                client.RegistrationCompleted += EventHub_RegistrationCompleted;
+                cancelKeyPress.SetResult(null);
+                e.Cancel = true;
+            };
 
-                // Queries is an ObservableCollection, so we can subscribe to the CollectionChanged event
-                // A new Query will be automatically created when initiating a private conversation with someone
-                client.Queries.CollectionChanged += Queries_CollectionChanged;
+            Console.WriteLine("Press Ctrl+C to stop this application.");
 
-                // Channels is also an ObservableCollection, so we can subscribe to the CollectionChanged event
-                // A new Channel will be automatically created when joining a channel
-                client.Channels.CollectionChanged += Channels_CollectionChanged;
+            var builder = Client.CreateBuilder()
+                .WithNick(nickName, "NetIRC")
+                .WithServer(Server, 6667);
 
-                // Handy method to register all custom message handlers in an assembly
-                client.RegisterCustomMessageHandlers(typeof(Program).Assembly);
+            // Create IRC client instance with a using statement so it gets properly disposed (IDisposable pattern)
+            using var client = builder.Build();
+            
+            // Subscribe to IRC client events
+            client.RawDataReceived += Client_RawDataReceived;
+            client.IRCMessageParsed += Client_IRCMessageParsed;
+            client.RegistrationCompleted += EventHub_RegistrationCompleted;
 
-                // Custom message handlers can also be manually registered
-                //client.RegisterCustomMessageHandler<PrivMsgHandler>();
+            // Queries is an ObservableCollection, so we can subscribe to the CollectionChanged event
+            // A new Query will be automatically created when initiating a private conversation with someone
+            client.Queries.CollectionChanged += Queries_CollectionChanged;
 
-                // Connect to the server and let the magic happen in the background
-                Task.Run(() => client.ConnectAsync());
+            // Channels is also an ObservableCollection, so we can subscribe to the CollectionChanged event
+            // A new Channel will be automatically created when joining a channel
+            client.Channels.CollectionChanged += Channels_CollectionChanged;
 
-                // Wait for a key press before exiting the console application
-                Console.Read();
-            }
+            // Handy method to register all custom message handlers in an assembly
+            client.RegisterCustomMessageHandlers(typeof(Program).Assembly);
+
+            // Custom message handlers can also be manually registered
+            //client.RegisterCustomMessageHandler<PrivMsgHandler>();
+
+            Console.WriteLine($"Connecting to {Server}...");
+
+            // Connect to the server and let the magic happen in the background
+            await client.ConnectAsync();
+
+            // Wait for Ctrl+C before exiting the console application
+            await Task.WhenAny(cancelKeyPress.Task, Task.Delay(Timeout.Infinite));
+
+            Console.WriteLine("Shutting down...");
         }
 
         // This event handler will be called everytime a raw message is received from the server (interesting to inspect the IRC protocol)
@@ -100,9 +110,12 @@ namespace NetIRC.ConsoleCli
         // This event handler will be called when the user registration has been completed (usefull to know when we can start sending messages to the server)
         private static async void EventHub_RegistrationCompleted(object sender, EventArgs e)
         {
-            WriteLine("Ready to Roll!", ConsoleColor.Yellow);
+            if (sender is Client client)
+            {
+                WriteLine("Ready to Roll!", ConsoleColor.Yellow);
 
-            await client.SendAsync(new JoinMessage(channel));
+                await client.SendAsync(new JoinMessage(channel));
+            }
         }
 
         // This event handler will be called when a new Query is created (after initiating a new private conversation)
