@@ -19,10 +19,10 @@ namespace NetIRC.ConsoleCli
 
         static async Task Main()
         {
-            var cancelKeyPress = new TaskCompletionSource<object>();
+            var cancelKeyPress = new TaskCompletionSource();
             Console.CancelKeyPress += (s, e) =>
             {
-                cancelKeyPress.SetResult(null);
+                cancelKeyPress.SetResult();
                 e.Cancel = true;
             };
 
