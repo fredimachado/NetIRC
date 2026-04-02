@@ -35,7 +35,7 @@ namespace NetIRC
         /// <summary>
         /// Represents the last parameters in the message
         /// </summary>
-        public string Trailing => Parameters != null ? Parameters[Parameters.Length - 1] : string.Empty;
+        public string Trailing => Parameters != null && Parameters.Length > 0 ? Parameters[Parameters.Length - 1] : string.Empty;
 
         /// <summary>
         /// An Enum representing the IRC command
