@@ -30,8 +30,10 @@ if (Test-Path $artifacts) {
 
 exec { dotnet clean -c Release }
 
+exec { dotnet restore .\NetIRC.sln }
+
 exec { dotnet build -c Release }
 
-exec { dotnet test -c Release -r $artifacts --no-build -l trx --verbosity=normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov }
+exec { dotnet test -c Release --results-directory $artifacts --no-build -l trx --verbosity=normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov }
 
 exec { dotnet pack .\src\NetIRC\NetIRC.csproj -c Release -o $artifacts --no-build }
