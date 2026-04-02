@@ -127,7 +127,7 @@ namespace NetIRC.Connection
             {
                 streamReader?.Dispose();
                 streamWriter?.Dispose();
-                tcpClient.Dispose();
+                tcpClient?.Dispose();
             }
 
             disposed = true;
