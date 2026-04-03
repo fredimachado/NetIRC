@@ -1,6 +1,7 @@
-﻿using NetIRC.Builder;
+using NetIRC.Builder;
 using NetIRC.Connection;
 using NetIRC.Ctcp;
+using NetIRC.Extensions;
 using NetIRC.Messages;
 using System;
 using System.Linq;
@@ -97,8 +98,8 @@ namespace NetIRC
         /// <param name="connection">IConnection implementation</param>
         public Client(User user, IConnection connection)
         {
-            User = user;
-            this.connection = connection;
+            User = user ?? throw new ArgumentNullException(nameof(user));
+            this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
 
             DispatcherInvoker = a => a.Invoke();
 
@@ -119,7 +120,15 @@ namespace NetIRC
             this.password = password;
         }
 
-        private async void Connection_DataReceived(object sender, DataReceivedEventArgs e)
+        private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
+        {
+            HandleDataReceivedAsync(e)
+                .SafeFireAndForget(
+                    continueOnCapturedContext: false,
+                    onException: ex => DispatcherInvoker.Invoke(() => ServerMessages.Add(new ServerMessage($"[Error] {ex.Message}"))));
+        }
+
+        private async Task HandleDataReceivedAsync(DataReceivedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.Data))
             {
@@ -141,10 +150,8 @@ namespace NetIRC
         }
 
         /// <summary>
-        /// Connects to the specified IRC server using the specified port number
+        /// Connects to the configured IRC server endpoint.
         /// </summary>
-        /// <param name="host">IRC server address</param>
-        /// <param name="port">Port number</param>
         /// <returns>The task object representing the asynchronous operation</returns>
         public async Task ConnectAsync()
         {
@@ -213,7 +220,7 @@ namespace NetIRC
         /// Sets the internal dispatcher invoker so collections get manipulated in a specific thread
         /// For WPF you can pass Application.Dispatcher.Invoke
         /// </summary>
-        /// <param name="dispatcherInvoke"></param>
+        /// <param name="dispatcherInvoke">Delegate used to marshal collection updates to a specific thread context.</param>
         public void SetDispatcherInvoker(Action<Action> dispatcherInvoke)
         {
             _ = dispatcherInvoke ?? throw new ArgumentNullException(nameof(dispatcherInvoke));

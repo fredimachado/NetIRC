@@ -1,4 +1,4 @@
-﻿using NetIRC.Extensions;
+using NetIRC.Extensions;
 using System;
 using System.IO;
 using System.Net.Sockets;
@@ -35,6 +35,11 @@ namespace NetIRC.Connection
         private readonly string host;
         private readonly int port;
 
+        /// <summary>
+        /// Initializes a new TCP connection abstraction for an IRC server endpoint.
+        /// </summary>
+        /// <param name="host">IRC server host name or address.</param>
+        /// <param name="port">IRC server port.</param>
         public TcpClientConnection(string host, int port = 6667)
         {
             if (string.IsNullOrWhiteSpace(host))
@@ -52,12 +57,9 @@ namespace NetIRC.Connection
         }
 
         /// <summary>
-        /// Connects the client to an IRC server using the specified host and port number
-        /// as an asynchronous operation
+        /// Connects the client to an IRC server as an asynchronous operation.
         /// </summary>
-        /// <param name="host">The host of the IRC server</param>
-        /// <param name="port">The port number</param>
-        /// <returns>The task object representing the asynchronous operation</returns>
+        /// <returns>The task object representing the asynchronous operation.</returns>
         public async Task ConnectAsync()
         {
             tcpClient?.Dispose();
@@ -96,6 +98,11 @@ namespace NetIRC.Connection
         /// <returns>The task object representing the asynchronous operation</returns>
         public async Task SendAsync(string data)
         {
+            if (string.IsNullOrWhiteSpace(data))
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             if (!data.EndsWith(Constants.CrLf))
             {
                 data += Constants.CrLf;

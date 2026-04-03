@@ -1,4 +1,4 @@
-﻿using NetIRC.Messages;
+using NetIRC.Messages;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -77,7 +77,12 @@ namespace NetIRC.ConsoleCli
         }
 
         // This event handler will be called after the IRC client has parsed a raw message (nicer to work with when compared to the raw message string)
-        private static async void Client_IRCMessageParsed(Client client, ParsedIRCMessage ircMessage)
+        private static void Client_IRCMessageParsed(Client client, ParsedIRCMessage ircMessage)
+        {
+            _ = HandleIrcMessageParsedAsync(client, ircMessage);
+        }
+
+        private static async Task HandleIrcMessageParsedAsync(Client client, ParsedIRCMessage ircMessage)
         {
             // When receiving a topic message
             // NOTE: Just an example, because having a custom message handler deriving from CustomMessageHandler<TopicMessage> would be better
@@ -108,7 +113,12 @@ namespace NetIRC.ConsoleCli
         }
 
         // This event handler will be called when the user registration has been completed (usefull to know when we can start sending messages to the server)
-        private static async void EventHub_RegistrationCompleted(object sender, EventArgs e)
+        private static void EventHub_RegistrationCompleted(object sender, EventArgs e)
+        {
+            _ = HandleRegistrationCompletedAsync(sender);
+        }
+
+        private static async Task HandleRegistrationCompletedAsync(object sender)
         {
             if (sender is Client client)
             {
