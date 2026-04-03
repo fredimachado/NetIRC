@@ -130,6 +130,8 @@ namespace NetIRC
 
         private async Task HandleDataReceivedAsync(DataReceivedEventArgs e)
         {
+            _ = e ?? throw new ArgumentNullException(nameof(e));
+
             if (string.IsNullOrWhiteSpace(e.Data))
             {
                 return;
@@ -176,6 +178,11 @@ namespace NetIRC
         /// <returns>The task object representing the asynchronous operation</returns>
         public Task SendRaw(string rawData)
         {
+            if (string.IsNullOrWhiteSpace(rawData))
+            {
+                throw new ArgumentNullException(nameof(rawData));
+            }
+
             return connection.SendAsync(rawData);
         }
 
@@ -186,6 +193,8 @@ namespace NetIRC
         /// <returns>The task object representing the asynchronous operation</returns>
         public Task SendAsync(IClientMessage message)
         {
+            _ = message ?? throw new ArgumentNullException(nameof(message));
+
             return connection.SendAsync(message.ToString());
         }
 
@@ -213,6 +222,8 @@ namespace NetIRC
         /// <param name="assembly">The assembly containing custom message handlers to add.</param>
         public void RegisterCustomMessageHandlers(Assembly assembly)
         {
+            _ = assembly ?? throw new ArgumentNullException(nameof(assembly));
+
             messageHandlerContainer.RegisterCustomMessageHandlers(assembly);
         }
 

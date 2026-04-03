@@ -43,6 +43,21 @@ namespace NetIRC.Tests
             mockConnection.Verify(c => c.SendAsync(data), Times.Once);
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task SendRawShouldThrowWhenDataIsInvalid(string data)
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => client.SendRaw(data));
+        }
+
+        [Fact]
+        public async Task SendAsyncShouldThrowWhenMessageIsNull()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => client.SendAsync(null));
+        }
+
         [Fact]
         public void DisposeShouldCallConnectionDispose()
         {
@@ -394,6 +409,12 @@ namespace NetIRC.Tests
 
             Assert.True(NoticeHandler.Called);
             Assert.True(EndOfMotdHandler.Called);
+        }
+
+        [Fact]
+        public void RegisterCustomMessageHandlersShouldThrowWhenAssemblyIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => client.RegisterCustomMessageHandlers(null));
         }
 
         [Theory]
