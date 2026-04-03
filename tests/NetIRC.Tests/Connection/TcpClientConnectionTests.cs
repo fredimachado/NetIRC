@@ -162,6 +162,16 @@ namespace NetIRC.Tests.Connection
             Assert.Equal(data, dataReceived);
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task WhenSendingInvalidData_ShouldThrowArgumentNullException(string data)
+        {
+            using var tcpClient = new TcpClientConnection(HOST, port);
+            await Assert.ThrowsAsync<ArgumentNullException>(() => tcpClient.SendAsync(data));
+        }
+
         [Fact]
         public async Task WhenServerDisconnects_TrigerDisconnectedEvent()
         {
