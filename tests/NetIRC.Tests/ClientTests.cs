@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using NetIRC.Connection;
 using NetIRC.Ctcp;
 using NetIRC.Messages;
@@ -19,6 +19,18 @@ namespace NetIRC.Tests
         {
             mockConnection = new Mock<IConnection>();
             client = new Client(FakeUser, mockConnection.Object);
+        }
+
+        [Fact]
+        public void ConstructorShouldThrowWhenUserIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new Client(null, mockConnection.Object));
+        }
+
+        [Fact]
+        public void ConstructorShouldThrowWhenConnectionIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new Client(FakeUser, (IConnection)null));
         }
 
         [Fact]
@@ -299,6 +311,23 @@ namespace NetIRC.Tests
             var raw = ":irc.server.io 001 netIRCTest :Welcome";
 
             RaiseDataReceived(raw);
+        }
+
+        [Fact]
+        public async Task AsyncMessageProcessingExceptionsShouldBeCapturedAsServerMessage()
+        {
+            client.IRCMessageParsed += (c, m) => throw new InvalidOperationException("boom");
+
+            RaiseDataReceived(":from PRIVMSG to :message");
+
+            var timeout = TimeSpan.FromSeconds(1);
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            while (stopwatch.Elapsed < timeout && client.ServerMessages.Count == 0)
+            {
+                await Task.Delay(25);
+            }
+
+            Assert.Contains(client.ServerMessages, message => message.Text.Contains("[Error] boom"));
         }
 
         [Fact]
