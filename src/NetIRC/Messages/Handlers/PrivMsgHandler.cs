@@ -1,10 +1,19 @@
-﻿using NetIRC.Ctcp;
+using NetIRC.Ctcp;
 using System.Threading.Tasks;
 
 namespace NetIRC.Messages.Handlers
 {
+    /// <summary>
+    /// Handles PRIVMSG messages for channels, queries, and CTCP.
+    /// </summary>
     public class PrivMsgHandler : MessageHandler<PrivMsgMessage>
     {
+        /// <summary>
+        /// Dispatches private messages to channel/query storage or CTCP processing.
+        /// </summary>
+        /// <param name="serverMessage">Private message payload.</param>
+        /// <param name="client">Target IRC client.</param>
+        /// <returns>A completed task.</returns>
         public override Task HandleAsync(PrivMsgMessage serverMessage, Client client)
         {
             if (serverMessage.IsCtcp)

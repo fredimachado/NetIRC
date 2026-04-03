@@ -1,24 +1,45 @@
-﻿using NetIRC.Messages;
+using NetIRC.Messages;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NetIRC.Ctcp
 {
+    /// <summary>
+    /// Provides known CTCP command names and built-in CTCP reply handlers.
+    /// </summary>
     public static class CtcpCommands
     {
         internal const string CtcpDelimiter = "\x01";
 
+        /// <summary>
+        /// CTCP ACTION command.
+        /// </summary>
         public const string ACTION = nameof(ACTION);
 
+        /// <summary>
+        /// CTCP CLIENTINFO command.
+        /// </summary>
         public const string CLIENTINFO = nameof(CLIENTINFO);
 
+        /// <summary>
+        /// CTCP ERRMSG command.
+        /// </summary>
         public const string ERRMSG = nameof(ERRMSG);
 
+        /// <summary>
+        /// CTCP PING command.
+        /// </summary>
         public const string PING = nameof(PING);
 
+        /// <summary>
+        /// CTCP TIME command.
+        /// </summary>
         public const string TIME = nameof(TIME);
 
+        /// <summary>
+        /// CTCP VERSION command.
+        /// </summary>
         public const string VERSION = nameof(VERSION);
 
         internal static Task HandleCtcp(Client client, CtcpEventArgs ctcp)

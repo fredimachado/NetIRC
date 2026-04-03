@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace NetIRC
@@ -8,6 +8,11 @@ namespace NetIRC
     /// </summary>
     public class ChannelCollection : ObservableCollection<Channel>
     {
+        /// <summary>
+        /// Gets an existing channel by name, or creates one if it does not exist.
+        /// </summary>
+        /// <param name="name">Channel name.</param>
+        /// <returns>The existing or newly created <see cref="Channel"/>.</returns>
         public Channel GetChannel(string name)
         {
             var channel = Items.FirstOrDefault(c => c.Name == name);

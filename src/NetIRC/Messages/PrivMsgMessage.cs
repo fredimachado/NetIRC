@@ -1,4 +1,4 @@
-﻿using NetIRC.Ctcp;
+using NetIRC.Ctcp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,17 +7,50 @@ using System.Text;
 
 namespace NetIRC.Messages
 {
+    /// <summary>
+    /// Represents a PRIVMSG message from server or client.
+    /// </summary>
     public class PrivMsgMessage : IRCMessage, IServerMessage, IClientMessage, ISplitClientMessage
     {
+        /// <summary>
+        /// Maximum UTF-8 byte size per IRC message chunk.
+        /// </summary>
         public const int MaxMessageByteSize = 400;
 
+        /// <summary>
+        /// Gets the sender nickname.
+        /// </summary>
         public string From { get; }
+
+        /// <summary>
+        /// Gets the parsed sender prefix.
+        /// </summary>
         public IRCPrefix Prefix { get; }
+
+        /// <summary>
+        /// Gets the target nickname or channel.
+        /// </summary>
         public string To { get; }
+
+        /// <summary>
+        /// Gets the message text.
+        /// </summary>
         public string Message { get; }
+
+        /// <summary>
+        /// Gets whether the target is a channel.
+        /// </summary>
         public bool IsChannelMessage { get; }
+
+        /// <summary>
+        /// Gets whether the message contains CTCP framing.
+        /// </summary>
         public bool IsCtcp { get; }
 
+        /// <summary>
+        /// Initializes a new instance from a parsed server message.
+        /// </summary>
+        /// <param name="parsedMessage">Parsed IRC message.</param>
         public PrivMsgMessage(ParsedIRCMessage parsedMessage)
         {
             From = parsedMessage.Prefix.From;
@@ -29,14 +62,25 @@ namespace NetIRC.Messages
             IsCtcp = Message.Contains(CtcpCommands.CtcpDelimiter);
         }
 
+        /// <summary>
+        /// Initializes a new instance for a client command.
+        /// </summary>
+        /// <param name="target">Target nickname or channel.</param>
+        /// <param name="text">Message text.</param>
         public PrivMsgMessage(string target, string text)
         {
             To = target;
             Message = !text.Contains(" ") ? $":{text}" : text;
         }
 
+        /// <summary>
+        /// Gets command tokens for single-line serialization.
+        /// </summary>
         public IEnumerable<string> Tokens => Enumerable.Empty<string>();
 
+        /// <summary>
+        /// Gets command tokens split into multiple lines when needed.
+        /// </summary>
         public IEnumerable<string[]> LineSplitTokens => BuildTokensFromMessageChunks();
 
         private IEnumerable<string[]> BuildTokensFromMessageChunks()

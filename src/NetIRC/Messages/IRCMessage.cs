@@ -1,9 +1,12 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 
 namespace NetIRC.Messages
 {
+    /// <summary>
+    /// Base type for IRC messages and helper logic for formatting client commands.
+    /// </summary>
     public abstract class IRCMessage
     {
         /// <summary>
@@ -11,6 +14,10 @@ namespace NetIRC.Messages
         /// </summary>
         public DateTime CreatedDate { get; } = DateTime.Now;
 
+        /// <summary>
+        /// Converts this message into its wire-format text representation when applicable.
+        /// </summary>
+        /// <returns>Formatted IRC line(s) for client messages; otherwise the base string representation.</returns>
         public override string ToString()
         {
             return this switch

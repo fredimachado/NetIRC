@@ -1,8 +1,11 @@
-﻿using NetIRC.Connection;
+using NetIRC.Connection;
 using System;
 
 namespace NetIRC.Builder
 {
+    /// <summary>
+    /// Provides a fluent API for configuring and constructing a <see cref="Client"/>.
+    /// </summary>
     public sealed class ClientBuilder
     {
         private User _user;
@@ -26,7 +29,7 @@ namespace NetIRC.Builder
         }
 
         /// <summary>
-        /// 
+        /// Configures the IRC server endpoint and optional connection password.
         /// </summary>
         /// <param name="host">The host of the server you wish to connect to</param>
         /// <param name="port">The port of the server (Default port is usually 6667)</param>
