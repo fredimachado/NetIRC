@@ -4,7 +4,7 @@
     <Description>Simple open-source Portable IRC Client Library written in C# targeting .NETStandard 2.0 and .NET Framework 4.6.1</Description>
     <Copyright>Copyright Fredi Machado</Copyright>
     <MinVerTagPrefix>v</MinVerTagPrefix>
-    <MinVerDefaultPreReleasePhase>preview</MinVerDefaultPreReleasePhase>
+    <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
     <Authors>Fredi Machado</Authors>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
@@ -30,7 +30,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201" PrivateAssets="All" />
     <PackageReference Include="MinVer" Version="7.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.Memory" Version="4.6.3" />
+    <PackageReference Include="System.Memory" Version="4.5.5" Condition="'$(TargetFramework)' == 'net461'" />
+    <PackageReference Include="System.Memory" Version="4.6.3" Condition="'$(TargetFramework)' != 'net461'" />
   </ItemGroup>
 
   <Target Name="PrepareReleaseNotes" BeforeTargets="GenerateNuspec">
